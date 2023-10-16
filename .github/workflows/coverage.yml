@@ -1,0 +1,59 @@
+# Scan code quality and code coverage
+
+name: Build and code coverage
+on:
+  # Pushing to a feature branch
+  push:
+    branches:
+      - feature/**      # Feature development
+      - develop         # Iteration development
+      - release         # Ready to release code
+      - hotfix          # Urgent fixes code
+      - main
+  # Opening a new PR
+  pull_request:
+    types:
+      - opened
+      - synchronize
+
+jobs:
+  # Scan code quality
+  build:
+    name: Build and scan
+    runs-on: ubuntu-22.04
+    steps:
+      # Clone repository
+      - name: 👍 Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      # Configure Java 17 and cache Maven dependencies
+      - name: 👷‍ Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: ' corretto'
+          java-version: '17'
+          cache: 'maven'
+      
+      - name: 📚 Cache Maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      
+      # Cache Sonar dependencies
+      - name: 📚 Cache Sonar packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      
+      # Build code and analyze it
+      - name: 🏗️ Build and analyze
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Corusoft_slurp-backend

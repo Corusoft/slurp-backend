@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>3.1.4</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+
+	<groupId>dev.corusoft</groupId>
+	<artifactId>slurp</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>slurp</name>
+	<description>Slurp backend</description>
+
+	<properties>
+		<!-- Project properties -->
+		<java.version>17</java.version>
+		<maven.compiler.source>17</maven.compiler.source>
+		<maven.compiler.target>17</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UFT-8</project.reporting.outputEncoding>
+
+		<!-- Project dependencies versions -->
+		<dependencies.version.bouncycastle>1.70</dependencies.version.bouncycastle>
+		<dependencies.version.jackson-datatype>2.15.3</dependencies.version.jackson-datatype>
+		<dependencies.version.jacoco>0.8.10</dependencies.version.jacoco>
+		<dependencies.version.jaxb-api>2.3.0</dependencies.version.jaxb-api>
+		<dependencies.version.jjwt>0.9.1</dependencies.version.jjwt>
+		<dependencies.version.lombok>1.18.28</dependencies.version.lombok>
+		<dependencies.version.postgresqldriver>42.6.0</dependencies.version.postgresqldriver>
+		<dependencies.version.spring-boot-starter>3.1.4</dependencies.version.spring-boot-starter>
+		<dependencies.version.spring-security>6.1.4</dependencies.version.spring-security>
+
+		<!-- Project plugins versions -->
+		<plugins.version.failsafe>3.1.2</plugins.version.failsafe>
+
+
+		<!-- CI/CD configuration -->
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+		<sonar.organization>corusoft</sonar.organization>
+
+		<!-- Path configuration -->
+		<project.contextPath>/backend</project.contextPath>
+		<docker-compose.test.path>${project.basedir}/src/test/docker-compose.test.yml</docker-compose.test.path>
+	</properties>
+
+	<dependencies>
+		<!-- Group "com.fasterxml" -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr310</artifactId>
+			<version>${dependencies.version.jackson-datatype}</version>
+		</dependency>
+
+
+		<!-- Group "org.apache" -->
+		<dependency>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-failsafe-plugin</artifactId>
+			<version>${plugins.version.failsafe}</version>
+		</dependency>
+
+
+		<!-- Group "org.bouncycastle" -->
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcprov-jdk15on</artifactId>
+			<version>${dependencies.version.bouncycastle}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcpkix-jdk15on</artifactId>
+			<version>${dependencies.version.bouncycastle}</version>
+		</dependency>
+
+
+		<!-- Group "org.jacoco" -->
+		<dependency>
+			<groupId>org.jacoco</groupId>
+			<artifactId>jacoco-maven-plugin</artifactId>
+			<version>${dependencies.version.jacoco}</version>
+		</dependency>
+
+
+		<!-- Group "org.postgresql" -->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>${dependencies.version.postgresqldriver}</version>
+			<scope>runtime</scope>
+		</dependency>
+
+
+		<!-- Group "org.springframework" -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<version>${dependencies.version.spring-boot-starter}</version>
+			<optional>true</optional>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-docker-compose</artifactId>
+			<optional>true</optional>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+			<version>${dependencies.version.spring-boot-starter}</version>
+
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-rest</artifactId>
+			<version>${dependencies.version.spring-boot-starter}</version>
+
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+			<version>${dependencies.version.spring-boot-starter}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<version>${dependencies.version.spring-boot-starter}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+			<version>${dependencies.version.spring-boot-starter}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+			<version>${dependencies.version.spring-boot-starter}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-testcontainers</artifactId>
+			<version>${dependencies.version.spring-boot-starter}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<version>${dependencies.version.spring-security}</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<!-- Build name: slurp-backend_Mayor.Minor.Patch -->
+		<finalName>${project.artifactId}_${project.version}</finalName>
+
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+				<filtering>true</filtering>
+			</testResource>
+		</testResources>
+
+		<plugins>
+			<!-- Lombok configuration -->
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>${dependencies.version.spring-boot-starter}</version>
+				<configuration>
+					<excludes>
+						<exclude>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+						</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+
+			<!-- Maven plugins configuration -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<!-- Development profile:  -->
+		<profile>
+			<id>development</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<!-- Use application-dev.yml -->
+				<activatedProperties>dev</activatedProperties>
+				<!-- Skip tests -->
+				<maven.test.skip>true</maven.test.skip>
+			</properties>
+
+		</profile>
+
+		<!-- Production profile -->
+		<profile>
+			<id>production</id>
+			<properties>
+				<!-- Use application-prod.yml -->
+				<activatedProperties>prod</activatedProperties>
+				<!-- Skip tests -->
+				<maven.test.skip>true</maven.test.skip>
+			</properties>
+
+		</profile>
+
+		<!-- Testing profile -->
+		<profile>
+			<id>testing</id>
+			<properties>
+				<!-- Use application-test.yml -->
+				<activatedProperties>test</activatedProperties>
+			</properties>
+
+			<build>
+				<plugins>
+					<!-- Jacoco configuration -->
+					<plugin>
+						<groupId>org.jacoco</groupId>
+						<artifactId>jacoco-maven-plugin</artifactId>
+						<version>${dependencies.version.jacoco}</version>
+						<executions>
+							<!-- Prepare agent to inspect code -->
+							<execution>
+								<phase>test-compile</phase>
+								<goals>
+									<goal>prepare-agent</goal>
+								</goals>
+							</execution>
+							<!-- Generate reports before packaging -->
+							<execution>
+								<id>report-results</id>
+								<phase>post-integration-test</phase>
+								<goals>
+									<goal>report</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<!-- Maven configuration for integration testing -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-failsafe-plugin</artifactId>
+						<version>${plugins.version.failsafe}</version>
+						<executions>
+							<execution>
+								<goals>
+									<goal>integration-test</goal>
+									<goal>verify</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+</project>
