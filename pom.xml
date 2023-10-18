@@ -25,11 +25,11 @@
 		<project.reporting.outputEncoding>UFT-8</project.reporting.outputEncoding>
 
 		<!-- Project dependencies versions -->
-		<dependencies.version.bouncycastle>1.70</dependencies.version.bouncycastle>
+		<dependencies.version.bouncycastle>1.76</dependencies.version.bouncycastle>
 		<dependencies.version.jackson-datatype>2.15.3</dependencies.version.jackson-datatype>
 		<dependencies.version.jacoco>0.8.10</dependencies.version.jacoco>
 		<dependencies.version.jaxb-api>2.3.0</dependencies.version.jaxb-api>
-		<dependencies.version.jjwt>0.9.1</dependencies.version.jjwt>
+		<dependencies.version.jjwt>0.12.3</dependencies.version.jjwt>
 		<dependencies.version.lombok>1.18.28</dependencies.version.lombok>
 		<dependencies.version.postgresqldriver>42.6.0</dependencies.version.postgresqldriver>
 		<dependencies.version.spring-boot-starter>3.1.4</dependencies.version.spring-boot-starter>
@@ -56,6 +56,25 @@
 			<version>${dependencies.version.jackson-datatype}</version>
 		</dependency>
 
+		<!-- Group "io.jsonwebtoken" -->
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-api</artifactId>
+			<version>${dependencies.version.jjwt}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-impl</artifactId>
+			<version>${dependencies.version.jjwt}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-jackson</artifactId>
+			<version>${dependencies.version.jjwt}</version>
+		</dependency>
+
 
 		<!-- Group "org.apache" -->
 		<dependency>
@@ -68,13 +87,13 @@
 		<!-- Group "org.bouncycastle" -->
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
-			<artifactId>bcprov-jdk15on</artifactId>
+			<artifactId>bcprov-jdk18on</artifactId>
 			<version>${dependencies.version.bouncycastle}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
-			<artifactId>bcpkix-jdk15on</artifactId>
+			<artifactId>bcpkix-jdk18on</artifactId>
 			<version>${dependencies.version.bouncycastle}</version>
 		</dependency>
 
@@ -86,7 +105,6 @@
 			<version>${dependencies.version.jacoco}</version>
 		</dependency>
 
-
 		<!-- Group "org.postgresql" -->
 		<dependency>
 			<groupId>org.postgresql</groupId>
@@ -95,6 +113,12 @@
 			<scope>runtime</scope>
 		</dependency>
 
+		<!-- Group "org.projectlombok" -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>${dependencies.version.lombok}</version>
+		</dependency>
 
 		<!-- Group "org.springframework" -->
 		<dependency>
