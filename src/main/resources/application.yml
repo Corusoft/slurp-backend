@@ -3,3 +3,13 @@ spring:
     name: 'slurp-backend'
   profiles:
     active: '@activatedProperties@'
+  banner:
+    location: file:banner.txt
+  datasource:
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5         # Connections always available
+      idle-timeout: 30000
+  
+  jpa:
+    database: postgresql

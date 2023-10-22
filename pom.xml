@@ -11,10 +11,12 @@
 	</parent>
 
 	<groupId>dev.corusoft</groupId>
-	<artifactId>slurp</artifactId>
+	<artifactId>slurp-backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>slurp</name>
 	<description>Slurp backend</description>
+	<packaging>jar</packaging>
+	<inceptionYear>2023</inceptionYear>
 
 	<properties>
 		<!-- Project properties -->
@@ -131,6 +133,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-docker-compose</artifactId>
+			<version>${dependencies.version.spring-boot-starter}</version>
 			<optional>true</optional>
 		</dependency>
 
@@ -226,6 +229,19 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifestEntries>
+							<Implementation-Title>${project.artifactId}</Implementation-Title>
+							<Implementation-Version>${project.version}</Implementation-Version>
+						</manifestEntries>
+					</archive>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
