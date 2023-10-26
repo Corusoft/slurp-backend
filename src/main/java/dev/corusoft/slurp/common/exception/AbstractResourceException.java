@@ -1,4 +1,4 @@
-package dev.corusoft.slurp.common.domain.exceptions;
+package dev.corusoft.slurp.common.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

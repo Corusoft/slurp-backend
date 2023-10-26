@@ -1,7 +1,7 @@
-package dev.corusoft.slurp.common.infrastructure.security;
+package dev.corusoft.slurp.common.security;
 
-import dev.corusoft.slurp.common.infrastructure.security.jwt.application.JwtGenerator;
-import dev.corusoft.slurp.common.infrastructure.security.jwt.infrastructure.JwtHttpConfigurer;
+import dev.corusoft.slurp.common.security.jwt.infrastructure.JwtHttpConfigurer;
+import dev.corusoft.slurp.common.security.jwt.application.JwtGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

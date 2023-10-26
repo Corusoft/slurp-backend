@@ -1,6 +1,6 @@
-package dev.corusoft.slurp.common.infrastructure.security.jwt.infrastructure;
+package dev.corusoft.slurp.common.security.jwt.infrastructure;
 
-import dev.corusoft.slurp.common.infrastructure.security.jwt.application.JwtGenerator;
+import dev.corusoft.slurp.common.security.jwt.application.JwtGenerator;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

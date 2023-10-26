@@ -1,4 +1,4 @@
-package dev.corusoft.slurp.config;
+package dev.corusoft.slurp.common.config;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;

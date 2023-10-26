@@ -1,4 +1,4 @@
-package dev.corusoft.slurp.common.infrastructure.security;
+package dev.corusoft.slurp.common.security;
 
 import lombok.experimental.UtilityClass;
 

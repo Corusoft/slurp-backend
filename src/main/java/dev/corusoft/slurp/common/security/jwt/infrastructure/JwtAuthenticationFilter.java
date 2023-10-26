@@ -1,7 +1,7 @@
-package dev.corusoft.slurp.common.infrastructure.security.jwt.infrastructure;
+package dev.corusoft.slurp.common.security.jwt.infrastructure;
 
-import dev.corusoft.slurp.common.infrastructure.security.jwt.application.JwtGenerator;
-import dev.corusoft.slurp.common.infrastructure.security.jwt.domain.JwtData;
+import dev.corusoft.slurp.common.security.jwt.application.JwtGenerator;
+import dev.corusoft.slurp.common.security.jwt.domain.JwtData;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-import static dev.corusoft.slurp.common.infrastructure.security.SecurityConstants.*;
+import static dev.corusoft.slurp.common.security.SecurityConstants.*;
 
 @Slf4j
 public class JwtAuthenticationFilter extends BasicAuthenticationFilter {

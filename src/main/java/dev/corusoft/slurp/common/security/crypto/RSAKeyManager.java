@@ -1,6 +1,6 @@
-package dev.corusoft.slurp.common.infrastructure.security.crypto;
+package dev.corusoft.slurp.common.security.crypto;
 
-import dev.corusoft.slurp.config.EnvironmentConfiguration;
+import dev.corusoft.slurp.common.config.EnvironmentConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
