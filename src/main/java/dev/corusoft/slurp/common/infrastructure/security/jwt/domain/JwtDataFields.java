@@ -1,4 +1,4 @@
-package dev.corusoft.slurp.common.security.jwt.domain;
+package dev.corusoft.slurp.common.infrastructure.security.jwt.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

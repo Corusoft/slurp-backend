@@ -2,9 +2,6 @@ package dev.corusoft.slurp.users.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.experimental.Accessors;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 @Getter
 @Setter
@@ -12,10 +9,9 @@ import org.hibernate.annotations.OnDeleteAction;
 @AllArgsConstructor
 @ToString
 @Builder
-@Accessors(prefix = {"is", "has"})
 @Entity
 @Table(name = "contactinfo", schema = "users")
-public class Contactinfo {
+public class ContactInfo {
     /* Atributes */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,21 +21,23 @@ public class Contactinfo {
     @Column(name = "email", nullable = false, length = 100, unique = true)
     private String email;
 
+    @Builder.Default
     @Column(name = "isemailverified", nullable = false)
     private Boolean isEmailVerified = false;
 
     @Column(name = "phonenumber", nullable = false, length = 20)
     private String phoneNumber;
 
+    @Builder.Default
     @Column(name = "isphonenumberverified", nullable = false)
     private Boolean isPhoneNumberVerified = false;
 
 
+
     /* Relationships */
     @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "user_id", nullable = false)
+    @OneToOne(optional = false, orphanRemoval = true)
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
 

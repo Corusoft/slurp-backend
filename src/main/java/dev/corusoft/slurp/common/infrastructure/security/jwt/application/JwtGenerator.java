@@ -1,6 +1,6 @@
-package dev.corusoft.slurp.common.security.jwt.application;
+package dev.corusoft.slurp.common.infrastructure.security.jwt.application;
 
-import dev.corusoft.slurp.common.security.jwt.domain.JwtData;
+import dev.corusoft.slurp.common.infrastructure.security.jwt.domain.JwtData;
 
 import java.io.IOException;
 

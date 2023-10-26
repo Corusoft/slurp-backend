@@ -8,7 +8,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE SCHEMA users;
 
 CREATE TABLE IF NOT EXISTS users.UserTable (
-    user_id      UUID,
+    user_id UUID DEFAULT uuid_generate_v4(),
     name         VARCHAR(50) NOT NULL,
     surname      VARCHAR(50),
     gender       VARCHAR(10) NOT NULL,
@@ -19,10 +19,9 @@ CREATE TABLE IF NOT EXISTS users.UserTable (
 );
 
 CREATE TABLE IF NOT EXISTS users.Credential (
-    credential_id     NUMERIC,
+    credential_id SERIAL,
     nickname          VARCHAR(50) NOT NULL,
     passwordEncrypted VARCHAR     NOT NULL,
-    passwordSalt      VARCHAR     NOT NULL,
     user_id           UUID        NOT NULL,
 
     CONSTRAINT PK_Credential PRIMARY KEY (credential_id),
@@ -33,7 +32,7 @@ CREATE TABLE IF NOT EXISTS users.Credential (
 );
 
 CREATE TABLE IF NOT EXISTS users.Role (
-    role_id NUMERIC,
+    role_id SERIAL,
     role    VARCHAR NOT NULL,
 
     CONSTRAINT PK_Role PRIMARY KEY (role_id)
@@ -41,7 +40,7 @@ CREATE TABLE IF NOT EXISTS users.Role (
 
 CREATE TABLE IF NOT EXISTS users.UserRole (
     user_id    UUID,
-    role_id    NUMERIC,
+    role_id INTEGER,
     assignedAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT PK_UserRole PRIMARY KEY (user_id, role_id),
@@ -55,7 +54,7 @@ CREATE TABLE IF NOT EXISTS users.UserRole (
 );
 
 CREATE TABLE IF NOT EXISTS users.ContactInfo (
-    contactInfo_id        NUMERIC,
+    contactInfo_id INTEGER,
     email                 VARCHAR(100) NOT NULL,
     isEmailVerified       BOOLEAN      NOT NULL DEFAULT FALSE,
     phoneNumber           VARCHAR(20)  NOT NULL,
@@ -71,9 +70,9 @@ CREATE TABLE IF NOT EXISTS users.ContactInfo (
 );
 
 CREATE TABLE IF NOT EXISTS users.LocationHistory (
-    locationHistory_id NUMERIC,
-    latitude           NUMERIC   NOT NULL,
-    longitude          NUMERIC   NOT NULL,
+    locationHistory_id INTEGER,
+    latitude           INTEGER NOT NULL,
+    longitude          INTEGER NOT NULL,
     timestamp          TIMESTAMP NOT NULL,
     validUntil         TIMESTAMP,
     user_id            UUID      NOT NULL,
@@ -88,7 +87,7 @@ CREATE TABLE IF NOT EXISTS users.LocationHistory (
 );
 
 CREATE TABLE users.SystemSettings (
-    setting_id NUMERIC,
+    setting_id INTEGER,
     type       VARCHAR NOT NULL,
     value      VARCHAR NOT NULL,
     user_id    UUID    NOT NULL,
@@ -98,4 +97,13 @@ CREATE TABLE users.SystemSettings (
         FOREIGN KEY (user_id) REFERENCES users.UserTable (user_id)
             ON DELETE CASCADE
             ON UPDATE CASCADE
-)
+);
+
+
+
+INSERT INTO users.Role(role)
+VALUES ('ADMIN');
+INSERT INTO users.Role(role)
+VALUES ('BASIC');
+INSERT INTO users.Role(role)
+VALUES ('PREMIUM');

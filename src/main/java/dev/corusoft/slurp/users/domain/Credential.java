@@ -18,14 +18,11 @@ public class Credential {
     @Column(name = "credential_id", nullable = false)
     private Long credentialID;
 
-    @Column(name = "nickname", nullable = false, unique = true)
+    @Column(name = "nickname", nullable = false, unique = true, length = 50)
     private String nickname;
 
     @Column(name = "passwordEncrypted", nullable = false)
     private String passwordEncrypted;
-
-    @Column(name = "passwordSalt", nullable = false)
-    private String passwordSalt;
 
 
     /* Relationships */

@@ -1,7 +1,7 @@
-package dev.corusoft.slurp.common.security.jwt.infrastructure;
+package dev.corusoft.slurp.common.infrastructure.security.jwt.infrastructure;
 
-import dev.corusoft.slurp.common.security.jwt.application.JwtGenerator;
-import dev.corusoft.slurp.common.security.jwt.domain.JwtData;
+import dev.corusoft.slurp.common.infrastructure.security.jwt.application.JwtGenerator;
+import dev.corusoft.slurp.common.infrastructure.security.jwt.domain.JwtData;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,10 +16,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import java.io.IOException;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
-import static dev.corusoft.slurp.common.security.SecurityConstants.*;
+import static dev.corusoft.slurp.common.infrastructure.security.SecurityConstants.*;
 
 @Slf4j
 public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
@@ -71,8 +71,8 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
     }
 
     private Set<GrantedAuthority> createAuthorities(JwtData token) {
-        Set<GrantedAuthority> authorities = Collections.emptySet();
         boolean hasRoles = (token.getRoles() != null) && (!token.getRoles().isEmpty());
+        Set<GrantedAuthority> authorities = new HashSet<>(token.getRoles().size());
 
         if (!hasRoles) return authorities;
 

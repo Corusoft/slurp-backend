@@ -1,4 +1,4 @@
-package dev.corusoft.slurp.common.security.crypto;
+package dev.corusoft.slurp.common.infrastructure.security.crypto;
 
 import dev.corusoft.slurp.config.EnvironmentConfiguration;
 import lombok.extern.slf4j.Slf4j;
