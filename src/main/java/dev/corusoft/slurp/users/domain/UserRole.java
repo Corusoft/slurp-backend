@@ -35,6 +35,7 @@ public class UserRole {
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
+    @Builder.Default
     @Column(name = "assignedat", nullable = false)
     private LocalDateTime assignedAt = LocalDateTime.now();
 

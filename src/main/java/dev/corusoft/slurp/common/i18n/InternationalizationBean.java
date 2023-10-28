@@ -5,7 +5,9 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.util.*;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class InternationalizationBean {
@@ -15,7 +17,7 @@ public class InternationalizationBean {
 
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource bean = new ReloadableResourceBundleMessageSource();
-        bean.setDefaultEncoding("UTF-8");
+        bean.setDefaultEncoding(StandardCharsets.UTF_8.name());
 
         for (String basename: createBasenames()) {
             bean.addBasenames(basename);

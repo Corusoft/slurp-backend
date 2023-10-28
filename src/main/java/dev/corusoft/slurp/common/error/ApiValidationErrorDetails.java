@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class ApiValidationError implements ApiError {
+public class ApiValidationErrorDetails implements ApiErrorDetails {
 
     private String objectName;
 

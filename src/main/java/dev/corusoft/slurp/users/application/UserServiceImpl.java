@@ -1,6 +1,6 @@
 package dev.corusoft.slurp.users.application;
 
-import dev.corusoft.slurp.common.domain.exceptions.EntityAlreadyExistsException;
+import dev.corusoft.slurp.common.exception.EntityAlreadyExistsException;
 import dev.corusoft.slurp.users.application.utils.UserUtils;
 import dev.corusoft.slurp.users.domain.*;
 import dev.corusoft.slurp.users.domain.User.UserBuilder;
