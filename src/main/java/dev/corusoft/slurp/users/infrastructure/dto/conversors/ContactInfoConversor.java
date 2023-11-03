@@ -2,12 +2,13 @@ package dev.corusoft.slurp.users.infrastructure.dto.conversors;
 
 import dev.corusoft.slurp.users.domain.ContactInfo;
 import dev.corusoft.slurp.users.infrastructure.dto.output.ContactInfoDTO;
-import lombok.experimental.UtilityClass;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
-@UtilityClass
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ContactInfoConversor {
     /* ******************** Convertir a DTO ******************** */
-    public ContactInfoDTO toContactInfoDTO(ContactInfo entity) {
+    public static ContactInfoDTO toContactInfoDTO(ContactInfo entity) {
         return ContactInfoDTO.builder()
                 .contactInfoID(entity.getContactInfoID())
                 .email(entity.getEmail())

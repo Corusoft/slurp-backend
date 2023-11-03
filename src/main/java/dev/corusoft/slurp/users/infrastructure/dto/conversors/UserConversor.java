@@ -2,14 +2,15 @@ package dev.corusoft.slurp.users.infrastructure.dto.conversors;
 
 import dev.corusoft.slurp.users.domain.User;
 import dev.corusoft.slurp.users.infrastructure.dto.output.*;
-import lombok.experimental.UtilityClass;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import static dev.corusoft.slurp.users.infrastructure.dto.conversors.ContactInfoConversor.toContactInfoDTO;
 
-@UtilityClass
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserConversor {
     /* ******************** Convertir a DTO ******************** */
-    public UserDTO toUserDTO(User entity) {
+    public static UserDTO toUserDTO(User entity) {
         ContactInfoDTO contactInfoDTO = toContactInfoDTO(entity.getContactInfo());
 
         return UserDTO.builder()
@@ -25,7 +26,7 @@ public class UserConversor {
                 .build();
     }
 
-    public AuthenticatedUserDTO toAuthenticatedUserDTO(String token, User entity) {
+    public static AuthenticatedUserDTO toAuthenticatedUserDTO(String token, User entity) {
         UserDTO userDTO = toUserDTO(entity);
 
         return new AuthenticatedUserDTO(token, userDTO);
