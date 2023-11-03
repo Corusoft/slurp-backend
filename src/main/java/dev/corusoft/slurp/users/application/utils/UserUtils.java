@@ -3,7 +3,7 @@ package dev.corusoft.slurp.users.application.utils;
 import dev.corusoft.slurp.common.exception.EntityNotFoundException;
 import dev.corusoft.slurp.users.domain.*;
 import dev.corusoft.slurp.users.infrastructure.repositories.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,12 +14,23 @@ import java.util.Optional;
 public class UserUtils {
     private static final String USER_CLASSNAME = User.class.getSimpleName();
 
-    @Autowired
-    private UserRepository userRepo;
-    @Autowired
-    private CredentialRepository credentialRepo;
-    @Autowired
-    private RoleRepository roleRepo;
+    private final UserRepository userRepo;
+    private final CredentialRepository credentialRepo;
+    private final RoleRepository roleRepo;
+    private final BCryptPasswordEncoder passwordEncoder;
+
+
+    public UserUtils(UserRepository userRepo, CredentialRepository credentialRepo, RoleRepository roleRepo, BCryptPasswordEncoder passwordEncoder) {
+        this.userRepo = userRepo;
+        this.credentialRepo = credentialRepo;
+        this.roleRepo = roleRepo;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+
+    public String encryptPassword(String rawPassword) {
+        return passwordEncoder.encode(rawPassword);
+    }
 
     /**
      * Busca un usuario por su nickname.

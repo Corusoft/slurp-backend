@@ -3,6 +3,8 @@ package dev.corusoft.slurp.users.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Objects;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -43,4 +45,17 @@ public class ContactInfo {
 
     /* Domain-Model */
 
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (other == null || getClass() != other.getClass()) return false;
+        ContactInfo that = (ContactInfo) other;
+        return Objects.equals(getContactInfoID(), that.getContactInfoID());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getContactInfoID());
+    }
 }

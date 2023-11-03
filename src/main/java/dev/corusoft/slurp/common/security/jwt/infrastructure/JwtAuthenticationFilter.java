@@ -51,7 +51,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         chain.doFilter(request, response);
     }
 
-    private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) throws IOException {
+    private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
         // Elimina el "Bearer " de la cabecera
         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         String token = authHeader.replace(PREFIX_BEARER_TOKEN, "");

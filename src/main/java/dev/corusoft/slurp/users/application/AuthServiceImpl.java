@@ -6,8 +6,6 @@ import dev.corusoft.slurp.users.domain.*;
 import dev.corusoft.slurp.users.domain.User.UserBuilder;
 import dev.corusoft.slurp.users.infrastructure.dto.input.RegisterUserParamsDTO;
 import dev.corusoft.slurp.users.infrastructure.repositories.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,25 +13,26 @@ import java.time.LocalDateTime;
 
 @Transactional
 @Service
-public class UserServiceImpl implements UserService {
+public class AuthServiceImpl implements AuthService {
     private final String USER_CLASSNAME = User.class.getSimpleName();
 
     /* DEPENDENCIES */
-    @Autowired
-    private UserRepository userRepo;
-    @Autowired
-    private CredentialRepository credentialRepo;
-    @Autowired
-    private ContactInfoRepository contactInfoRepo;
-    @Autowired
-    private UserUtils userUtils;
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
+    private final UserRepository userRepo;
+    private final CredentialRepository credentialRepo;
+    private final ContactInfoRepository contactInfoRepo;
+    private final UserUtils userUtils;
+
+    public AuthServiceImpl(UserRepository userRepo, CredentialRepository credentialRepo, ContactInfoRepository contactInfoRepo, UserUtils userUtils) {
+        this.userRepo = userRepo;
+        this.credentialRepo = credentialRepo;
+        this.contactInfoRepo = contactInfoRepo;
+        this.userUtils = userUtils;
+    }
 
 
     /* USE CASES */
     @Override
-    public User signUp(RegisterUserParamsDTO paramsDTO) throws EntityAlreadyExistsException {
+    public User register(RegisterUserParamsDTO paramsDTO) throws EntityAlreadyExistsException {
         // Comprobar si existe un usuario con el mismo nickname
         if (credentialRepo.existsByNicknameIgnoreCase(paramsDTO.getNickname())) {
             throw new EntityAlreadyExistsException(USER_CLASSNAME, paramsDTO.getNickname());
@@ -49,7 +48,7 @@ public class UserServiceImpl implements UserService {
 
         Credential credentials = Credential.builder()
                 .nickname(paramsDTO.getNickname())
-                .passwordEncrypted(passwordEncoder.encode(paramsDTO.getRawPassword()))
+                .passwordEncrypted(userUtils.encryptPassword(paramsDTO.getRawPassword()))
                 .build();
         credentials = credentialRepo.save(credentials);
 

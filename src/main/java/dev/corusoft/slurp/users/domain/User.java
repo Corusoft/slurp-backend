@@ -6,6 +6,7 @@ import lombok.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -55,16 +56,19 @@ public class User {
 
 
     /* Domain-Model */
+    @Transient
     public void attachCredential(Credential other) {
         this.credential = other;
         other.setUser(this);
     }
 
+    @Transient
     public void attachContactInfo(ContactInfo other) {
         this.contactInfo = other;
         other.setUser(this);
     }
 
+    @Transient
     public User attachUserRole(Role other) {
         UserRole userRole = new UserRole();
         userRole.setId(new UserRoleID(this.userID, other.getRoleID()));
@@ -75,4 +79,25 @@ public class User {
         return this;
     }
 
+    @Transient
+    public List<UserRoles> getAttachedRoles() {
+        return getUserRoles()
+                .stream()
+                .map(userRole -> userRole.getRole().getName())
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (other == null || getClass() != other.getClass()) return false;
+        User user = (User) other;
+
+        return Objects.equals(getUserID(), user.getUserID());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getUserID());
+    }
 }

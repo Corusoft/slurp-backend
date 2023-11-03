@@ -1,4 +1,7 @@
 spring:
+  docker:
+    compose:
+      enabled: false
   application:
     name: 'slurp-backend'
   profiles:
@@ -15,3 +18,6 @@ spring:
   jackson:
     date-format: yyyy-MM-dd'T'HH:mm:ss
     time-zone: UTC
+server:
+  servlet:
+    context-path: '@project.contextPath@'
