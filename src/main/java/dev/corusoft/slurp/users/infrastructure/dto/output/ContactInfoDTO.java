@@ -10,7 +10,7 @@ import lombok.Data;
 public class ContactInfoDTO {
     private Long contactInfoID;
 
-    @NotBlank(groups = {UserDTO.MandatoryField.class})
+    @NotBlank
     @Email
     private String email;
 
