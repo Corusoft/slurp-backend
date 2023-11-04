@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Builder
 @Entity
 @Table(name = "userTable", schema = "users")
@@ -43,10 +42,10 @@ public class User {
 
     /* Relationships */
     @ToString.Exclude
-    @OneToOne(mappedBy = "user", orphanRemoval = true)
+    @OneToOne(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
     private Credential credential;
 
-    @OneToOne(mappedBy = "user", orphanRemoval = true)
+    @OneToOne(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
     private ContactInfo contactInfo;
 
     @ToString.Exclude
@@ -58,26 +57,16 @@ public class User {
     /* Domain-Model */
     @Transient
     public void attachCredential(Credential other) {
-        this.credential = other;
         other.setUser(this);
+        this.credential = other;
     }
 
     @Transient
     public void attachContactInfo(ContactInfo other) {
-        this.contactInfo = other;
         other.setUser(this);
+        this.contactInfo = other;
     }
 
-    @Transient
-    public User attachUserRole(Role other) {
-        UserRole userRole = new UserRole();
-        userRole.setId(new UserRoleID(this.userID, other.getRoleID()));
-        userRole.setAssignedAt(LocalDateTime.now());
-        userRole.setUser(this);
-        userRole.setRole(other);
-
-        return this;
-    }
 
     @Transient
     public List<UserRoles> getAttachedRoles() {

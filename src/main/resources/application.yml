@@ -6,6 +6,7 @@ spring:
     name: 'slurp-backend'
   profiles:
     active: '@activatedProperties@'
+    default: dev
   banner:
     location: file:banner.txt
   datasource:
@@ -15,9 +16,23 @@ spring:
       idle-timeout: 30000
   jpa:
     database: postgresql
-  jackson:
-    date-format: yyyy-MM-dd'T'HH:mm:ss
-    time-zone: UTC
+    show-sql: false
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+    open-in-view: false
 server:
   servlet:
-    context-path: '@project.contextPath@'
+    context-path: '/api'
+project:
+  security:
+    jwt:
+      expirationInMilliseconds: 604800000     # 1000 ms * 60 s * 60 m * 24 h * 7 d
+  serialization:
+    date-format: "yyyy-MM-dd"
+    localdatetime-format: "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"

@@ -7,8 +7,7 @@ import dev.corusoft.slurp.users.application.AuthService;
 import dev.corusoft.slurp.users.domain.User;
 import dev.corusoft.slurp.users.infrastructure.dto.input.RegisterUserParamsDTO;
 import dev.corusoft.slurp.users.infrastructure.dto.output.AuthenticatedUserDTO;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -43,6 +42,8 @@ public class AuthController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<AuthenticatedUserDTO> register(
             @Validated @RequestBody RegisterUserParamsDTO params
     ) throws EntityAlreadyExistsException {

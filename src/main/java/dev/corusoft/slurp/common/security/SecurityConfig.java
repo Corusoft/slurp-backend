@@ -1,9 +1,10 @@
 package dev.corusoft.slurp.common.security;
 
-import dev.corusoft.slurp.common.security.jwt.infrastructure.JwtHttpConfigurer;
 import dev.corusoft.slurp.common.security.jwt.application.JwtGenerator;
+import dev.corusoft.slurp.common.security.jwt.infrastructure.JwtHttpConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -31,6 +32,7 @@ public class SecurityConfig {
         // Permitir las peticiones que indiquemos
         http.authorizeHttpRequests(requests -> requests
                 // ALLOWED ENDPOINTS
+                .requestMatchers(HttpMethod.POST, "/v1/auth/register").permitAll()
 
                 // DENEGAR EL RESTO DE PETICIONES
                 .anyRequest().denyAll()

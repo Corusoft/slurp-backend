@@ -38,7 +38,7 @@ public class ContactInfo {
 
     /* Relationships */
     @ToString.Exclude
-    @OneToOne(optional = false, orphanRemoval = true)
+    @OneToOne(optional = false, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 

@@ -3,3 +3,13 @@ spring:
     compose:
       skip:
         in-tests: false
+      enabled: false
+      file: 'compose.@activatedProperties@.yaml'
+      lifecycle-management: start_and_stop
+  datasource:
+    url: "jdbc:postgresql://localhost:5431/testing"
+    username: myuser
+    password: mypassword
+logging:
+  level:
+    dev.corusoft.slurp: debug

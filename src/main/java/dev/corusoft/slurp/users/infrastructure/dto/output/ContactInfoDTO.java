@@ -5,6 +5,8 @@ import jakarta.validation.constraints.*;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.Objects;
+
 @Data
 @Builder
 public class ContactInfoDTO {
@@ -23,4 +25,18 @@ public class ContactInfoDTO {
     @NotNull
     @JsonProperty(value = "isPhoneNumberVerified")
     private Boolean isPhoneNumberVerified;
+
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (other == null || getClass() != other.getClass()) return false;
+        ContactInfoDTO that = (ContactInfoDTO) other;
+        return Objects.equals(getContactInfoID(), that.getContactInfoID());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getContactInfoID());
+    }
 }

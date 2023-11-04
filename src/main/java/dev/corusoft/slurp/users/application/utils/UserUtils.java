@@ -7,6 +7,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Component
@@ -17,13 +18,19 @@ public class UserUtils {
     private final UserRepository userRepo;
     private final CredentialRepository credentialRepo;
     private final RoleRepository roleRepo;
+    private final UserRoleRepository userRoleRepo;
     private final BCryptPasswordEncoder passwordEncoder;
 
 
-    public UserUtils(UserRepository userRepo, CredentialRepository credentialRepo, RoleRepository roleRepo, BCryptPasswordEncoder passwordEncoder) {
+    public UserUtils(UserRepository userRepo,
+                     CredentialRepository credentialRepo,
+                     RoleRepository roleRepo,
+                     UserRoleRepository userRoleRepo,
+                     BCryptPasswordEncoder passwordEncoder) {
         this.userRepo = userRepo;
         this.credentialRepo = credentialRepo;
         this.roleRepo = roleRepo;
+        this.userRoleRepo = userRoleRepo;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -54,19 +61,28 @@ public class UserUtils {
         return optionalUser.get();
     }
 
-    public User assignRoleToUser(User user, UserRoles userRole) {
-        Role targetRole;
-        Optional<Role> optionalRole = roleRepo.findByName(userRole);
+    public UserRole assignRoleToUser(User user, UserRoles roleName) {
+        // Buscar el rol. Si no existe, crearlo.
+        Role role;
+        Optional<Role> optionalRole = roleRepo.findByName(roleName);
         if (optionalRole.isPresent()) {
-            targetRole = optionalRole.get();
+            role = optionalRole.get();
         } else {
-            targetRole = new Role();
-            targetRole.setName(userRole);
+            role = new Role();
+            role.setName(roleName);
         }
 
-        user = user.attachUserRole(targetRole);
+        // Asignar rol a usuario
+        UserRole userRole = UserRole.builder()
+                .id(new UserRoleID(user.getUserID(), role.getRoleID()))
+                .assignedAt(LocalDateTime.now())
+                .build();
+        userRole.setUser(user);
+        user.getUserRoles().add(userRole);
+        userRole.setRole(role);
+        role.getUserRoles().add(userRole);
 
-        return user;
+        return userRoleRepo.save(userRole);
     }
 
 }

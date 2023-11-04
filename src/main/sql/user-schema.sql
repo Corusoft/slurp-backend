@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS users.UserRole (
 );
 
 CREATE TABLE IF NOT EXISTS users.ContactInfo (
-    contactInfo_id INTEGER,
+    contactInfo_id SERIAL,
     email                 VARCHAR(100) NOT NULL,
     isEmailVerified       BOOLEAN      NOT NULL DEFAULT FALSE,
     phoneNumber           VARCHAR(20)  NOT NULL,
@@ -70,7 +70,7 @@ CREATE TABLE IF NOT EXISTS users.ContactInfo (
 );
 
 CREATE TABLE IF NOT EXISTS users.LocationHistory (
-    locationHistory_id INTEGER,
+    locationHistory_id SERIAL,
     latitude           INTEGER NOT NULL,
     longitude          INTEGER NOT NULL,
     timestamp          TIMESTAMP NOT NULL,
@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS users.LocationHistory (
 );
 
 CREATE TABLE users.SystemSettings (
-    setting_id INTEGER,
+    setting_id SERIAL,
     type       VARCHAR NOT NULL,
     value      VARCHAR NOT NULL,
     user_id    UUID    NOT NULL,

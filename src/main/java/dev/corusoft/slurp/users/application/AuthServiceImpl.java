@@ -3,7 +3,6 @@ package dev.corusoft.slurp.users.application;
 import dev.corusoft.slurp.common.exception.EntityAlreadyExistsException;
 import dev.corusoft.slurp.users.application.utils.UserUtils;
 import dev.corusoft.slurp.users.domain.*;
-import dev.corusoft.slurp.users.domain.User.UserBuilder;
 import dev.corusoft.slurp.users.infrastructure.dto.input.RegisterUserParamsDTO;
 import dev.corusoft.slurp.users.infrastructure.repositories.*;
 import org.springframework.stereotype.Service;
@@ -39,33 +38,37 @@ public class AuthServiceImpl implements AuthService {
         }
 
         // Crear usuario
-        User user;
-        UserBuilder userBuilder = User.builder()
+        User user = User.builder()
+                //.userID(UUID.randomUUID())
                 .name(paramsDTO.getName())
                 .surname(paramsDTO.getSurname())
                 .gender(paramsDTO.getGender())
-                .birthDate(paramsDTO.getBirthDate());
+                .birthDate(paramsDTO.getBirthDate())
+                .build();
+        user = userRepo.save(user);
 
         Credential credentials = Credential.builder()
                 .nickname(paramsDTO.getNickname())
                 .passwordEncrypted(userUtils.encryptPassword(paramsDTO.getRawPassword()))
+                .user(user)
                 .build();
-        credentials = credentialRepo.save(credentials);
+        credentialRepo.save(credentials);
+        user.attachCredential(credentials);
 
         ContactInfo contactInfo = ContactInfo.builder()
-                .email(paramsDTO.getEmail())
+                .email(paramsDTO.getEmail().toLowerCase())
                 .phoneNumber(paramsDTO.getPhoneNumber())
+                .user(user)
                 .build();
-        contactInfo = contactInfoRepo.save(contactInfo);
-
-
-        // Asignar datos por defecto
-        user = userBuilder.registeredAt(LocalDateTime.now()).build();
-        user = userUtils.assignRoleToUser(user, UserRoles.BASIC);
-        user.attachCredential(credentials);
+        contactInfoRepo.save(contactInfo);
         user.attachContactInfo(contactInfo);
 
-        return userRepo.save(user);
+        // Asignar datos por defecto
+        user.setRegisteredAt(LocalDateTime.now());
+        userUtils.assignRoleToUser(user, UserRoles.BASIC);
+        user = userRepo.save(user);
+
+        return user;
     }
 
 

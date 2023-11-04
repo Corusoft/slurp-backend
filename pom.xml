@@ -24,13 +24,13 @@
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UFT-8</project.reporting.outputEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<project.contextPath>/api</project.contextPath>
 
 		<!-- Project dependencies versions -->
 		<dependencies.version.bouncycastle>1.76</dependencies.version.bouncycastle>
 		<dependencies.version.jackson-datatype>2.15.3</dependencies.version.jackson-datatype>
-		<dependencies.version.jacoco>0.8.10</dependencies.version.jacoco>
+		<dependencies.version.jacoco>0.8.11</dependencies.version.jacoco>
 		<dependencies.version.jaxb-api>2.3.0</dependencies.version.jaxb-api>
 		<dependencies.version.jjwt>0.12.3</dependencies.version.jjwt>
 		<dependencies.version.lombok>1.18.28</dependencies.version.lombok>
@@ -39,7 +39,8 @@
 		<dependencies.version.spring-security>6.1.4</dependencies.version.spring-security>
 
 		<!-- Project plugins versions -->
-		<plugins.version.failsafe>3.1.2</plugins.version.failsafe>
+		<plugins.version.failsafe>3.2.1</plugins.version.failsafe>
+		<plugins.maven-help.version>3.4.0</plugins.maven-help.version>
 
 
 		<!-- CI/CD configuration -->
@@ -47,7 +48,6 @@
 		<sonar.organization>corusoft</sonar.organization>
 
 		<!-- Path configuration -->
-		<project.contextPath>/backend</project.contextPath>
 		<docker-compose.test.path>${project.basedir}/src/test/docker-compose.test.yml</docker-compose.test.path>
 	</properties>
 
@@ -181,7 +181,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-testcontainers</artifactId>
 			<version>${dependencies.version.spring-boot-starter}</version>
-			<scope>test</scope>
 		</dependency>
 
 		<dependency>
@@ -243,6 +242,23 @@
 						</manifestEntries>
 					</archive>
 				</configuration>
+			</plugin>
+
+			<!-- Show current execut -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-help-plugin</artifactId>
+				<version>${plugins.maven-help.version}</version>
+				<executions>
+					<execution>
+						<!-- Show current profile active on compile time (development, testing or production) -->
+						<id>show-active-profile</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>active-profiles</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

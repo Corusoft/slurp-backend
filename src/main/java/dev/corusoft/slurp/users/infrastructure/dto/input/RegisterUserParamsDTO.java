@@ -21,11 +21,11 @@ public class RegisterUserParamsDTO {
     @Size(min = 1, max = 50)
     private String surname;
 
-    @NotBlank
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Gender gender;
 
-    @NotBlank
+    @NotNull
+    @PastOrPresent
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private LocalDate birthDate;
 
