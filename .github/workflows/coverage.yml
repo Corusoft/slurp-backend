@@ -55,7 +55,7 @@ jobs:
       - name: 🐳 Start container
         uses: adambirds/docker-compose-action@v1.3.0
         with:
-          compose-file: ~/compose.test.yaml
+          compose-file: ./compose.test.yaml
           services: db-test
           test-container: "Test-container"
       
