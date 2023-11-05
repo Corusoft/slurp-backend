@@ -68,4 +68,4 @@ jobs:
           mvn -B verify \
           org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
           -Dsonar.projectKey=Corusoft_slurp-backend \
-          -Ptest
+          -Ptesting
