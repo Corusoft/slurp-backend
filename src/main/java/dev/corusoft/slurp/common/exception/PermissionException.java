@@ -1,6 +1,8 @@
 package dev.corusoft.slurp.common.exception;
 
-public class PermissionException extends AbstractResourceException {
+import java.io.Serializable;
+
+public class PermissionException extends AbstractResourceException implements Serializable {
     public PermissionException() {
         super();
     }

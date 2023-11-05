@@ -5,7 +5,7 @@ import dev.corusoft.slurp.common.i18n.Translator;
 import dev.corusoft.slurp.users.domain.User;
 import dev.corusoft.slurp.users.domain.UserRoles;
 import dev.corusoft.slurp.users.infrastructure.dto.input.RegisterUserParamsDTO;
-import dev.corusoft.slurp.users.infrastructure.repositories.*;
+import dev.corusoft.slurp.users.infrastructure.repositories.UserRepository;
 import dev.corusoft.slurp.utils.AuthTestUtils;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,19 +48,10 @@ class AuthControllerTest {
     private Translator translator;
     @Autowired
     private UserRepository userRepo;
-    @Autowired
-    private CredentialRepository credentialRepo;
-    @Autowired
-    private ContactInfoRepository contactInfoRepo;
 
 
     /* ************************* CICLO VIDA TESTS ************************* */
-    @AfterEach
-    void beforeEach() {
-        userRepo.deleteAll();
-        credentialRepo.deleteAll();
-        contactInfoRepo.deleteAll();
-    }
+
 
     /* ************************* CASOS DE PRUEBA ************************* */
 

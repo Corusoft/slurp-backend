@@ -2,7 +2,9 @@ package dev.corusoft.slurp.common.exception;
 
 import jakarta.validation.constraints.NotNull;
 
-public class EntityAlreadyExistsException extends AbstractEntityException {
+import java.io.Serializable;
+
+public class EntityAlreadyExistsException extends AbstractEntityException implements Serializable {
     public EntityAlreadyExistsException(@NotNull Object key) {
         super(null, key);
     }

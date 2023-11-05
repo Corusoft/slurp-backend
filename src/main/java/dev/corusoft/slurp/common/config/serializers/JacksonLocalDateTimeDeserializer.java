@@ -5,16 +5,11 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import java.io.IOException;
-import java.io.Serial;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class JacksonLocalDateTimeDeserializer extends StdDeserializer<LocalDateTime> {
-    @Serial
-    private static final long serialVersionUID = 1355852411036457107L;
-    private static final String DATETIME_FORMAT = "dd-MM-yyyy HH:mm:ss";
-
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATETIME_FORMAT);
+    private final transient DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
     public JacksonLocalDateTimeDeserializer() {
         super(LocalDateTime.class);

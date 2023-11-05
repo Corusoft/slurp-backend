@@ -1,0 +1,8 @@
+# Ficheros a excluir
+sonar:
+  exclusions:
+    - **/common/config/**/*
+  coverage:
+    exclusions:
+      - **/common/config/**/*
+  

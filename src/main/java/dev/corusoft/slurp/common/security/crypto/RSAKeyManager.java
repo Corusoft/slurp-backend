@@ -12,7 +12,6 @@ import org.bouncycastle.operator.InputDecryptorProvider;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.pkcs.PKCS8EncryptedPrivateKeyInfo;
 import org.bouncycastle.pkcs.PKCSException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -32,8 +31,11 @@ public class RSAKeyManager {
         Security.addProvider(new BouncyCastleProvider());
     }
 
-    @Autowired
-    private EnvironmentConfiguration envConfig;
+    private final EnvironmentConfiguration envConfig;
+
+    public RSAKeyManager(EnvironmentConfiguration envConfig) {
+        this.envConfig = envConfig;
+    }
 
     public static KeyPair loadKeyPair() {
         if (keyPairInstance == null) {
