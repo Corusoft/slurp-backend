@@ -2,6 +2,7 @@ package dev.corusoft.slurp.users.application;
 
 import dev.corusoft.slurp.common.exception.EntityAlreadyExistsException;
 import dev.corusoft.slurp.users.domain.User;
+import dev.corusoft.slurp.users.domain.exceptions.UserAlreadyExistsException;
 import dev.corusoft.slurp.users.infrastructure.dto.input.RegisterUserParamsDTO;
 
 public interface AuthService {
@@ -12,5 +13,5 @@ public interface AuthService {
      * @return Usuario registrado
      * @throws EntityAlreadyExistsException Usuario ya existe
      */
-    User register(RegisterUserParamsDTO paramsDTO) throws EntityAlreadyExistsException;
+    User register(RegisterUserParamsDTO paramsDTO) throws UserAlreadyExistsException;
 }

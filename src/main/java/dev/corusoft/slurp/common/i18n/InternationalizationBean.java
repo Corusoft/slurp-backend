@@ -1,20 +1,22 @@
 package dev.corusoft.slurp.common.i18n;
 
 import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
+@Configuration
 public class InternationalizationBean {
-    public static final String[] supportedLanguages = {"en", "es"};
-    public static final String[] supportedElements = {"exceptions", "validations", "fields"};
+    private static final String[] supportedLanguages = {"en", "es"};
+    private static final String[] supportedElements = {"exceptions", "fields", "validations"};
     private final String CLASSPATH = "classpath:i18n";
 
+    @Bean
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource bean = new ReloadableResourceBundleMessageSource();
         bean.setDefaultEncoding(StandardCharsets.UTF_8.name());

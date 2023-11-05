@@ -1,6 +1,5 @@
 package dev.corusoft.slurp.users.application.utils;
 
-import dev.corusoft.slurp.common.exception.EntityNotFoundException;
 import dev.corusoft.slurp.users.domain.*;
 import dev.corusoft.slurp.users.infrastructure.repositories.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -13,8 +12,6 @@ import java.util.Optional;
 @Component
 @Transactional(readOnly = true)
 public class UserUtils {
-    private static final String USER_CLASSNAME = User.class.getSimpleName();
-
     private final UserRepository userRepo;
     private final CredentialRepository credentialRepo;
     private final RoleRepository roleRepo;
@@ -39,27 +36,6 @@ public class UserUtils {
         return passwordEncoder.encode(rawPassword);
     }
 
-    /**
-     * Busca un usuario por su nickname.
-     *
-     * @param nickname Nombre de usuario a buscar
-     * @return Usuario encontrado
-     * @throws EntityNotFoundException No se encuentra al usuario
-     */
-    public User fetchUserByNickname(String nickname) throws EntityNotFoundException {
-        Optional<User> optionalUser = Optional.empty();
-
-        // Comprobar si existe el usuario con el ID recibido
-        boolean hasExistentCredentials = credentialRepo.existsByNicknameIgnoreCase(nickname);
-        if (hasExistentCredentials) {
-            optionalUser = userRepo.findByNickname(nickname);
-        }
-        if (optionalUser.isEmpty()) {
-            throw new EntityNotFoundException(USER_CLASSNAME, nickname);
-        }
-
-        return optionalUser.get();
-    }
 
     public UserRole assignRoleToUser(User user, UserRoles roleName) {
         // Buscar el rol. Si no existe, crearlo.

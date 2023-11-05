@@ -33,6 +33,3 @@ project:
   security:
     jwt:
       expirationInMilliseconds: 604800000     # 1000 ms * 60 s * 60 m * 24 h * 7 d
-  serialization:
-    date-format: "yyyy-MM-dd"
-    localdatetime-format: "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"

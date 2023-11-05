@@ -1,10 +1,10 @@
 package dev.corusoft.slurp.users.infrastructure.controllers;
 
-import dev.corusoft.slurp.common.exception.EntityAlreadyExistsException;
 import dev.corusoft.slurp.common.security.jwt.application.JwtGenerator;
 import dev.corusoft.slurp.common.security.jwt.domain.JwtData;
 import dev.corusoft.slurp.users.application.AuthService;
 import dev.corusoft.slurp.users.domain.User;
+import dev.corusoft.slurp.users.domain.exceptions.UserAlreadyExistsException;
 import dev.corusoft.slurp.users.infrastructure.dto.input.RegisterUserParamsDTO;
 import dev.corusoft.slurp.users.infrastructure.dto.output.AuthenticatedUserDTO;
 import org.springframework.http.*;
@@ -46,7 +46,7 @@ public class AuthController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<AuthenticatedUserDTO> register(
             @Validated @RequestBody RegisterUserParamsDTO params
-    ) throws EntityAlreadyExistsException {
+    ) throws UserAlreadyExistsException {
         // Registrar usuario
         User registeredUser = authService.register(params);
 
