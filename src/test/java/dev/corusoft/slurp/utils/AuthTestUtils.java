@@ -1,5 +1,6 @@
 package dev.corusoft.slurp.utils;
 
+import dev.corusoft.slurp.users.application.utils.AuthUtils;
 import dev.corusoft.slurp.users.domain.*;
 import dev.corusoft.slurp.users.infrastructure.dto.input.RegisterUserParamsDTO;
 import dev.corusoft.slurp.users.infrastructure.repositories.UserRepository;
@@ -19,6 +20,8 @@ public class AuthTestUtils {
     private BCryptPasswordEncoder passwordEncoder;
     @Autowired
     private UserRepository userRepo;
+    @Autowired
+    private AuthUtils authUtils;
 
 
     public AuthTestUtils(BCryptPasswordEncoder passwordEncoder, UserRepository userRepo) {
@@ -48,14 +51,21 @@ public class AuthTestUtils {
         ContactInfo contactInfo = generateValidContactInfoForUser(user);
         user.attachContactInfo(contactInfo);
 
+
         return user;
     }
 
     public Credential generateValidCredentialForUser(User user) {
-        String encryptedPassword = passwordEncoder.encode(DEFAULT_PASSWORD);
+        return generateValidCredentialForUser(user, DEFAULT_NICKNAME, DEFAULT_PASSWORD);
+    }
+
+    public Credential generateValidCredentialForUser(User user, String nickname, String password) {
+        String finalNickname = (nickname != null) ? nickname : DEFAULT_NICKNAME;
+        String finalPassword = (password != null) ? password : DEFAULT_PASSWORD;
+        String encryptedPassword = passwordEncoder.encode(finalPassword);
 
         Credential credential = Credential.builder()
-                .nickname("%s_%s".formatted(user.getName(), user.getSurname()))
+                .nickname(finalNickname)
                 .passwordEncrypted(encryptedPassword)
                 .build();
 
@@ -74,11 +84,17 @@ public class AuthTestUtils {
     }
 
     public User registerValidUser() {
+        return registerValidUser(DEFAULT_NICKNAME, DEFAULT_PASSWORD);
+    }
+
+    public User registerValidUser(String nickname, String password) {
         User user = generateValidUser();
-        Credential credential = generateValidCredentialForUser(user);
+        Credential credential = generateValidCredentialForUser(user, nickname, password);
         user.attachCredential(credential);
         ContactInfo contactInfo = generateValidContactInfoForUser(user);
         user.attachContactInfo(contactInfo);
+        userRepo.save(user);
+        authUtils.assignRoleToUser(user, UserRoles.BASIC);
 
         return userRepo.save(user);
     }
@@ -101,5 +117,4 @@ public class AuthTestUtils {
 
         return dto;
     }
-
 }

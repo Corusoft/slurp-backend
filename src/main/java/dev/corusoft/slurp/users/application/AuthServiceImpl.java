@@ -72,6 +72,12 @@ public class AuthServiceImpl implements AuthService {
             throw new IncorrectLoginException();
         }
 
+        // Comprobar si credenciales coinciden
+        Credential userCredentials = user.getCredential();
+        if (!authUtils.doPasswordsMatch(rawPassword, userCredentials.getPasswordEncrypted())) {
+            throw new IncorrectLoginException();
+        }
+
         return user;
     }
 

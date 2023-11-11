@@ -36,6 +36,10 @@ public class AuthUtils {
         return passwordEncoder.encode(rawPassword);
     }
 
+    public boolean doPasswordsMatch(String actualPassword, String expectedPassword) {
+        return passwordEncoder.matches(actualPassword, expectedPassword);
+    }
+
 
     public UserRole assignRoleToUser(User user, UserRoles roleName) {
         Role role = roleRepo.findByName(roleName).get();

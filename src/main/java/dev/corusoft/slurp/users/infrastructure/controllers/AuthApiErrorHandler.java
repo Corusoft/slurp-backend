@@ -47,7 +47,7 @@ public class AuthApiErrorHandler {
     public ApiResponse<ErrorApiResponseBody> handleIncorrectLoginException(IncorrectLoginException exception, Locale locale) {
         String errorMessage = translator.generateMessage(INCORRECT_LOGIN_KEY, locale);
 
-        return buildErrorApiResponse(HttpStatus.BAD_REQUEST, errorMessage, exception);
+        return buildErrorApiResponse(HttpStatus.BAD_REQUEST, errorMessage);
     }
 
 }
