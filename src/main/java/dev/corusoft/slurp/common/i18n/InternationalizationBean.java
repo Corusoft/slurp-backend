@@ -14,7 +14,7 @@ import java.util.List;
 public class InternationalizationBean {
     private static final String[] supportedLanguages = {"en", "es"};
     private static final String[] supportedElements = {"exceptions", "fields", "validations"};
-    private final String CLASSPATH = "classpath:i18n";
+    private static final String CLASSPATH = "classpath:i18n";
 
     @Bean
     public MessageSource messageSource() {

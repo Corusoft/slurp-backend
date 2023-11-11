@@ -1,11 +1,14 @@
 package dev.corusoft.slurp.common.api;
 
 import dev.corusoft.slurp.common.api.error.ApiErrorDetails;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ApiResponseHelper {
 
     private static <T> ApiResponse<T> createResponse(boolean success, T body) {

@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class JacksonLocalDateTimeSerializer extends StdSerializer<LocalDateTime> {
-    private final transient DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
     public JacksonLocalDateTimeSerializer() {
         this(null);
