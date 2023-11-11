@@ -1,5 +1,6 @@
 package dev.corusoft.slurp.users.infrastructure.controllers;
 
+import dev.corusoft.slurp.common.api.ApiResponse;
 import dev.corusoft.slurp.common.security.jwt.application.JwtGenerator;
 import dev.corusoft.slurp.common.security.jwt.domain.JwtData;
 import dev.corusoft.slurp.users.application.AuthService;
@@ -15,6 +16,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
 
+import static dev.corusoft.slurp.common.api.ApiResponseHelper.buildSuccessApiResponse;
 import static dev.corusoft.slurp.users.infrastructure.dto.conversors.UserConversor.toAuthenticatedUserDTO;
 
 @RestController
@@ -44,7 +46,7 @@ public class AuthController {
     )
     @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<AuthenticatedUserDTO> register(
+    public ResponseEntity<ApiResponse<AuthenticatedUserDTO>> register(
             @Validated @RequestBody RegisterUserParamsDTO params
     ) throws UserAlreadyExistsException {
         // Registrar usuario
@@ -58,11 +60,13 @@ public class AuthController {
         String serviceToken = generateJWTFromUser(registeredUser);
         AuthenticatedUserDTO authenticatedUserDTO = toAuthenticatedUserDTO(serviceToken, registeredUser);
 
-        // Crear respuesta HTTP y enviar
+        // Crear respuesta y enviar
+        ApiResponse<AuthenticatedUserDTO> body = buildSuccessApiResponse(authenticatedUserDTO);
+
         return ResponseEntity
                 .created(resourceLocation)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(authenticatedUserDTO);
+                .body(body);
     }
 
 

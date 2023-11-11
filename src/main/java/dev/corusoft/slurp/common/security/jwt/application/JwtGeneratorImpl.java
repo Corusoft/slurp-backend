@@ -6,7 +6,7 @@ import dev.corusoft.slurp.common.security.jwt.domain.JwtData;
 import dev.corusoft.slurp.common.security.jwt.domain.JwtDataVisitor;
 import io.jsonwebtoken.*;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
@@ -16,7 +16,7 @@ import java.security.PublicKey;
 import java.util.Date;
 import java.util.Map;
 
-@Slf4j
+@Log4j2
 @NoArgsConstructor
 @Component
 @Primary
@@ -38,6 +38,7 @@ public class JwtGeneratorImpl implements JwtGenerator {
         PrivateKey privateKey = RSAKeyManager.loadKeyPair().getPrivate();
 
         Map<String, Object> customClaims = toClaims(data);
+        log.info("Generating JWT for user {}", data.getUserID());
 
         return Jwts.builder()
                 //.signWith(publicKey)

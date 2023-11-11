@@ -1,7 +1,7 @@
 package dev.corusoft.slurp.common.security.crypto;
 
 import dev.corusoft.slurp.common.config.EnvironmentConfiguration;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.security.*;
 
-@Slf4j
+@Log4j2
 @Component
 public class RSAKeyManager {
     private static String rawPrivateKey;

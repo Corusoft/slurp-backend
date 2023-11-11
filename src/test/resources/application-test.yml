@@ -11,5 +11,6 @@ spring:
     username: myuser
     password: mypassword
 logging:
+  config: 'classpath:log4j2.test.xml'
   level:
     dev.corusoft.slurp: debug

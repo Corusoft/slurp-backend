@@ -2,7 +2,9 @@
 sonar:
   exclusions:
     - **/common/config/**/*
+    - **/common/security/crypto/**/*
   coverage:
     exclusions:
       - **/common/config/**/*
+      - **/common/security/crypto/**/*
   

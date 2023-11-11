@@ -6,7 +6,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,7 +21,7 @@ import java.util.Set;
 
 import static dev.corusoft.slurp.common.security.SecurityConstants.*;
 
-@Slf4j
+@Log4j2
 public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
     private final JwtGenerator jwtGenerator;
 
@@ -40,6 +40,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         String authHeaderValue = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (authHeaderValue == null || !authHeaderValue.startsWith(PREFIX_BEARER_TOKEN)) {
             chain.doFilter(request, response);
+            log.warn("Received request without JWT in the Authorization header");
             return;
         }
 

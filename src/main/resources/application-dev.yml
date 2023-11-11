@@ -8,3 +8,5 @@ spring:
     url: "jdbc:postgresql://localhost:5432/development"
     username: myuser
     password: mypassword
+logging:
+  config: 'classpath:log4j2.dev.xml'

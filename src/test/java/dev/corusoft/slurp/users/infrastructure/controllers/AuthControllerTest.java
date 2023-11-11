@@ -17,6 +17,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.*;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 
@@ -73,14 +75,17 @@ class AuthControllerTest {
 
         // ** Assert **
         List<String> expectedRoles = List.of(UserRoles.BASIC.name());
+        String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
 
         testResults.andExpectAll(
                 status().isCreated(),
                 content().contentType(MediaType.APPLICATION_JSON),
+                jsonPath("$.success", is(true)),
+                jsonPath("$.timestamp", lessThan(now)),
+                jsonPath("$.data", notNullValue()),
                 // Valores autogenerados
-                jsonPath("$.user.registeredAt").isNotEmpty(),
-                jsonPath("$.user.roles").isArray(),
-                jsonPath("$.user.roles", containsInAnyOrder(expectedRoles.toArray()))
+                jsonPath("$.data.user.registeredAt", lessThan(now)),
+                jsonPath("$.data.user.roles", containsInAnyOrder(expectedRoles.toArray()))
         );
     }
 
@@ -102,13 +107,19 @@ class AuthControllerTest {
         // ** Assert **
         Object[] errorMessageParams = new Object[]{paramsDTO.getNickname()};
         String errorMessage = translator.generateMessage(USER_ALREADY_EXISTS_KEY, errorMessageParams, locale);
+        String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
 
         testResults.andExpectAll(
                 status().isBadRequest(),
                 content().contentType(MediaType.APPLICATION_JSON),
-                jsonPath("$.status", is(HttpStatus.BAD_REQUEST.name())),
-                jsonPath("$.timestamp", is(notNullValue())),
-                jsonPath("$.message", equalTo(errorMessage))
+                jsonPath("$.success", is(false)),
+                jsonPath("$.timestamp", lessThan(now)),
+                jsonPath("$.data", notNullValue()),
+                // Contenido de la respuesta
+                jsonPath("$.data.status", is(HttpStatus.BAD_REQUEST.name())),
+                jsonPath("$.data.statusCode", is(HttpStatus.BAD_REQUEST.value())),
+                jsonPath("$.data.message", equalTo(errorMessage)),
+                jsonPath("$.data.debugMessage", nullValue())
         );
     }
 }
