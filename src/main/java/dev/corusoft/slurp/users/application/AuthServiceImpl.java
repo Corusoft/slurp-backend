@@ -1,10 +1,17 @@
 package dev.corusoft.slurp.users.application;
 
-import dev.corusoft.slurp.users.application.utils.UserUtils;
-import dev.corusoft.slurp.users.domain.*;
+import dev.corusoft.slurp.users.application.utils.AuthUtils;
+import dev.corusoft.slurp.users.domain.ContactInfo;
+import dev.corusoft.slurp.users.domain.Credential;
+import dev.corusoft.slurp.users.domain.User;
+import dev.corusoft.slurp.users.domain.UserRoles;
+import dev.corusoft.slurp.users.domain.exceptions.IncorrectLoginException;
 import dev.corusoft.slurp.users.domain.exceptions.UserAlreadyExistsException;
+import dev.corusoft.slurp.users.domain.exceptions.UserNotFoundException;
 import dev.corusoft.slurp.users.infrastructure.dto.input.RegisterUserParamsDTO;
-import dev.corusoft.slurp.users.infrastructure.repositories.*;
+import dev.corusoft.slurp.users.infrastructure.repositories.ContactInfoRepository;
+import dev.corusoft.slurp.users.infrastructure.repositories.CredentialRepository;
+import dev.corusoft.slurp.users.infrastructure.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,13 +24,13 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepo;
     private final CredentialRepository credentialRepo;
     private final ContactInfoRepository contactInfoRepo;
-    private final UserUtils userUtils;
+    private final AuthUtils authUtils;
 
-    public AuthServiceImpl(UserRepository userRepo, CredentialRepository credentialRepo, ContactInfoRepository contactInfoRepo, UserUtils userUtils) {
+    public AuthServiceImpl(UserRepository userRepo, CredentialRepository credentialRepo, ContactInfoRepository contactInfoRepo, AuthUtils authUtils) {
         this.userRepo = userRepo;
         this.credentialRepo = credentialRepo;
         this.contactInfoRepo = contactInfoRepo;
-        this.userUtils = userUtils;
+        this.authUtils = authUtils;
     }
 
 
@@ -48,8 +55,22 @@ public class AuthServiceImpl implements AuthService {
 
         // Asignar datos por defecto
         user.setRegisteredAt(LocalDateTime.now());
-        userUtils.assignRoleToUser(user, UserRoles.BASIC);
+        authUtils.assignRoleToUser(user, UserRoles.BASIC);
         user = userRepo.save(user);
+
+        return user;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public User login(String nickname, String rawPassword) throws IncorrectLoginException {
+        // Comprobar si existe el usuario
+        User user;
+        try {
+            user = authUtils.fetchUserByNickname(nickname);
+        } catch (UserNotFoundException e) {
+            throw new IncorrectLoginException();
+        }
 
         return user;
     }
@@ -71,7 +92,7 @@ public class AuthServiceImpl implements AuthService {
     private User createCredentialForUser(RegisterUserParamsDTO paramsDTO, User user) {
         Credential credentials = Credential.builder()
                 .nickname(paramsDTO.getNickname())
-                .passwordEncrypted(userUtils.encryptPassword(paramsDTO.getRawPassword()))
+                .passwordEncrypted(authUtils.encryptPassword(paramsDTO.getRawPassword()))
                 .user(user)
                 .build();
         credentialRepo.save(credentials);

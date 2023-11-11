@@ -5,10 +5,14 @@ import dev.corusoft.slurp.common.security.jwt.application.JwtGenerator;
 import dev.corusoft.slurp.common.security.jwt.domain.JwtData;
 import dev.corusoft.slurp.users.application.AuthService;
 import dev.corusoft.slurp.users.domain.User;
+import dev.corusoft.slurp.users.domain.exceptions.IncorrectLoginException;
 import dev.corusoft.slurp.users.domain.exceptions.UserAlreadyExistsException;
+import dev.corusoft.slurp.users.infrastructure.dto.input.LoginParamsDTO;
 import dev.corusoft.slurp.users.infrastructure.dto.input.RegisterUserParamsDTO;
 import dev.corusoft.slurp.users.infrastructure.dto.output.AuthenticatedUserDTO;
-import org.springframework.http.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -31,11 +35,6 @@ public class AuthController {
         this.authService = authService;
         this.jwtGenerator = jwtGenerator;
     }
-
-    /* ******************** I18N ******************** */
-
-
-    /* ******************** EXCEPCIONES ******************** */
 
 
     /* ******************** ENDPOINTS ******************** */
@@ -67,6 +66,24 @@ public class AuthController {
                 .created(resourceLocation)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(body);
+    }
+
+    @PostMapping(path = "/login",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ResponseBody
+    public ApiResponse<AuthenticatedUserDTO> login(
+            @Validated @RequestBody LoginParamsDTO params
+    ) throws IncorrectLoginException {
+        // Iniciar sesión en servicio
+        User user = authService.login(params.getNickname(), params.getPassword());
+
+        // Generar token para usaurio
+        String serviceToken = generateJWTFromUser(user);
+        AuthenticatedUserDTO authenticatedUserDTO = toAuthenticatedUserDTO(serviceToken, user);
+
+        return buildSuccessApiResponse(authenticatedUserDTO);
     }
 
 
