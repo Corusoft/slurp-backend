@@ -16,6 +16,9 @@ on:
       - opened
       - synchronize
 
+env:
+  TEST_ENVIRONMENT_FILE: .test.env
+
 jobs:
   # Scan code quality
   build:
@@ -36,6 +39,13 @@ jobs:
           java-version: '17'
           cache: 'maven'
       
+      # Configure environment variables
+      - name: 🖥️ Configure environment
+        env:
+          TEST_ENV_CONTENT: ${{ secrets.TEST_ENV_CONTENT }}
+        run: |
+          echo "$TEST_ENV_CONTENT" > $TEST_ENVIRONMENT_FILE
+      
       - name: 📚 Cache Maven packages
         uses: actions/cache@v3
         with:
@@ -51,9 +61,26 @@ jobs:
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
       
+      # Launch docker container for testing
+      - name: 🐳 Start container
+        uses: adambirds/docker-compose-action@v1.3.0
+        with:
+          compose-file: ./compose.test.yaml
+          services: db-test
+          test-container: "Test-container"
+      
       # Build code and analyze it
       - name: 🏗️ Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Corusoft_slurp-backend
+        run: |
+          mvn -B verify \
+          org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+          -Dsonar.projectKey=Corusoft_slurp-backend \
+          -Ptesting
+      
+      # Remove environment variables
+      - name: 🧹 Clean environment
+        run: |
+          rm $TEST_ENVIRONMENT_FILE

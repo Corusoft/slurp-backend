@@ -6,7 +6,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,12 +16,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import java.io.IOException;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import static dev.corusoft.slurp.common.security.SecurityConstants.*;
 
-@Slf4j
+@Log4j2
 public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
     private final JwtGenerator jwtGenerator;
 
@@ -40,6 +40,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         String authHeaderValue = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (authHeaderValue == null || !authHeaderValue.startsWith(PREFIX_BEARER_TOKEN)) {
             chain.doFilter(request, response);
+            log.warn("Received request without JWT in the Authorization header");
             return;
         }
 
@@ -51,7 +52,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         chain.doFilter(request, response);
     }
 
-    private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) throws IOException {
+    private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
         // Elimina el "Bearer " de la cabecera
         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         String token = authHeader.replace(PREFIX_BEARER_TOKEN, "");
@@ -71,8 +72,8 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
     }
 
     private Set<GrantedAuthority> createAuthorities(JwtData token) {
-        Set<GrantedAuthority> authorities = Collections.emptySet();
         boolean hasRoles = (token.getRoles() != null) && (!token.getRoles().isEmpty());
+        Set<GrantedAuthority> authorities = new HashSet<>(token.getRoles().size());
 
         if (!hasRoles) return authorities;
 

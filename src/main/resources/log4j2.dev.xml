@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Properties>
+        <Property name="date">%d{dd-MM-yyyy HH:mm:ss.SSS}</Property>
+        <Property name="thread">[%t]</Property>
+        <Property name="level">%-5level</Property>
+        <Property name="logger">%logger{8.}</Property>
+        <Property name="message">%msg</Property>
+        <Property name="logFormat">${date} ${thread} ${level} ${logger} -- ${message} %n</Property>
+    </Properties>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${logFormat}"/>
+        </Console>
+        <File name="File" fileName="logs/dev/slurp-backend.log">
+            <PatternLayout pattern="${logFormat}"/>
+        </File>
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="File"/>
+        </Root>
+    </Loggers>
+</Configuration>

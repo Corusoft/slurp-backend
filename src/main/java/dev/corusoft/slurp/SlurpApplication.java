@@ -2,11 +2,8 @@ package dev.corusoft.slurp;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
 
 
-@ComponentScan("dev.corusoft.slurp.config")
-@ComponentScan("dev.corusoft.slurp.common")
 @SpringBootApplication
 public class SlurpApplication {
 
