@@ -20,7 +20,6 @@ public class ApiResponseHelper {
         return responseBuilder.build();
     }
 
-
     private static <E extends Exception> ErrorApiResponseBody generateErrorResponseBody(HttpStatus status, String message, E exception) {
         return generateErrorResponseBody(status, message, exception, null);
     }

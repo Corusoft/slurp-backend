@@ -1,6 +1,8 @@
 package dev.corusoft.slurp.users.application.utils;
 
 import dev.corusoft.slurp.users.domain.*;
+import dev.corusoft.slurp.users.domain.exceptions.UserNotFoundException;
+import dev.corusoft.slurp.users.infrastructure.repositories.CredentialRepository;
 import dev.corusoft.slurp.users.infrastructure.repositories.RoleRepository;
 import dev.corusoft.slurp.users.infrastructure.repositories.UserRoleRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -8,26 +10,34 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Component
 @Transactional(readOnly = true)
-public class UserUtils {
+public class AuthUtils {
+    private final BCryptPasswordEncoder passwordEncoder;
     private final RoleRepository roleRepo;
     private final UserRoleRepository userRoleRepo;
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final CredentialRepository credentialRepo;
 
 
-    public UserUtils(RoleRepository roleRepo,
+    public AuthUtils(RoleRepository roleRepo,
                      UserRoleRepository userRoleRepo,
-                     BCryptPasswordEncoder passwordEncoder) {
+                     BCryptPasswordEncoder passwordEncoder,
+                     CredentialRepository credentialRepo) {
         this.roleRepo = roleRepo;
         this.userRoleRepo = userRoleRepo;
         this.passwordEncoder = passwordEncoder;
+        this.credentialRepo = credentialRepo;
     }
 
 
     public String encryptPassword(String rawPassword) {
         return passwordEncoder.encode(rawPassword);
+    }
+
+    public boolean doPasswordsMatch(String actualPassword, String expectedPassword) {
+        return passwordEncoder.matches(actualPassword, expectedPassword);
     }
 
 
@@ -47,4 +57,11 @@ public class UserUtils {
         return userRoleRepo.save(userRole);
     }
 
+    public User fetchUserByNickname(String nickname) throws UserNotFoundException {
+        // Comprobar si existen credenciales para el nickname recibido
+        Optional<Credential> optionalCredential = credentialRepo.findByNicknameIgnoreCase(nickname);
+        Credential credential = optionalCredential.orElseThrow(() -> new UserNotFoundException(nickname));
+
+        return credential.getUser();
+    }
 }
