@@ -1,12 +1,17 @@
 package dev.corusoft.slurp.users.infrastructure.controllers;
 
 import dev.corusoft.slurp.common.api.ApiResponse;
+import dev.corusoft.slurp.common.exception.PermissionException;
 import dev.corusoft.slurp.common.security.jwt.application.JwtGenerator;
 import dev.corusoft.slurp.common.security.jwt.domain.JwtData;
 import dev.corusoft.slurp.users.application.AuthService;
+import dev.corusoft.slurp.users.application.utils.AuthUtils;
 import dev.corusoft.slurp.users.domain.User;
 import dev.corusoft.slurp.users.domain.exceptions.IncorrectLoginException;
+import dev.corusoft.slurp.users.domain.exceptions.IncorrectPasswordException;
 import dev.corusoft.slurp.users.domain.exceptions.UserAlreadyExistsException;
+import dev.corusoft.slurp.users.domain.exceptions.UserNotFoundException;
+import dev.corusoft.slurp.users.infrastructure.dto.input.ChangePasswordParamsDTO;
 import dev.corusoft.slurp.users.infrastructure.dto.input.LoginParamsDTO;
 import dev.corusoft.slurp.users.infrastructure.dto.input.RegisterUserParamsDTO;
 import dev.corusoft.slurp.users.infrastructure.dto.output.AuthenticatedUserDTO;
@@ -19,8 +24,11 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 
+import static dev.corusoft.slurp.common.api.ApiResponseHelper.buildEmptySuccessApiResponse;
 import static dev.corusoft.slurp.common.api.ApiResponseHelper.buildSuccessApiResponse;
+import static dev.corusoft.slurp.common.security.SecurityConstants.USER_ID_ATTRIBUTE_NAME;
 import static dev.corusoft.slurp.users.infrastructure.dto.conversors.UserConversor.toAuthenticatedUserDTO;
 
 @RestController
@@ -29,11 +37,15 @@ public class AuthController {
     /* ******************** DEPENDENCIAS ******************** */
     private final AuthService authService;
     private final JwtGenerator jwtGenerator;
+    private final AuthUtils authUtils;
 
 
-    public AuthController(AuthService authService, JwtGenerator jwtGenerator) {
+    public AuthController(AuthService authService,
+                          JwtGenerator jwtGenerator,
+                          AuthUtils authUtils) {
         this.authService = authService;
         this.jwtGenerator = jwtGenerator;
+        this.authUtils = authUtils;
     }
 
 
@@ -86,6 +98,26 @@ public class AuthController {
         return buildSuccessApiResponse(authenticatedUserDTO);
     }
 
+    @PatchMapping(path = "/{userID}/password",
+            consumes = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseBody
+    public ApiResponse<Void> updatePassword(
+            @RequestAttribute(USER_ID_ATTRIBUTE_NAME) UUID userID,
+            @PathVariable("userID") UUID pathUserID,
+            @Validated @RequestBody ChangePasswordParamsDTO params
+    ) throws PermissionException, UserNotFoundException, IncorrectPasswordException {
+        // Comprobar que usuario actual y usuario objetivo son el mismo
+        if (!authUtils.doUsersMatch(userID, pathUserID)) {
+            throw new PermissionException();
+        }
+
+        // Actualizar contraseña en el servicio
+        authService.changePassword(userID, params.getOldPassword(), params.getNewPassword());
+
+        return buildEmptySuccessApiResponse();
+    }
 
     /* ******************** HELPER FUNCTIONS ******************** */
     public String generateJWTFromUser(User user) {

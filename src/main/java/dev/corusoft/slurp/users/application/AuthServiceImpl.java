@@ -6,6 +6,7 @@ import dev.corusoft.slurp.users.domain.Credential;
 import dev.corusoft.slurp.users.domain.User;
 import dev.corusoft.slurp.users.domain.UserRoles;
 import dev.corusoft.slurp.users.domain.exceptions.IncorrectLoginException;
+import dev.corusoft.slurp.users.domain.exceptions.IncorrectPasswordException;
 import dev.corusoft.slurp.users.domain.exceptions.UserAlreadyExistsException;
 import dev.corusoft.slurp.users.domain.exceptions.UserNotFoundException;
 import dev.corusoft.slurp.users.infrastructure.dto.input.RegisterUserParamsDTO;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Transactional
 @Service
@@ -26,7 +28,10 @@ public class AuthServiceImpl implements AuthService {
     private final ContactInfoRepository contactInfoRepo;
     private final AuthUtils authUtils;
 
-    public AuthServiceImpl(UserRepository userRepo, CredentialRepository credentialRepo, ContactInfoRepository contactInfoRepo, AuthUtils authUtils) {
+    public AuthServiceImpl(UserRepository userRepo,
+                           CredentialRepository credentialRepo,
+                           ContactInfoRepository contactInfoRepo,
+                           AuthUtils authUtils) {
         this.userRepo = userRepo;
         this.credentialRepo = credentialRepo;
         this.contactInfoRepo = contactInfoRepo;
@@ -81,6 +86,23 @@ public class AuthServiceImpl implements AuthService {
         return user;
     }
 
+    @Override
+    public void changePassword(UUID userID, String oldPassword, String newPassword)
+            throws UserNotFoundException, IncorrectPasswordException {
+        // Obtener al usurio y sus credenciales
+        Credential credential = authUtils.findUserCredential(userID);
+
+        // Comprobar que contraseñas coinciden
+        String currentPassword = credential.getPasswordEncrypted();
+        if (!authUtils.doPasswordsMatch(currentPassword, oldPassword)) {
+            throw new IncorrectPasswordException();
+        }
+
+        // Cifrar y actualizar contraseña
+        String encodedNewPassword = authUtils.encryptPassword(newPassword);
+        credential.setPasswordEncrypted(encodedNewPassword);
+        credentialRepo.save(credential);
+    }
 
     /* HELPER FUNCTIONS */
     private User createContactInfoForUser(RegisterUserParamsDTO paramsDTO, User user) {
