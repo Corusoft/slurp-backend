@@ -11,6 +11,7 @@ import dev.corusoft.slurp.users.infrastructure.dto.output.AuthenticatedUserDTO;
 import dev.corusoft.slurp.utils.AuthTestUtils;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -66,306 +67,314 @@ class AuthControllerTest {
 
 
     /* ************************* CASOS DE PRUEBA ************************* */
+    @Nested
+    class Register_UseCase {
+        @Test
+        void when_Register_thenUserIsCreatedSuccessfuly() throws Exception {
+            // ** Arrange **
+            User validUser = authTestUtils.generateValidUser();
+            RegisterUserParamsDTO paramsDTO = authTestUtils.generateRegisterParamsDtoFromUser(validUser);
 
+            // ** Act **
+            String endpointAddress = API_ENDPOINT + "/register";
+            String encodedRequestBody = jsonMapper.writeValueAsString(paramsDTO);
+            RequestBuilder requestBuilder = post(endpointAddress)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(encodedRequestBody)
+                    .locale(locale);
+            ResultActions testResults = mockMvc.perform(requestBuilder);
 
-    @Test
-    void whenRegisterUser_thenUserIsCreatedSuccessfuly() throws Exception {
-        // ** Arrange **
-        User validUser = authTestUtils.generateValidUser();
-        RegisterUserParamsDTO paramsDTO = authTestUtils.generateRegisterParamsDtoFromUser(validUser);
+            // ** Assert **
+            List<String> expectedRoles = List.of(UserRoles.BASIC.name());
+            String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
 
-        // ** Act **
-        String endpointAddress = API_ENDPOINT + "/register";
-        String encodedRequestBody = jsonMapper.writeValueAsString(paramsDTO);
-        RequestBuilder requestBuilder = post(endpointAddress)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(encodedRequestBody)
-                .locale(locale);
-        ResultActions testResults = mockMvc.perform(requestBuilder);
+            testResults.andExpectAll(
+                    status().isCreated(),
+                    content().contentType(MediaType.APPLICATION_JSON),
+                    jsonPath("$.success", is(true)),
+                    jsonPath("$.timestamp", lessThan(now)),
+                    jsonPath("$.data", notNullValue()),
+                    jsonPath("$.data.serviceToken", notNullValue()),
+                    // Valores autogenerados
+                    jsonPath("$.data.user.registeredAt", lessThan(now)),
+                    jsonPath("$.data.user.roles", containsInAnyOrder(expectedRoles.toArray()))
+            );
+        }
 
-        // ** Assert **
-        List<String> expectedRoles = List.of(UserRoles.BASIC.name());
-        String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
+        @Test
+        void when_RegisterTwice_thenThrowException() throws Exception {
+            // ** Arrange **
+            User user = authTestUtils.registerValidUser();
+            RegisterUserParamsDTO paramsDTO = authTestUtils.generateRegisterParamsDtoFromUser(user);
 
-        testResults.andExpectAll(
-                status().isCreated(),
-                content().contentType(MediaType.APPLICATION_JSON),
-                jsonPath("$.success", is(true)),
-                jsonPath("$.timestamp", lessThan(now)),
-                jsonPath("$.data", notNullValue()),
-                jsonPath("$.data.serviceToken", notNullValue()),
-                // Valores autogenerados
-                jsonPath("$.data.user.registeredAt", lessThan(now)),
-                jsonPath("$.data.user.roles", containsInAnyOrder(expectedRoles.toArray()))
-        );
+            // ** Act **
+            String endpointAddress = API_ENDPOINT + "/register";
+            String encodedRequestBody = jsonMapper.writeValueAsString(paramsDTO);
+            RequestBuilder requestBuilder = post(endpointAddress)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(encodedRequestBody)
+                    .locale(locale);
+            ResultActions testResults = mockMvc.perform(requestBuilder);
+
+            // ** Assert **
+            Object[] errorMessageParams = new Object[]{paramsDTO.getNickname()};
+            String errorMessage = translator.generateMessage(USER_ALREADY_EXISTS_KEY, errorMessageParams, locale);
+            String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
+
+            testResults.andExpectAll(
+                    status().isBadRequest(),
+                    content().contentType(MediaType.APPLICATION_JSON),
+                    jsonPath("$.success", is(false)),
+                    jsonPath("$.timestamp", lessThan(now)),
+                    jsonPath("$.data", notNullValue()),
+                    // Contenido de la respuesta de error
+                    jsonPath("$.data.status", is(HttpStatus.BAD_REQUEST.name())),
+                    jsonPath("$.data.statusCode", is(HttpStatus.BAD_REQUEST.value())),
+                    jsonPath("$.data.message", equalTo(errorMessage)),
+                    jsonPath("$.data.debugMessage", nullValue())
+            );
+        }
+
     }
 
-    @Test
-    void whenRegisterUserTwice_thenThrowException() throws Exception {
-        // ** Arrange **
-        User user = authTestUtils.registerValidUser();
-        RegisterUserParamsDTO paramsDTO = authTestUtils.generateRegisterParamsDtoFromUser(user);
+    @Nested
+    class Login_UseCase {
+        @Test
+        void when_Login_thenSuccess() throws Exception {
+            // ** Arrange **
+            authTestUtils.registerValidUser();
+            LoginParamsDTO paramsDTO = new LoginParamsDTO(DEFAULT_NICKNAME, DEFAULT_PASSWORD);
 
-        // ** Act **
-        String endpointAddress = API_ENDPOINT + "/register";
-        String encodedRequestBody = jsonMapper.writeValueAsString(paramsDTO);
-        RequestBuilder requestBuilder = post(endpointAddress)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(encodedRequestBody)
-                .locale(locale);
-        ResultActions testResults = mockMvc.perform(requestBuilder);
+            // ** Act **
+            String endpointAddress = API_ENDPOINT + "/login";
+            String encodedRequestBody = jsonMapper.writeValueAsString(paramsDTO);
+            RequestBuilder requestBuilder = post(endpointAddress)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(encodedRequestBody)
+                    .locale(locale);
+            ResultActions testResults = mockMvc.perform(requestBuilder);
 
-        // ** Assert **
-        Object[] errorMessageParams = new Object[]{paramsDTO.getNickname()};
-        String errorMessage = translator.generateMessage(USER_ALREADY_EXISTS_KEY, errorMessageParams, locale);
-        String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
+            // ** Assert **
+            String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
+            List<String> expectedRoles = List.of(UserRoles.BASIC.name());
 
-        testResults.andExpectAll(
-                status().isBadRequest(),
-                content().contentType(MediaType.APPLICATION_JSON),
-                jsonPath("$.success", is(false)),
-                jsonPath("$.timestamp", lessThan(now)),
-                jsonPath("$.data", notNullValue()),
-                // Contenido de la respuesta de error
-                jsonPath("$.data.status", is(HttpStatus.BAD_REQUEST.name())),
-                jsonPath("$.data.statusCode", is(HttpStatus.BAD_REQUEST.value())),
-                jsonPath("$.data.message", equalTo(errorMessage)),
-                jsonPath("$.data.debugMessage", nullValue())
-        );
+            testResults.andExpectAll(
+                    status().isOk(),
+                    content().contentType(MediaType.APPLICATION_JSON),
+                    jsonPath("$.success", is(true)),
+                    jsonPath("$.timestamp", lessThan(now)),
+                    jsonPath("$.data", notNullValue()),
+                    jsonPath("$.data.serviceToken", notNullValue()),
+                    jsonPath("$.data.user.registeredAt", lessThan(now)),
+                    jsonPath("$.data.user.roles", containsInAnyOrder(expectedRoles.toArray()))
+            );
+        }
+
+        @Test
+        void when_Login_andIncorrectPassword_thenThrowException() throws Exception {
+            // ** Arrange **
+            String wrongPassword = DEFAULT_PASSWORD + "XXX";
+            authTestUtils.registerValidUser(DEFAULT_NICKNAME, DEFAULT_PASSWORD);
+            LoginParamsDTO paramsDTO = new LoginParamsDTO(DEFAULT_NICKNAME, wrongPassword);
+
+            // ** Act **
+            String endpointAddress = API_ENDPOINT + "/login";
+            String encodedRequestBody = jsonMapper.writeValueAsString(paramsDTO);
+            RequestBuilder requestBuilder = post(endpointAddress)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(encodedRequestBody)
+                    .locale(locale);
+            ResultActions testResults = mockMvc.perform(requestBuilder);
+
+            // ** Assert **
+            String errorMessage = translator.generateMessage(INCORRECT_LOGIN_KEY, locale);
+            String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
+
+            testResults.andExpectAll(
+                    status().isBadRequest(),
+                    content().contentType(MediaType.APPLICATION_JSON),
+                    jsonPath("$.success", is(false)),
+                    jsonPath("$.timestamp", lessThan(now)),
+                    jsonPath("$.data", notNullValue()),
+                    // Contenido de la respuesta
+                    jsonPath("$.data.status", is(HttpStatus.BAD_REQUEST.name())),
+                    jsonPath("$.data.statusCode", is(HttpStatus.BAD_REQUEST.value())),
+                    jsonPath("$.data.message", equalTo(errorMessage)),
+                    jsonPath("$.data.debugMessage", nullValue())
+            );
+        }
+
+        @Test
+        void when_Login_andUserDoesNotExist_thenThrowException() throws Exception {
+            // ** Arrange **
+            String wrongPassword = DEFAULT_PASSWORD + "XXX";
+            LoginParamsDTO paramsDTO = new LoginParamsDTO(DEFAULT_NICKNAME, wrongPassword);
+
+            // ** Act **
+            String endpointAddress = API_ENDPOINT + "/login";
+            String encodedRequestBody = jsonMapper.writeValueAsString(paramsDTO);
+            RequestBuilder requestBuilder = post(endpointAddress)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(encodedRequestBody)
+                    .locale(locale);
+            ResultActions testResults = mockMvc.perform(requestBuilder);
+
+            // ** Assert **
+            String errorMessage = translator.generateMessage(INCORRECT_LOGIN_KEY, locale);
+            String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
+
+            testResults.andExpectAll(
+                    status().isBadRequest(),
+                    content().contentType(MediaType.APPLICATION_JSON),
+                    jsonPath("$.success", is(false)),
+                    jsonPath("$.timestamp", lessThan(now)),
+                    jsonPath("$.data", notNullValue()),
+                    // Contenido de la respuesta
+                    jsonPath("$.data.status", is(HttpStatus.BAD_REQUEST.name())),
+                    jsonPath("$.data.statusCode", is(HttpStatus.BAD_REQUEST.value())),
+                    jsonPath("$.data.message", equalTo(errorMessage)),
+                    jsonPath("$.data.debugMessage", nullValue())
+            );
+        }
     }
 
-    @Test
-    void whenLogin_thenSuccess() throws Exception {
-        // ** Arrange **
-        authTestUtils.registerValidUser();
-        LoginParamsDTO paramsDTO = new LoginParamsDTO(DEFAULT_NICKNAME, DEFAULT_PASSWORD);
+    @Nested
+    class ChangePassword_UseCase {
 
-        // ** Act **
-        String endpointAddress = API_ENDPOINT + "/login";
-        String encodedRequestBody = jsonMapper.writeValueAsString(paramsDTO);
-        RequestBuilder requestBuilder = post(endpointAddress)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(encodedRequestBody)
-                .locale(locale);
-        ResultActions testResults = mockMvc.perform(requestBuilder);
+        @Test
+        void when_ChangePassword_thenSuccess() throws Exception {
+            // ** Arrange **
+            User user = authTestUtils.registerValidUser();
+            AuthenticatedUserDTO authUserDto = authTestUtils.generateAuthenticatedUser(user);
+            ChangePasswordParamsDTO paramsDTO = new ChangePasswordParamsDTO(DEFAULT_PASSWORD, DEFAULT_PASSWORD + "XXX");
 
-        // ** Assert **
-        String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
-        List<String> expectedRoles = List.of(UserRoles.BASIC.name());
+            // ** Act **
+            String endpointAddress = API_ENDPOINT + "/%s/password".formatted(user.getUserID());
+            String encodedRequestBody = jsonMapper.writeValueAsString(paramsDTO);
+            RequestBuilder requestBuilder = patch(endpointAddress)
+                    .requestAttr(USER_ID_ATTRIBUTE_NAME, user.getUserID())
+                    .requestAttr(TOKEN_ATTRIBUTE_NAME, authUserDto.getServiceToken())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(encodedRequestBody)
+                    .locale(locale);
+            ResultActions testResults = mockMvc.perform(requestBuilder);
 
-        testResults.andExpectAll(
-                status().isOk(),
-                content().contentType(MediaType.APPLICATION_JSON),
-                jsonPath("$.success", is(true)),
-                jsonPath("$.timestamp", lessThan(now)),
-                jsonPath("$.data", notNullValue()),
-                jsonPath("$.data.serviceToken", notNullValue()),
-                jsonPath("$.data.user.registeredAt", lessThan(now)),
-                jsonPath("$.data.user.roles", containsInAnyOrder(expectedRoles.toArray()))
-        );
+            // ** Assert **
+            String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
+
+            testResults.andExpectAll(
+                    status().isNoContent(),
+                    content().contentType(MediaType.APPLICATION_JSON),
+                    jsonPath("$.success", is(true)),
+                    jsonPath("$.timestamp", lessThan(now)),
+                    jsonPath("$.data", nullValue())
+            );
+        }
+
+        @Test
+        void when_ChangePassword_andPasswordDoNotMatch_thenThrowException() throws Exception {
+            // ** Arrange **
+            User user = authTestUtils.registerValidUser();
+            AuthenticatedUserDTO authUserDto = authTestUtils.generateAuthenticatedUser(user);
+            ChangePasswordParamsDTO paramsDTO = new ChangePasswordParamsDTO(DEFAULT_PASSWORD + "XXX", DEFAULT_PASSWORD);
+
+            // ** Act **
+            String endpointAddress = API_ENDPOINT + "/%s/password".formatted(user.getUserID());
+            String encodedRequestBody = jsonMapper.writeValueAsString(paramsDTO);
+            RequestBuilder requestBuilder = patch(endpointAddress)
+                    .requestAttr(USER_ID_ATTRIBUTE_NAME, user.getUserID())
+                    .requestAttr(TOKEN_ATTRIBUTE_NAME, authUserDto.getServiceToken())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(encodedRequestBody)
+                    .locale(locale);
+            ResultActions testResults = mockMvc.perform(requestBuilder);
+
+            // ** Assert **
+            String errorMessage = translator.generateMessage(PASSWORD_DO_NOT_MATCH_KEY, locale);
+            String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
+
+            testResults.andExpectAll(
+                    status().isBadRequest(),
+                    content().contentType(MediaType.APPLICATION_JSON),
+                    jsonPath("$.success", is(false)),
+                    jsonPath("$.timestamp", lessThan(now)),
+                    jsonPath("$.data", notNullValue()),
+                    // Contenido de la respuesta
+                    jsonPath("$.data.status", is(HttpStatus.BAD_REQUEST.name())),
+                    jsonPath("$.data.statusCode", is(HttpStatus.BAD_REQUEST.value())),
+                    jsonPath("$.data.message", equalTo(errorMessage)),
+                    jsonPath("$.data.debugMessage", nullValue())
+            );
+        }
+
+        @Test
+        void when_ChangePassword_andIsNotCurrentUser_thenThrowException() throws Exception {
+            // ** Arrange **
+            User user = authTestUtils.registerValidUser();
+            AuthenticatedUserDTO authUserDto = authTestUtils.generateAuthenticatedUser(user);
+            ChangePasswordParamsDTO paramsDTO = new ChangePasswordParamsDTO(DEFAULT_PASSWORD + "XXX", DEFAULT_PASSWORD);
+
+            // ** Act **
+            String endpointAddress = API_ENDPOINT + "/%s/password".formatted(user.getUserID());
+            String encodedRequestBody = jsonMapper.writeValueAsString(paramsDTO);
+            RequestBuilder requestBuilder = patch(endpointAddress)
+                    .requestAttr(USER_ID_ATTRIBUTE_NAME, UUID.randomUUID())
+                    .requestAttr(TOKEN_ATTRIBUTE_NAME, authUserDto.getServiceToken())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(encodedRequestBody)
+                    .locale(locale);
+            ResultActions testResults = mockMvc.perform(requestBuilder);
+
+            // ** Assert **
+            String errorMessage = translator.generateMessage(PERMISSION_KEY, locale);
+            String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
+
+            testResults.andExpectAll(
+                    status().isForbidden(),
+                    content().contentType(MediaType.APPLICATION_JSON),
+                    jsonPath("$.success", is(false)),
+                    jsonPath("$.timestamp", lessThan(now)),
+                    jsonPath("$.data", notNullValue()),
+                    // Contenido de la respuesta
+                    jsonPath("$.data.status", is(HttpStatus.FORBIDDEN.name())),
+                    jsonPath("$.data.statusCode", is(HttpStatus.FORBIDDEN.value())),
+                    jsonPath("$.data.message", equalTo(errorMessage)),
+                    jsonPath("$.data.debugMessage", nullValue())
+            );
+        }
+
+        @Test
+        void when_ChangePassword_andUserDoesNotExist_thenThrowException() throws Exception {
+            // ** Arrange **
+            UUID randomUserID = UUID.randomUUID();
+            ChangePasswordParamsDTO paramsDTO = new ChangePasswordParamsDTO(DEFAULT_PASSWORD + "XXX", DEFAULT_PASSWORD);
+
+            // ** Act **
+            String endpointAddress = API_ENDPOINT + "/%s/password".formatted(randomUserID);
+            String encodedRequestBody = jsonMapper.writeValueAsString(paramsDTO);
+            RequestBuilder requestBuilder = patch(endpointAddress)
+                    .requestAttr(USER_ID_ATTRIBUTE_NAME, randomUserID)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(encodedRequestBody)
+                    .locale(locale);
+            ResultActions testResults = mockMvc.perform(requestBuilder);
+
+            // ** Assert **
+            String errorMessage = translator.generateMessage(USER_NOT_FOUND_KEY, locale);
+            String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
+
+            testResults.andExpectAll(
+                    status().isNotFound(),
+                    content().contentType(MediaType.APPLICATION_JSON),
+                    jsonPath("$.success", is(false)),
+                    jsonPath("$.timestamp", lessThan(now)),
+                    jsonPath("$.data", notNullValue()),
+                    // Contenido de la respuesta
+                    jsonPath("$.data.status", is(HttpStatus.NOT_FOUND.name())),
+                    jsonPath("$.data.statusCode", is(HttpStatus.NOT_FOUND.value())),
+                    jsonPath("$.data.message", equalTo(errorMessage)),
+                    jsonPath("$.data.debugMessage", nullValue())
+            );
+        }
     }
-
-    @Test
-    void whenLoginWithIncorrectPassword_thenThrowException() throws Exception {
-        // ** Arrange **
-        String wrongPassword = DEFAULT_PASSWORD + "XXX";
-        authTestUtils.registerValidUser(DEFAULT_NICKNAME, DEFAULT_PASSWORD);
-        LoginParamsDTO paramsDTO = new LoginParamsDTO(DEFAULT_NICKNAME, wrongPassword);
-
-        // ** Act **
-        String endpointAddress = API_ENDPOINT + "/login";
-        String encodedRequestBody = jsonMapper.writeValueAsString(paramsDTO);
-        RequestBuilder requestBuilder = post(endpointAddress)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(encodedRequestBody)
-                .locale(locale);
-        ResultActions testResults = mockMvc.perform(requestBuilder);
-
-        // ** Assert **
-        String errorMessage = translator.generateMessage(INCORRECT_LOGIN_KEY, locale);
-        String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
-
-        testResults.andExpectAll(
-                status().isBadRequest(),
-                content().contentType(MediaType.APPLICATION_JSON),
-                jsonPath("$.success", is(false)),
-                jsonPath("$.timestamp", lessThan(now)),
-                jsonPath("$.data", notNullValue()),
-                // Contenido de la respuesta
-                jsonPath("$.data.status", is(HttpStatus.BAD_REQUEST.name())),
-                jsonPath("$.data.statusCode", is(HttpStatus.BAD_REQUEST.value())),
-                jsonPath("$.data.message", equalTo(errorMessage)),
-                jsonPath("$.data.debugMessage", nullValue())
-        );
-    }
-
-    @Test
-    void whenLoginNonExistentUser_thenThrowException() throws Exception {
-        // ** Arrange **
-        String wrongPassword = DEFAULT_PASSWORD + "XXX";
-        LoginParamsDTO paramsDTO = new LoginParamsDTO(DEFAULT_NICKNAME, wrongPassword);
-
-        // ** Act **
-        String endpointAddress = API_ENDPOINT + "/login";
-        String encodedRequestBody = jsonMapper.writeValueAsString(paramsDTO);
-        RequestBuilder requestBuilder = post(endpointAddress)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(encodedRequestBody)
-                .locale(locale);
-        ResultActions testResults = mockMvc.perform(requestBuilder);
-
-        // ** Assert **
-        String errorMessage = translator.generateMessage(INCORRECT_LOGIN_KEY, locale);
-        String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
-
-        testResults.andExpectAll(
-                status().isBadRequest(),
-                content().contentType(MediaType.APPLICATION_JSON),
-                jsonPath("$.success", is(false)),
-                jsonPath("$.timestamp", lessThan(now)),
-                jsonPath("$.data", notNullValue()),
-                // Contenido de la respuesta
-                jsonPath("$.data.status", is(HttpStatus.BAD_REQUEST.name())),
-                jsonPath("$.data.statusCode", is(HttpStatus.BAD_REQUEST.value())),
-                jsonPath("$.data.message", equalTo(errorMessage)),
-                jsonPath("$.data.debugMessage", nullValue())
-        );
-    }
-
-    @Test
-    void whenChangePassword_thenSuccess() throws Exception {
-        // ** Arrange **
-        User user = authTestUtils.registerValidUser();
-        AuthenticatedUserDTO authUserDto = authTestUtils.generateAuthenticatedUser(user);
-        ChangePasswordParamsDTO paramsDTO = new ChangePasswordParamsDTO(DEFAULT_PASSWORD, DEFAULT_PASSWORD + "XXX");
-
-        // ** Act **
-        String endpointAddress = API_ENDPOINT + "/%s/password".formatted(user.getUserID());
-        String encodedRequestBody = jsonMapper.writeValueAsString(paramsDTO);
-        RequestBuilder requestBuilder = patch(endpointAddress)
-                .requestAttr(USER_ID_ATTRIBUTE_NAME, user.getUserID())
-                .requestAttr(TOKEN_ATTRIBUTE_NAME, authUserDto.getServiceToken())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(encodedRequestBody)
-                .locale(locale);
-        ResultActions testResults = mockMvc.perform(requestBuilder);
-
-        // ** Assert **
-        String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
-
-        testResults.andExpectAll(
-                status().isNoContent(),
-                content().contentType(MediaType.APPLICATION_JSON),
-                jsonPath("$.success", is(true)),
-                jsonPath("$.timestamp", lessThan(now)),
-                jsonPath("$.data", nullValue())
-        );
-    }
-
-    @Test
-    void whenChangePassword_andPasswordDontMatch_thenThrowException() throws Exception {
-        // ** Arrange **
-        User user = authTestUtils.registerValidUser();
-        AuthenticatedUserDTO authUserDto = authTestUtils.generateAuthenticatedUser(user);
-        ChangePasswordParamsDTO paramsDTO = new ChangePasswordParamsDTO(DEFAULT_PASSWORD + "XXX", DEFAULT_PASSWORD);
-
-        // ** Act **
-        String endpointAddress = API_ENDPOINT + "/%s/password".formatted(user.getUserID());
-        String encodedRequestBody = jsonMapper.writeValueAsString(paramsDTO);
-        RequestBuilder requestBuilder = patch(endpointAddress)
-                .requestAttr(USER_ID_ATTRIBUTE_NAME, user.getUserID())
-                .requestAttr(TOKEN_ATTRIBUTE_NAME, authUserDto.getServiceToken())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(encodedRequestBody)
-                .locale(locale);
-        ResultActions testResults = mockMvc.perform(requestBuilder);
-
-        // ** Assert **
-        String errorMessage = translator.generateMessage(PASSWORD_DO_NOT_MATCH_KEY, locale);
-        String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
-
-        testResults.andExpectAll(
-                status().isBadRequest(),
-                content().contentType(MediaType.APPLICATION_JSON),
-                jsonPath("$.success", is(false)),
-                jsonPath("$.timestamp", lessThan(now)),
-                jsonPath("$.data", notNullValue()),
-                // Contenido de la respuesta
-                jsonPath("$.data.status", is(HttpStatus.BAD_REQUEST.name())),
-                jsonPath("$.data.statusCode", is(HttpStatus.BAD_REQUEST.value())),
-                jsonPath("$.data.message", equalTo(errorMessage)),
-                jsonPath("$.data.debugMessage", nullValue())
-        );
-    }
-
-    @Test
-    void whenChangePasswordToOtherUser_thenThrowException() throws Exception {
-        // ** Arrange **
-        User user = authTestUtils.registerValidUser();
-        AuthenticatedUserDTO authUserDto = authTestUtils.generateAuthenticatedUser(user);
-        ChangePasswordParamsDTO paramsDTO = new ChangePasswordParamsDTO(DEFAULT_PASSWORD + "XXX", DEFAULT_PASSWORD);
-
-        // ** Act **
-        String endpointAddress = API_ENDPOINT + "/%s/password".formatted(user.getUserID());
-        String encodedRequestBody = jsonMapper.writeValueAsString(paramsDTO);
-        RequestBuilder requestBuilder = patch(endpointAddress)
-                .requestAttr(USER_ID_ATTRIBUTE_NAME, UUID.randomUUID())
-                .requestAttr(TOKEN_ATTRIBUTE_NAME, authUserDto.getServiceToken())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(encodedRequestBody)
-                .locale(locale);
-        ResultActions testResults = mockMvc.perform(requestBuilder);
-
-        // ** Assert **
-        String errorMessage = translator.generateMessage(PERMISSION_KEY, locale);
-        String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
-
-        testResults.andExpectAll(
-                status().isForbidden(),
-                content().contentType(MediaType.APPLICATION_JSON),
-                jsonPath("$.success", is(false)),
-                jsonPath("$.timestamp", lessThan(now)),
-                jsonPath("$.data", notNullValue()),
-                // Contenido de la respuesta
-                jsonPath("$.data.status", is(HttpStatus.FORBIDDEN.name())),
-                jsonPath("$.data.statusCode", is(HttpStatus.FORBIDDEN.value())),
-                jsonPath("$.data.message", equalTo(errorMessage)),
-                jsonPath("$.data.debugMessage", nullValue())
-        );
-    }
-
-    @Test
-    void whenChangePasswordToNonExistentUser_thenThrowException() throws Exception {
-        // ** Arrange **
-        UUID randomUserID = UUID.randomUUID();
-        ChangePasswordParamsDTO paramsDTO = new ChangePasswordParamsDTO(DEFAULT_PASSWORD + "XXX", DEFAULT_PASSWORD);
-
-        // ** Act **
-        String endpointAddress = API_ENDPOINT + "/%s/password".formatted(randomUserID);
-        String encodedRequestBody = jsonMapper.writeValueAsString(paramsDTO);
-        RequestBuilder requestBuilder = patch(endpointAddress)
-                .requestAttr(USER_ID_ATTRIBUTE_NAME, randomUserID)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(encodedRequestBody)
-                .locale(locale);
-        ResultActions testResults = mockMvc.perform(requestBuilder);
-
-        // ** Assert **
-        String errorMessage = translator.generateMessage(USER_NOT_FOUND_KEY, locale);
-        String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
-
-        testResults.andExpectAll(
-                status().isNotFound(),
-                content().contentType(MediaType.APPLICATION_JSON),
-                jsonPath("$.success", is(false)),
-                jsonPath("$.timestamp", lessThan(now)),
-                jsonPath("$.data", notNullValue()),
-                // Contenido de la respuesta
-                jsonPath("$.data.status", is(HttpStatus.NOT_FOUND.name())),
-                jsonPath("$.data.statusCode", is(HttpStatus.NOT_FOUND.value())),
-                jsonPath("$.data.message", equalTo(errorMessage)),
-                jsonPath("$.data.debugMessage", nullValue())
-        );
-    }
-
 }
