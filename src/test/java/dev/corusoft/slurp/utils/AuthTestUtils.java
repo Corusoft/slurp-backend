@@ -3,6 +3,7 @@ package dev.corusoft.slurp.utils;
 import dev.corusoft.slurp.users.application.utils.AuthUtils;
 import dev.corusoft.slurp.users.domain.*;
 import dev.corusoft.slurp.users.infrastructure.dto.input.RegisterUserParamsDTO;
+import dev.corusoft.slurp.users.infrastructure.dto.output.AuthenticatedUserDTO;
 import dev.corusoft.slurp.users.infrastructure.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 
 import static dev.corusoft.slurp.TestConstants.*;
+import static dev.corusoft.slurp.users.infrastructure.dto.conversors.UserConversor.toAuthenticatedUserDTO;
 
 @Component
 public class AuthTestUtils {
@@ -30,6 +32,9 @@ public class AuthTestUtils {
     }
 
     /* ************************* MÉTODOS AUXILIARES ************************* */
+    public String encryptPassword(String password) {
+        return passwordEncoder.encode(password);
+    }
 
     public User generateValidUser() {
         return this.generateValidUser(DEFAULT_NAME);
@@ -46,7 +51,7 @@ public class AuthTestUtils {
                 .registeredAt(LocalDateTime.now())
                 .build();
 
-        Credential credential = generateValidCredentialForUser(user);
+        Credential credential = generateValidCredentialForUser();
         user.attachCredential(credential);
         ContactInfo contactInfo = generateValidContactInfoForUser(user);
         user.attachContactInfo(contactInfo);
@@ -55,11 +60,11 @@ public class AuthTestUtils {
         return user;
     }
 
-    public Credential generateValidCredentialForUser(User user) {
-        return generateValidCredentialForUser(user, DEFAULT_NICKNAME, DEFAULT_PASSWORD);
+    public Credential generateValidCredentialForUser() {
+        return generateValidCredentialForUser(DEFAULT_NICKNAME, DEFAULT_PASSWORD);
     }
 
-    public Credential generateValidCredentialForUser(User user, String nickname, String password) {
+    public Credential generateValidCredentialForUser(String nickname, String password) {
         String finalNickname = (nickname != null) ? nickname : DEFAULT_NICKNAME;
         String finalPassword = (password != null) ? password : DEFAULT_PASSWORD;
         String encryptedPassword = passwordEncoder.encode(finalPassword);
@@ -89,7 +94,7 @@ public class AuthTestUtils {
 
     public User registerValidUser(String nickname, String password) {
         User user = generateValidUser();
-        Credential credential = generateValidCredentialForUser(user, nickname, password);
+        Credential credential = generateValidCredentialForUser(nickname, password);
         user.attachCredential(credential);
         ContactInfo contactInfo = generateValidContactInfoForUser(user);
         user.attachContactInfo(contactInfo);
@@ -99,6 +104,11 @@ public class AuthTestUtils {
         return userRepo.save(user);
     }
 
+    public AuthenticatedUserDTO generateAuthenticatedUser(User user) {
+        String serviceToken = authUtils.generateJWTFromUser(user);
+
+        return toAuthenticatedUserDTO(serviceToken, user);
+    }
 
     public RegisterUserParamsDTO generateRegisterParamsDtoFromUser(User user) {
         Credential credential = user.getCredential();

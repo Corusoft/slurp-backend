@@ -1,9 +1,11 @@
 package dev.corusoft.slurp.users.infrastructure.repositories;
 
 import dev.corusoft.slurp.users.domain.Credential;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.ListCrudRepository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 public interface CredentialRepository extends ListCrudRepository<Credential, Long> {
     /**
@@ -15,6 +17,9 @@ public interface CredentialRepository extends ListCrudRepository<Credential, Lon
     boolean existsByNicknameIgnoreCase(String nickname);
 
     Optional<Credential> findByNicknameIgnoreCase(String nickname);
+
+    @Query("SELECT c FROM Credential c WHERE c.user.userID = ?1")
+    Optional<Credential> findCredentialByUserID(UUID userID);
 
 
 }

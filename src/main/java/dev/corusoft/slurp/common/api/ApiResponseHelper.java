@@ -40,6 +40,10 @@ public class ApiResponseHelper {
 
 
     /* ******************** SUCCESS ******************** */
+    public static ApiResponse<Void> buildEmptySuccessApiResponse() {
+        return createResponse(true, null);
+    }
+
     public static <T> ApiResponse<T> buildSuccessApiResponse(T content) {
         return createResponse(true, content);
     }
