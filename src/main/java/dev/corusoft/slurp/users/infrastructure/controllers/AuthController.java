@@ -3,12 +3,11 @@ package dev.corusoft.slurp.users.infrastructure.controllers;
 import dev.corusoft.slurp.common.api.ApiResponse;
 import dev.corusoft.slurp.common.exception.PermissionException;
 import dev.corusoft.slurp.common.security.jwt.application.JwtGenerator;
-import dev.corusoft.slurp.common.security.jwt.domain.JwtData;
 import dev.corusoft.slurp.users.application.AuthService;
 import dev.corusoft.slurp.users.application.utils.AuthUtils;
 import dev.corusoft.slurp.users.domain.User;
 import dev.corusoft.slurp.users.domain.exceptions.IncorrectLoginException;
-import dev.corusoft.slurp.users.domain.exceptions.IncorrectPasswordException;
+import dev.corusoft.slurp.users.domain.exceptions.PasswordsDoNotMatchException;
 import dev.corusoft.slurp.users.domain.exceptions.UserAlreadyExistsException;
 import dev.corusoft.slurp.users.domain.exceptions.UserNotFoundException;
 import dev.corusoft.slurp.users.infrastructure.dto.input.ChangePasswordParamsDTO;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
 import java.util.UUID;
 
 import static dev.corusoft.slurp.common.api.ApiResponseHelper.buildEmptySuccessApiResponse;
@@ -68,7 +66,7 @@ public class AuthController {
                 .path("/v1/users/{userID}")
                 .buildAndExpand(registeredUser.getUserID())
                 .toUri();
-        String serviceToken = generateJWTFromUser(registeredUser);
+        String serviceToken = authUtils.generateJWTFromUser(registeredUser);
         AuthenticatedUserDTO authenticatedUserDTO = toAuthenticatedUserDTO(serviceToken, registeredUser);
 
         // Crear respuesta y enviar
@@ -92,7 +90,7 @@ public class AuthController {
         User user = authService.login(params.getNickname(), params.getPassword());
 
         // Generar token para usaurio
-        String serviceToken = generateJWTFromUser(user);
+        String serviceToken = authUtils.generateJWTFromUser(user);
         AuthenticatedUserDTO authenticatedUserDTO = toAuthenticatedUserDTO(serviceToken, user);
 
         return buildSuccessApiResponse(authenticatedUserDTO);
@@ -107,7 +105,7 @@ public class AuthController {
             @RequestAttribute(USER_ID_ATTRIBUTE_NAME) UUID userID,
             @PathVariable("userID") UUID pathUserID,
             @Validated @RequestBody ChangePasswordParamsDTO params
-    ) throws PermissionException, UserNotFoundException, IncorrectPasswordException {
+    ) throws PermissionException, UserNotFoundException, PasswordsDoNotMatchException {
         // Comprobar que usuario actual y usuario objetivo son el mismo
         if (!authUtils.doUsersMatch(userID, pathUserID)) {
             throw new PermissionException();
@@ -119,20 +117,4 @@ public class AuthController {
         return buildEmptySuccessApiResponse();
     }
 
-    /* ******************** HELPER FUNCTIONS ******************** */
-    public String generateJWTFromUser(User user) {
-        String nickname = user.getCredential().getNickname();
-        List<String> roles = user.getAttachedRoles()
-                .stream()
-                .map(Enum::name)
-                .toList();
-
-        JwtData jwtData = JwtData.builder()
-                .userID(user.getUserID())
-                .nickname(nickname)
-                .roles(roles)
-                .build();
-
-        return jwtGenerator.generateJWT(jwtData);
-    }
 }

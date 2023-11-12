@@ -2,6 +2,7 @@ package dev.corusoft.slurp.common.security;
 
 import dev.corusoft.slurp.common.security.jwt.application.JwtGenerator;
 import dev.corusoft.slurp.common.security.jwt.infrastructure.JwtHttpConfigurer;
+import dev.corusoft.slurp.users.domain.UserRoles;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -12,6 +13,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -32,7 +35,10 @@ public class SecurityConfig {
         // Permitir las peticiones que indiquemos
         http.authorizeHttpRequests(requests -> requests
                 // ALLOWED ENDPOINTS
+                // AUTH
                 .requestMatchers(HttpMethod.POST, "/v1/auth/register").permitAll()
+                .requestMatchers(HttpMethod.POST, "/v1/auth/login").permitAll()
+                .requestMatchers(HttpMethod.POST, "/v1/auth/*/password").hasAnyRole(Arrays.toString(UserRoles.values()))
 
                 // DENEGAR EL RESTO DE PETICIONES
                 .anyRequest().denyAll()

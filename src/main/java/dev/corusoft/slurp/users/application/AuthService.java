@@ -2,7 +2,7 @@ package dev.corusoft.slurp.users.application;
 
 import dev.corusoft.slurp.users.domain.User;
 import dev.corusoft.slurp.users.domain.exceptions.IncorrectLoginException;
-import dev.corusoft.slurp.users.domain.exceptions.IncorrectPasswordException;
+import dev.corusoft.slurp.users.domain.exceptions.PasswordsDoNotMatchException;
 import dev.corusoft.slurp.users.domain.exceptions.UserAlreadyExistsException;
 import dev.corusoft.slurp.users.domain.exceptions.UserNotFoundException;
 import dev.corusoft.slurp.users.infrastructure.dto.input.RegisterUserParamsDTO;
@@ -34,9 +34,9 @@ public interface AuthService {
      * @param oldPassword Antigua contraseña
      * @param newPassword Nueva contraseña
      * @throws UserNotFoundException No se encuentra al usuario
-     * @throws IncorrectPasswordException Contraseñas no coinciden
+     * @throws PasswordsDoNotMatchException Contraseñas no coinciden
      */
     void changePassword(UUID userID, String oldPassword, String newPassword)
-            throws UserNotFoundException, IncorrectPasswordException;
+            throws UserNotFoundException, PasswordsDoNotMatchException;
 
 }

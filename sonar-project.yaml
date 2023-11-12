@@ -3,8 +3,10 @@ sonar:
   exclusions:
     - **/common/config/**/*
     - **/common/security/crypto/**/*
+    - **/common/security/jwt/infrastructure/**/*
   coverage:
     exclusions:
       - **/common/config/**/*
       - **/common/security/crypto/**/*
-  
+      - **/common/security/jwt/infrastructure/**/*
+

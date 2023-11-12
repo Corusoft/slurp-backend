@@ -4,9 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.corusoft.slurp.common.i18n.Translator;
 import dev.corusoft.slurp.users.domain.User;
 import dev.corusoft.slurp.users.domain.UserRoles;
+import dev.corusoft.slurp.users.infrastructure.dto.input.ChangePasswordParamsDTO;
 import dev.corusoft.slurp.users.infrastructure.dto.input.LoginParamsDTO;
 import dev.corusoft.slurp.users.infrastructure.dto.input.RegisterUserParamsDTO;
-import dev.corusoft.slurp.users.infrastructure.repositories.UserRepository;
+import dev.corusoft.slurp.users.infrastructure.dto.output.AuthenticatedUserDTO;
 import dev.corusoft.slurp.utils.AuthTestUtils;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -26,12 +27,15 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 import static dev.corusoft.slurp.TestConstants.DEFAULT_NICKNAME;
 import static dev.corusoft.slurp.TestConstants.DEFAULT_PASSWORD;
-import static dev.corusoft.slurp.users.infrastructure.controllers.AuthApiErrorHandler.INCORRECT_LOGIN_KEY;
-import static dev.corusoft.slurp.users.infrastructure.controllers.AuthApiErrorHandler.USER_ALREADY_EXISTS_KEY;
+import static dev.corusoft.slurp.common.security.SecurityConstants.TOKEN_ATTRIBUTE_NAME;
+import static dev.corusoft.slurp.common.security.SecurityConstants.USER_ID_ATTRIBUTE_NAME;
+import static dev.corusoft.slurp.users.infrastructure.controllers.AuthApiErrorHandler.*;
 import static org.hamcrest.Matchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -56,8 +60,6 @@ class AuthControllerTest {
     private AuthTestUtils authTestUtils;
     @Autowired
     private Translator translator;
-    @Autowired
-    private UserRepository userRepo;
 
 
     /* ************************* CICLO VIDA TESTS ************************* */
@@ -229,4 +231,141 @@ class AuthControllerTest {
                 jsonPath("$.data.debugMessage", nullValue())
         );
     }
+
+    @Test
+    void whenChangePassword_thenSuccess() throws Exception {
+        // ** Arrange **
+        User user = authTestUtils.registerValidUser();
+        AuthenticatedUserDTO authUserDto = authTestUtils.generateAuthenticatedUser(user);
+        ChangePasswordParamsDTO paramsDTO = new ChangePasswordParamsDTO(DEFAULT_PASSWORD, DEFAULT_PASSWORD + "XXX");
+
+        // ** Act **
+        String endpointAddress = API_ENDPOINT + "/%s/password".formatted(user.getUserID());
+        String encodedRequestBody = jsonMapper.writeValueAsString(paramsDTO);
+        RequestBuilder requestBuilder = patch(endpointAddress)
+                .requestAttr(USER_ID_ATTRIBUTE_NAME, user.getUserID())
+                .requestAttr(TOKEN_ATTRIBUTE_NAME, authUserDto.getServiceToken())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(encodedRequestBody)
+                .locale(locale);
+        ResultActions testResults = mockMvc.perform(requestBuilder);
+
+        // ** Assert **
+        String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
+
+        testResults.andExpectAll(
+                status().isNoContent(),
+                content().contentType(MediaType.APPLICATION_JSON),
+                jsonPath("$.success", is(true)),
+                jsonPath("$.timestamp", lessThan(now)),
+                jsonPath("$.data", nullValue())
+        );
+    }
+
+    @Test
+    void whenChangePassword_andPasswordDontMatch_thenThrowException() throws Exception {
+        // ** Arrange **
+        User user = authTestUtils.registerValidUser();
+        AuthenticatedUserDTO authUserDto = authTestUtils.generateAuthenticatedUser(user);
+        ChangePasswordParamsDTO paramsDTO = new ChangePasswordParamsDTO(DEFAULT_PASSWORD + "XXX", DEFAULT_PASSWORD);
+
+        // ** Act **
+        String endpointAddress = API_ENDPOINT + "/%s/password".formatted(user.getUserID());
+        String encodedRequestBody = jsonMapper.writeValueAsString(paramsDTO);
+        RequestBuilder requestBuilder = patch(endpointAddress)
+                .requestAttr(USER_ID_ATTRIBUTE_NAME, user.getUserID())
+                .requestAttr(TOKEN_ATTRIBUTE_NAME, authUserDto.getServiceToken())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(encodedRequestBody)
+                .locale(locale);
+        ResultActions testResults = mockMvc.perform(requestBuilder);
+
+        // ** Assert **
+        String errorMessage = translator.generateMessage(PASSWORD_DO_NOT_MATCH_KEY, locale);
+        String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
+
+        testResults.andExpectAll(
+                status().isBadRequest(),
+                content().contentType(MediaType.APPLICATION_JSON),
+                jsonPath("$.success", is(false)),
+                jsonPath("$.timestamp", lessThan(now)),
+                jsonPath("$.data", notNullValue()),
+                // Contenido de la respuesta
+                jsonPath("$.data.status", is(HttpStatus.BAD_REQUEST.name())),
+                jsonPath("$.data.statusCode", is(HttpStatus.BAD_REQUEST.value())),
+                jsonPath("$.data.message", equalTo(errorMessage)),
+                jsonPath("$.data.debugMessage", nullValue())
+        );
+    }
+
+    @Test
+    void whenChangePasswordToOtherUser_thenThrowException() throws Exception {
+        // ** Arrange **
+        User user = authTestUtils.registerValidUser();
+        AuthenticatedUserDTO authUserDto = authTestUtils.generateAuthenticatedUser(user);
+        ChangePasswordParamsDTO paramsDTO = new ChangePasswordParamsDTO(DEFAULT_PASSWORD + "XXX", DEFAULT_PASSWORD);
+
+        // ** Act **
+        String endpointAddress = API_ENDPOINT + "/%s/password".formatted(user.getUserID());
+        String encodedRequestBody = jsonMapper.writeValueAsString(paramsDTO);
+        RequestBuilder requestBuilder = patch(endpointAddress)
+                .requestAttr(USER_ID_ATTRIBUTE_NAME, UUID.randomUUID())
+                .requestAttr(TOKEN_ATTRIBUTE_NAME, authUserDto.getServiceToken())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(encodedRequestBody)
+                .locale(locale);
+        ResultActions testResults = mockMvc.perform(requestBuilder);
+
+        // ** Assert **
+        String errorMessage = translator.generateMessage(PERMISSION_KEY, locale);
+        String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
+
+        testResults.andExpectAll(
+                status().isForbidden(),
+                content().contentType(MediaType.APPLICATION_JSON),
+                jsonPath("$.success", is(false)),
+                jsonPath("$.timestamp", lessThan(now)),
+                jsonPath("$.data", notNullValue()),
+                // Contenido de la respuesta
+                jsonPath("$.data.status", is(HttpStatus.FORBIDDEN.name())),
+                jsonPath("$.data.statusCode", is(HttpStatus.FORBIDDEN.value())),
+                jsonPath("$.data.message", equalTo(errorMessage)),
+                jsonPath("$.data.debugMessage", nullValue())
+        );
+    }
+
+    @Test
+    void whenChangePasswordToNonExistentUser_thenThrowException() throws Exception {
+        // ** Arrange **
+        UUID randomUserID = UUID.randomUUID();
+        ChangePasswordParamsDTO paramsDTO = new ChangePasswordParamsDTO(DEFAULT_PASSWORD + "XXX", DEFAULT_PASSWORD);
+
+        // ** Act **
+        String endpointAddress = API_ENDPOINT + "/%s/password".formatted(randomUserID);
+        String encodedRequestBody = jsonMapper.writeValueAsString(paramsDTO);
+        RequestBuilder requestBuilder = patch(endpointAddress)
+                .requestAttr(USER_ID_ATTRIBUTE_NAME, randomUserID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(encodedRequestBody)
+                .locale(locale);
+        ResultActions testResults = mockMvc.perform(requestBuilder);
+
+        // ** Assert **
+        String errorMessage = translator.generateMessage(USER_NOT_FOUND_KEY, locale);
+        String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
+
+        testResults.andExpectAll(
+                status().isNotFound(),
+                content().contentType(MediaType.APPLICATION_JSON),
+                jsonPath("$.success", is(false)),
+                jsonPath("$.timestamp", lessThan(now)),
+                jsonPath("$.data", notNullValue()),
+                // Contenido de la respuesta
+                jsonPath("$.data.status", is(HttpStatus.NOT_FOUND.name())),
+                jsonPath("$.data.statusCode", is(HttpStatus.NOT_FOUND.value())),
+                jsonPath("$.data.message", equalTo(errorMessage)),
+                jsonPath("$.data.debugMessage", nullValue())
+        );
+    }
+
 }

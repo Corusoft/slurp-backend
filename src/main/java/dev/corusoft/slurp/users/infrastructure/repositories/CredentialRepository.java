@@ -18,7 +18,7 @@ public interface CredentialRepository extends ListCrudRepository<Credential, Lon
 
     Optional<Credential> findByNicknameIgnoreCase(String nickname);
 
-    @Query("SELECT u FROM Credential c JOIN c.user u WHERE u.userID = ?1")
+    @Query("SELECT c FROM Credential c WHERE c.user.userID = ?1")
     Optional<Credential> findCredentialByUserID(UUID userID);
 
 

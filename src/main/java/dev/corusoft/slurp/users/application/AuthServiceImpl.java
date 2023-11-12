@@ -6,19 +6,21 @@ import dev.corusoft.slurp.users.domain.Credential;
 import dev.corusoft.slurp.users.domain.User;
 import dev.corusoft.slurp.users.domain.UserRoles;
 import dev.corusoft.slurp.users.domain.exceptions.IncorrectLoginException;
-import dev.corusoft.slurp.users.domain.exceptions.IncorrectPasswordException;
+import dev.corusoft.slurp.users.domain.exceptions.PasswordsDoNotMatchException;
 import dev.corusoft.slurp.users.domain.exceptions.UserAlreadyExistsException;
 import dev.corusoft.slurp.users.domain.exceptions.UserNotFoundException;
 import dev.corusoft.slurp.users.infrastructure.dto.input.RegisterUserParamsDTO;
 import dev.corusoft.slurp.users.infrastructure.repositories.ContactInfoRepository;
 import dev.corusoft.slurp.users.infrastructure.repositories.CredentialRepository;
 import dev.corusoft.slurp.users.infrastructure.repositories.UserRepository;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Log4j2
 @Transactional
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -63,6 +65,7 @@ public class AuthServiceImpl implements AuthService {
         authUtils.assignRoleToUser(user, UserRoles.BASIC);
         user = userRepo.save(user);
 
+        log.info("Registered new user {}", paramsDTO.getNickname());
         return user;
     }
 
@@ -83,24 +86,27 @@ public class AuthServiceImpl implements AuthService {
             throw new IncorrectLoginException();
         }
 
+        log.info("User {} logged in", nickname);
         return user;
     }
 
     @Override
     public void changePassword(UUID userID, String oldPassword, String newPassword)
-            throws UserNotFoundException, IncorrectPasswordException {
+            throws UserNotFoundException, PasswordsDoNotMatchException {
         // Obtener al usurio y sus credenciales
         Credential credential = authUtils.findUserCredential(userID);
 
         // Comprobar que contraseñas coinciden
         String currentPassword = credential.getPasswordEncrypted();
-        if (!authUtils.doPasswordsMatch(currentPassword, oldPassword)) {
-            throw new IncorrectPasswordException();
+        if (!authUtils.doPasswordsMatch(oldPassword, currentPassword)) {
+            throw new PasswordsDoNotMatchException();
         }
 
         // Cifrar y actualizar contraseña
         String encodedNewPassword = authUtils.encryptPassword(newPassword);
         credential.setPasswordEncrypted(encodedNewPassword);
+
+        log.info("User {} has changed his password", credential.getNickname());
         credentialRepo.save(credential);
     }
 
@@ -118,9 +124,10 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private User createCredentialForUser(RegisterUserParamsDTO paramsDTO, User user) {
+        String encryptedPassword = authUtils.encryptPassword(paramsDTO.getRawPassword());
         Credential credentials = Credential.builder()
                 .nickname(paramsDTO.getNickname())
-                .passwordEncrypted(authUtils.encryptPassword(paramsDTO.getRawPassword()))
+                .passwordEncrypted(encryptedPassword)
                 .user(user)
                 .build();
         credentialRepo.save(credentials);
