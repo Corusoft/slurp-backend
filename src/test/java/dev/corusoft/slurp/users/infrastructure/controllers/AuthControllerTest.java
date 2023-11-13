@@ -4,31 +4,22 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.corusoft.slurp.common.i18n.Translator;
 import dev.corusoft.slurp.users.domain.User;
 import dev.corusoft.slurp.users.domain.UserRoles;
-import dev.corusoft.slurp.users.infrastructure.dto.input.ChangePasswordParamsDTO;
-import dev.corusoft.slurp.users.infrastructure.dto.input.LoginParamsDTO;
-import dev.corusoft.slurp.users.infrastructure.dto.input.RegisterUserParamsDTO;
+import dev.corusoft.slurp.users.infrastructure.dto.input.*;
 import dev.corusoft.slurp.users.infrastructure.dto.output.AuthenticatedUserDTO;
 import dev.corusoft.slurp.utils.AuthTestUtils;
-import org.junit.jupiter.api.DisplayNameGeneration;
-import org.junit.jupiter.api.DisplayNameGenerator;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.RequestBuilder;
-import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.*;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.*;
 
 import static dev.corusoft.slurp.TestConstants.DEFAULT_NICKNAME;
 import static dev.corusoft.slurp.TestConstants.DEFAULT_PASSWORD;
@@ -142,7 +133,7 @@ class AuthControllerTest {
         @Test
         void when_Login_thenSuccess() throws Exception {
             // ** Arrange **
-            authTestUtils.registerValidUser();
+            User user = authTestUtils.registerValidUser();
             LoginParamsDTO paramsDTO = new LoginParamsDTO(DEFAULT_NICKNAME, DEFAULT_PASSWORD);
 
             // ** Act **
@@ -156,7 +147,9 @@ class AuthControllerTest {
 
             // ** Assert **
             String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
-            List<String> expectedRoles = List.of(UserRoles.BASIC.name());
+            List<String> expectedRoles = user.getAttachedRoles().stream()
+                    .map(role -> role.name())
+                    .toList();
 
             testResults.andExpectAll(
                     status().isOk(),
@@ -232,6 +225,107 @@ class AuthControllerTest {
                     // Contenido de la respuesta
                     jsonPath("$.data.status", is(HttpStatus.BAD_REQUEST.name())),
                     jsonPath("$.data.statusCode", is(HttpStatus.BAD_REQUEST.value())),
+                    jsonPath("$.data.message", equalTo(errorMessage)),
+                    jsonPath("$.data.debugMessage", nullValue())
+            );
+        }
+
+        @Test
+        void when_LoginViaJWT_thenSuccess() throws Exception {
+            // ** Arrange **
+            User user = authTestUtils.registerValidUser();
+            AuthenticatedUserDTO authUserDto = authTestUtils.generateAuthenticatedUser(user);
+
+
+            // ** Act **
+            String endpointAddress = API_ENDPOINT + "/login/jwt";
+            RequestBuilder requestBuilder = post(endpointAddress)
+                    .requestAttr(USER_ID_ATTRIBUTE_NAME, user.getUserID())
+                    .requestAttr(TOKEN_ATTRIBUTE_NAME, authUserDto.getServiceToken())
+                    .locale(locale);
+            ResultActions testResults = mockMvc.perform(requestBuilder);
+
+            // ** Assert **
+            String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
+            List<String> expectedRoles = user.getAttachedRoles().stream()
+                    .map(role -> role.name())
+                    .toList();
+
+            testResults.andExpectAll(
+                    status().isOk(),
+                    content().contentType(MediaType.APPLICATION_JSON),
+                    jsonPath("$.success", is(true)),
+                    jsonPath("$.timestamp", lessThan(now)),
+                    jsonPath("$.data", notNullValue()),
+                    jsonPath("$.data.serviceToken", notNullValue()),
+                    jsonPath("$.data.user.registeredAt", lessThan(now)),
+                    jsonPath("$.data.user.roles", containsInAnyOrder(expectedRoles.toArray()))
+            );
+        }
+
+        @Test
+        void when_LoginViaJWT_andUserDoesNotExist_thenThrowException() throws Exception {
+            // ** Arrange **
+            UUID randomUserID = UUID.randomUUID();          // ID random para que JWT tenga campo "userID"
+            User user = authTestUtils.generateValidUser();
+            user.setUserID(randomUserID);
+            AuthenticatedUserDTO authUserDto = authTestUtils.generateAuthenticatedUser(user);
+
+
+            // ** Act **
+            String endpointAddress = API_ENDPOINT + "/login/jwt";
+            RequestBuilder requestBuilder = post(endpointAddress)
+                    .requestAttr(USER_ID_ATTRIBUTE_NAME, randomUserID)
+                    .requestAttr(TOKEN_ATTRIBUTE_NAME, authUserDto.getServiceToken())
+                    .locale(locale);
+            ResultActions testResults = mockMvc.perform(requestBuilder);
+
+            // ** Assert **
+            String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
+            String errorMessage = translator.generateMessage(USER_NOT_FOUND_KEY, locale);
+
+
+            testResults.andExpectAll(
+                    status().isNotFound(),
+                    content().contentType(MediaType.APPLICATION_JSON),
+                    jsonPath("$.success", is(false)),
+                    jsonPath("$.timestamp", lessThan(now)),
+                    jsonPath("$.data", notNullValue()),
+                    jsonPath("$.data.status", is(HttpStatus.NOT_FOUND.name())),
+                    jsonPath("$.data.statusCode", is(HttpStatus.NOT_FOUND.value())),
+                    jsonPath("$.data.message", equalTo(errorMessage)),
+                    jsonPath("$.data.debugMessage", nullValue())
+            );
+        }
+
+        @Test
+        void when_LoginViaJWT_andIsNotCurrentUser_thenThrowException() throws Exception {
+            // ** Arrange **
+            User user = authTestUtils.registerValidUser();
+            AuthenticatedUserDTO authUserDto = authTestUtils.generateAuthenticatedUser(user);
+
+
+            // ** Act **
+            String endpointAddress = API_ENDPOINT + "/login/jwt";
+            RequestBuilder requestBuilder = post(endpointAddress)
+                    .requestAttr(USER_ID_ATTRIBUTE_NAME, UUID.randomUUID())
+                    .requestAttr(TOKEN_ATTRIBUTE_NAME, authUserDto.getServiceToken())
+                    .locale(locale);
+            ResultActions testResults = mockMvc.perform(requestBuilder);
+
+            // ** Assert **
+            String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
+            String errorMessage = translator.generateMessage(PERMISSION_KEY, locale);
+
+
+            testResults.andExpectAll(
+                    status().isForbidden(),
+                    content().contentType(MediaType.APPLICATION_JSON),
+                    jsonPath("$.success", is(false)),
+                    jsonPath("$.timestamp", lessThan(now)),
+                    jsonPath("$.data", notNullValue()),
+                    jsonPath("$.data.status", is(HttpStatus.FORBIDDEN.name())),
+                    jsonPath("$.data.statusCode", is(HttpStatus.FORBIDDEN.value())),
                     jsonPath("$.data.message", equalTo(errorMessage)),
                     jsonPath("$.data.debugMessage", nullValue())
             );

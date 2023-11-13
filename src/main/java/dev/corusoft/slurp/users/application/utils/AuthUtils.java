@@ -4,18 +4,13 @@ import dev.corusoft.slurp.common.security.jwt.application.JwtGenerator;
 import dev.corusoft.slurp.common.security.jwt.domain.JwtData;
 import dev.corusoft.slurp.users.domain.*;
 import dev.corusoft.slurp.users.domain.exceptions.UserNotFoundException;
-import dev.corusoft.slurp.users.infrastructure.repositories.CredentialRepository;
-import dev.corusoft.slurp.users.infrastructure.repositories.RoleRepository;
-import dev.corusoft.slurp.users.infrastructure.repositories.UserRepository;
-import dev.corusoft.slurp.users.infrastructure.repositories.UserRoleRepository;
+import dev.corusoft.slurp.users.infrastructure.repositories.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Component
 @Transactional(readOnly = true)
@@ -89,6 +84,12 @@ public class AuthUtils {
         Credential credential = optionalCredential.orElseThrow(() -> new UserNotFoundException(nickname));
 
         return credential.getUser();
+    }
+
+    public User fetchUserByID(UUID userID) throws UserNotFoundException {
+        // Comprobar si existe el usuario
+        return userRepo.findById(userID)
+                .orElseThrow(() -> new UserNotFoundException(userID));
     }
 
     public Credential findUserCredential(UUID userID) throws UserNotFoundException {
