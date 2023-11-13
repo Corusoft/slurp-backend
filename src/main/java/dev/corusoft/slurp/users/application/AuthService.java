@@ -1,10 +1,7 @@
 package dev.corusoft.slurp.users.application;
 
 import dev.corusoft.slurp.users.domain.User;
-import dev.corusoft.slurp.users.domain.exceptions.IncorrectLoginException;
-import dev.corusoft.slurp.users.domain.exceptions.PasswordsDoNotMatchException;
-import dev.corusoft.slurp.users.domain.exceptions.UserAlreadyExistsException;
-import dev.corusoft.slurp.users.domain.exceptions.UserNotFoundException;
+import dev.corusoft.slurp.users.domain.exceptions.*;
 import dev.corusoft.slurp.users.infrastructure.dto.input.RegisterUserParamsDTO;
 
 import java.util.UUID;
@@ -27,6 +24,15 @@ public interface AuthService {
      * @throws IncorrectLoginException Nickname o contraseña incorrectos
      */
     User login(String nickname, String rawPassword) throws IncorrectLoginException;
+
+    /**
+     * Iniciar sesión en el sistema mediante Json Web Token (JWT).
+     *
+     * @param userID ID del usuario
+     * @return Datos del usuario autenticado
+     * @throws UserNotFoundException No se encuentra al usuario
+     */
+    User loginViaJWT(UUID userID) throws UserNotFoundException;
 
     /**
      * Cambiar contraseña del usuario.

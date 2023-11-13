@@ -1,18 +1,10 @@
 package dev.corusoft.slurp.users.application;
 
 import dev.corusoft.slurp.users.application.utils.AuthUtils;
-import dev.corusoft.slurp.users.domain.ContactInfo;
-import dev.corusoft.slurp.users.domain.Credential;
-import dev.corusoft.slurp.users.domain.User;
-import dev.corusoft.slurp.users.domain.UserRoles;
-import dev.corusoft.slurp.users.domain.exceptions.IncorrectLoginException;
-import dev.corusoft.slurp.users.domain.exceptions.PasswordsDoNotMatchException;
-import dev.corusoft.slurp.users.domain.exceptions.UserAlreadyExistsException;
-import dev.corusoft.slurp.users.domain.exceptions.UserNotFoundException;
+import dev.corusoft.slurp.users.domain.*;
+import dev.corusoft.slurp.users.domain.exceptions.*;
 import dev.corusoft.slurp.users.infrastructure.dto.input.RegisterUserParamsDTO;
-import dev.corusoft.slurp.users.infrastructure.repositories.ContactInfoRepository;
-import dev.corusoft.slurp.users.infrastructure.repositories.CredentialRepository;
-import dev.corusoft.slurp.users.infrastructure.repositories.UserRepository;
+import dev.corusoft.slurp.users.infrastructure.repositories.*;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -86,8 +78,15 @@ public class AuthServiceImpl implements AuthService {
             throw new IncorrectLoginException();
         }
 
-        log.info("User {} logged in", nickname);
+        log.info("User {} authenticated using credentials", user.getUserID());
         return user;
+    }
+
+    @Override
+    public User loginViaJWT(UUID userID) throws UserNotFoundException {
+        // Buscar al usuario
+        log.info("User {} authenticated using Json Web Token", userID);
+        return authUtils.fetchUserByID(userID);
     }
 
     @Override
@@ -109,6 +108,7 @@ public class AuthServiceImpl implements AuthService {
         log.info("User {} has changed his password", credential.getNickname());
         credentialRepo.save(credential);
     }
+
 
     /* HELPER FUNCTIONS */
     private User createContactInfoForUser(RegisterUserParamsDTO paramsDTO, User user) {

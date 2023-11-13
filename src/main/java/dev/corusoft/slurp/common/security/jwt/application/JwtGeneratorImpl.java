@@ -69,7 +69,8 @@ public class JwtGeneratorImpl implements JwtGenerator {
         Claims claims = jwtParser
                 .parseSignedClaims(token)
                 .getPayload();
+        Map<String, Object> customClaims = (Map<String, Object>) claims.get("claims");
 
-        return JwtDataVisitor.fromMap(claims);
+        return JwtDataVisitor.fromMap(customClaims);
     }
 }

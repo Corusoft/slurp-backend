@@ -3,20 +3,14 @@ package dev.corusoft.slurp.users.infrastructure.controllers;
 import dev.corusoft.slurp.common.api.ApiResponse;
 import dev.corusoft.slurp.common.exception.PermissionException;
 import dev.corusoft.slurp.common.security.jwt.application.JwtGenerator;
+import dev.corusoft.slurp.common.security.jwt.domain.JwtData;
 import dev.corusoft.slurp.users.application.AuthService;
 import dev.corusoft.slurp.users.application.utils.AuthUtils;
 import dev.corusoft.slurp.users.domain.User;
-import dev.corusoft.slurp.users.domain.exceptions.IncorrectLoginException;
-import dev.corusoft.slurp.users.domain.exceptions.PasswordsDoNotMatchException;
-import dev.corusoft.slurp.users.domain.exceptions.UserAlreadyExistsException;
-import dev.corusoft.slurp.users.domain.exceptions.UserNotFoundException;
-import dev.corusoft.slurp.users.infrastructure.dto.input.ChangePasswordParamsDTO;
-import dev.corusoft.slurp.users.infrastructure.dto.input.LoginParamsDTO;
-import dev.corusoft.slurp.users.infrastructure.dto.input.RegisterUserParamsDTO;
+import dev.corusoft.slurp.users.domain.exceptions.*;
+import dev.corusoft.slurp.users.infrastructure.dto.input.*;
 import dev.corusoft.slurp.users.infrastructure.dto.output.AuthenticatedUserDTO;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -26,6 +20,7 @@ import java.util.UUID;
 
 import static dev.corusoft.slurp.common.api.ApiResponseHelper.buildEmptySuccessApiResponse;
 import static dev.corusoft.slurp.common.api.ApiResponseHelper.buildSuccessApiResponse;
+import static dev.corusoft.slurp.common.security.SecurityConstants.TOKEN_ATTRIBUTE_NAME;
 import static dev.corusoft.slurp.common.security.SecurityConstants.USER_ID_ATTRIBUTE_NAME;
 import static dev.corusoft.slurp.users.infrastructure.dto.conversors.UserConversor.toAuthenticatedUserDTO;
 
@@ -90,6 +85,30 @@ public class AuthController {
         User user = authService.login(params.getNickname(), params.getPassword());
 
         // Generar token para usaurio
+        String serviceToken = authUtils.generateJWTFromUser(user);
+        AuthenticatedUserDTO authenticatedUserDTO = toAuthenticatedUserDTO(serviceToken, user);
+
+        return buildSuccessApiResponse(authenticatedUserDTO);
+    }
+
+    @PostMapping(path = "/login/jwt",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ResponseBody
+    public ApiResponse<AuthenticatedUserDTO> loginViaJWT(
+            @RequestAttribute(USER_ID_ATTRIBUTE_NAME) UUID userID,
+            @RequestAttribute(TOKEN_ATTRIBUTE_NAME) String jwt
+    ) throws UserNotFoundException, PermissionException {
+        // Validar que JWT pertenece al usuario que intenta acceder
+        JwtData jwtData = jwtGenerator.extractData(jwt);
+        if (!authUtils.doUsersMatch(userID, jwtData.getUserID())) {
+            throw new PermissionException();
+        }
+
+        // Iniciar sesión en servicio
+        User user = authService.loginViaJWT(userID);
+
+        // Regenerar token para usaurio
         String serviceToken = authUtils.generateJWTFromUser(user);
         AuthenticatedUserDTO authenticatedUserDTO = toAuthenticatedUserDTO(serviceToken, user);
 
