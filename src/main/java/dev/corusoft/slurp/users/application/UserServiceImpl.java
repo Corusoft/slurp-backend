@@ -6,7 +6,6 @@ import dev.corusoft.slurp.users.domain.User;
 import dev.corusoft.slurp.users.domain.exceptions.UserNotFoundException;
 import dev.corusoft.slurp.users.infrastructure.dto.input.UpdateContactInfoParamsDTO;
 import dev.corusoft.slurp.users.infrastructure.repositories.ContactInfoRepository;
-import dev.corusoft.slurp.users.infrastructure.repositories.UserRepository;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,17 +17,20 @@ import java.util.UUID;
 @Service
 public class UserServiceImpl implements UserService {
     /* DEPENDENCIES */
-    private final UserRepository userRepo;
     private final ContactInfoRepository contactInfoRepo;
     private final AuthUtils authUtils;
 
-    public UserServiceImpl(UserRepository userRepo, ContactInfoRepository contactInfoRepo, AuthUtils authUtils) {
-        this.userRepo = userRepo;
+    public UserServiceImpl(ContactInfoRepository contactInfoRepo, AuthUtils authUtils) {
         this.contactInfoRepo = contactInfoRepo;
         this.authUtils = authUtils;
     }
 
     /* USE CASES */
+
+    @Override
+    public User findUserByID(UUID userID) throws UserNotFoundException {
+        return authUtils.fetchUserByID(userID);
+    }
 
     @Override
     public User updateContactInfo(UUID userID, UpdateContactInfoParamsDTO paramsDTO) throws UserNotFoundException {

@@ -33,12 +33,26 @@ public class UserController {
     }
 
     /* ******************** ENDPOINTS ******************** */
+    @GetMapping(path = "/{userID}",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse<UserDTO> findUserById(
+            @RequestAttribute(USER_ID_ATTRIBUTE_NAME) UUID userID,
+            @PathVariable("userID") UUID pathUserID
+    ) throws UserNotFoundException {
+        // Actualizar información de contacto
+        User user = userService.findUserByID(pathUserID);
+
+        UserDTO userDTO = toUserDTO(user);
+        return buildSuccessApiResponse(userDTO);
+    }
 
     @PatchMapping(path = "/{userID}/contact",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    @ResponseBody
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse<UserDTO> updateContactInfo(
             @RequestAttribute(USER_ID_ATTRIBUTE_NAME) UUID userID,

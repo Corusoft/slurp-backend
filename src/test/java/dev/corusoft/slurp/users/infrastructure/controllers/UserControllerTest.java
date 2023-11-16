@@ -6,13 +6,13 @@ import dev.corusoft.slurp.common.i18n.Translator;
 import dev.corusoft.slurp.users.domain.User;
 import dev.corusoft.slurp.users.infrastructure.dto.input.UpdateContactInfoParamsDTO;
 import dev.corusoft.slurp.users.infrastructure.dto.output.AuthenticatedUserDTO;
+import dev.corusoft.slurp.users.infrastructure.dto.output.UserDTO;
 import dev.corusoft.slurp.utils.AuthTestUtils;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.*;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,11 +20,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import java.util.UUID;
 
 import static dev.corusoft.slurp.TestConstants.DEFAULT_EMAIL_DOMAIN;
 import static dev.corusoft.slurp.TestConstants.DEFAULT_PHONE_NUMBER;
 import static dev.corusoft.slurp.common.security.SecurityConstants.PREFIX_BEARER_TOKEN;
+import static dev.corusoft.slurp.users.infrastructure.controllers.UsersApiErrorHandler.USER_NOT_FOUND_KEY;
 import static org.hamcrest.Matchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -51,6 +54,7 @@ class UserControllerTest {
     private AuthTestUtils authTestUtils;
     @Autowired
     private Translator translator;
+
     /* ************************* CASOS DE PRUEBA ************************* */
     private User registeredUser;
     private AuthenticatedUserDTO registeredAuthUserDTO = null;
@@ -150,5 +154,108 @@ class UserControllerTest {
 
     }
 
+    @Nested
+    class FindUser_UseCase {
+        @Test
+        void when_FindUserById_andIsCurrentUser_thenSuccess() throws Exception {
+            // ** Arrange **
+
+            // ** Act **
+            String endpointAddress = API_ENDPOINT + "/%s".formatted(registeredUser.getUserID());
+            RequestBuilder requestBuilder = get(endpointAddress)
+                    .header(HttpHeaders.AUTHORIZATION, bearerToken)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .locale(locale);
+            ResultActions testResults = mockMvc.perform(requestBuilder);
+
+            // ** Assert **
+            String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
+            UserDTO userDTO = registeredAuthUserDTO.getUserDTO();
+            String userBirthDateString = DateTimeFormatter.ISO_DATE.format(userDTO.getBirthDate());
+
+            testResults.andExpectAll(
+                    status().isOk(),
+                    content().contentType(MediaType.APPLICATION_JSON),
+                    jsonPath("$.success", is(true)),
+                    jsonPath("$.timestamp", lessThan(now)),
+                    // Datos de la respuesta
+                    jsonPath("$.data.userID", is(userDTO.getUserID().toString())),
+                    jsonPath("$.data.name", is(userDTO.getName())),
+                    jsonPath("$.data.surname", is(userDTO.getSurname())),
+                    jsonPath("$.data.gender", is(userDTO.getGender().name())),
+                    jsonPath("$.data.nickname", is(userDTO.getNickname())),
+                    jsonPath("$.data.birthDate", is(userBirthDateString)),
+                    jsonPath("$.data.registeredAt", lessThan(now)),
+                    jsonPath("$.data.roles", hasSize(userDTO.getRoles().size())),
+                    jsonPath("$.data.contactInfo", notNullValue())
+            );
+        }
+
+        @Test
+        void when_FindUserById_andIsAnotherUser_thenSuccess() throws Exception {
+            // ** Arrange **
+            int userDtoComparedFieldsCount = 9;
+
+            // ** Act **
+            String endpointAddress = API_ENDPOINT + "/%s".formatted(otherRegisteredUser.getUserID());
+            RequestBuilder requestBuilder = get(endpointAddress)
+                    .header(HttpHeaders.AUTHORIZATION, bearerToken)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .locale(locale);
+            ResultActions testResults = mockMvc.perform(requestBuilder);
+
+            // ** Assert **
+            String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
+            UserDTO userDTO = otherRegisteredAuthUserDTO.getUserDTO();
+            String userBirthDateString = DateTimeFormatter.ISO_DATE.format(userDTO.getBirthDate());
+
+            testResults.andExpectAll(
+                    status().isOk(),
+                    content().contentType(MediaType.APPLICATION_JSON),
+                    jsonPath("$.success", is(true)),
+                    jsonPath("$.timestamp", lessThan(now)),
+                    // Datos de la respuesta
+                    jsonPath("$.data.userID", is(userDTO.getUserID().toString())),
+                    jsonPath("$.data.name", is(userDTO.getName())),
+                    jsonPath("$.data.surname", is(userDTO.getSurname())),
+                    jsonPath("$.data.gender", is(userDTO.getGender().name())),
+                    jsonPath("$.data.nickname", is(userDTO.getNickname())),
+                    jsonPath("$.data.birthDate", is(userBirthDateString)),
+                    jsonPath("$.data.registeredAt", lessThan(now)),
+                    jsonPath("$.data.roles", hasSize(userDTO.getRoles().size())),
+                    jsonPath("$.data.contactInfo", notNullValue())
+            );
+        }
+
+        @Test
+        void when_FindUserById_andUserDoesNotExist_thenThrowException() throws Exception {
+            // ** Arrange **
+
+            // ** Act **
+            String endpointAddress = API_ENDPOINT + "/%s".formatted(UUID.randomUUID());
+            RequestBuilder requestBuilder = get(endpointAddress)
+                    .header(HttpHeaders.AUTHORIZATION, bearerToken)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .locale(locale);
+            ResultActions testResults = mockMvc.perform(requestBuilder);
+
+            // ** Assert **
+            String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
+            String errorMessage = translator.generateMessage(USER_NOT_FOUND_KEY, locale);
+
+            testResults.andExpectAll(
+                    status().isNotFound(),
+                    content().contentType(MediaType.APPLICATION_JSON),
+                    jsonPath("$.success", is(false)),
+                    jsonPath("$.timestamp", lessThan(now)),
+                    jsonPath("$.data", notNullValue()),
+                    jsonPath("$.data.status", is(HttpStatus.NOT_FOUND.name())),
+                    jsonPath("$.data.statusCode", is(HttpStatus.NOT_FOUND.value())),
+                    jsonPath("$.data.message", equalTo(errorMessage)),
+                    jsonPath("$.data.debugMessage", nullValue())
+            );
+        }
+
+    }
 
 }
