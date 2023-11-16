@@ -5,11 +5,11 @@ on:
   # Pushing to a feature branch
   push:
     branches:
-      - feature/**      # Feature development
       - develop         # Iteration development
       - release         # Ready to release code
       - hotfix          # Urgent fixes code
       - main
+      - master
   # Opening a new PR
   pull_request:
     types:

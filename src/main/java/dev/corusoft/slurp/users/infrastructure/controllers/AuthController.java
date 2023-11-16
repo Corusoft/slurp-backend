@@ -48,7 +48,6 @@ public class AuthController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    @ResponseBody
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<ApiResponse<AuthenticatedUserDTO>> register(
             @Validated @RequestBody RegisterUserParamsDTO params
@@ -77,7 +76,6 @@ public class AuthController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    @ResponseBody
     public ApiResponse<AuthenticatedUserDTO> login(
             @Validated @RequestBody LoginParamsDTO params
     ) throws IncorrectLoginException {
@@ -94,7 +92,6 @@ public class AuthController {
     @PostMapping(path = "/login/jwt",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    @ResponseBody
     public ApiResponse<AuthenticatedUserDTO> loginViaJWT(
             @RequestAttribute(USER_ID_ATTRIBUTE_NAME) UUID userID,
             @RequestAttribute(TOKEN_ATTRIBUTE_NAME) String jwt
@@ -119,7 +116,6 @@ public class AuthController {
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @ResponseBody
     public ApiResponse<Void> updatePassword(
             @RequestAttribute(USER_ID_ATTRIBUTE_NAME) UUID userID,
             @PathVariable("userID") UUID pathUserID,

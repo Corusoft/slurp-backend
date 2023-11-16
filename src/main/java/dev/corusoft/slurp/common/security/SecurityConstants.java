@@ -1,6 +1,10 @@
 package dev.corusoft.slurp.common.security;
 
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SecurityConstants {
     /* HTTP */
     public static final String PREFIX_BEARER_TOKEN = "Bearer ";
