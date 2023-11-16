@@ -104,6 +104,10 @@ public class AuthTestUtils {
         return userRepo.save(user);
     }
 
+    public void removeRegisteredUser(User user) {
+        userRepo.delete(user);
+    }
+
     public AuthenticatedUserDTO generateAuthenticatedUser(User user) {
         String serviceToken = authUtils.generateJWTFromUser(user);
 

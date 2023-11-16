@@ -3,8 +3,6 @@ package dev.corusoft.slurp.users.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Objects;
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -36,17 +34,4 @@ public class Credential {
 
     /* Domain-Model */
 
-
-    @Override
-    public boolean equals(Object other) {
-        if (this == other) return true;
-        if (other == null || getClass() != other.getClass()) return false;
-        Credential that = (Credential) other;
-        return Objects.equals(getCredentialID(), that.getCredentialID());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getCredentialID());
-    }
 }

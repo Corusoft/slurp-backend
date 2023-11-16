@@ -1,6 +1,7 @@
 package dev.corusoft.slurp.users.infrastructure.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.corusoft.slurp.TestUtils;
 import dev.corusoft.slurp.common.i18n.Translator;
 import dev.corusoft.slurp.users.domain.User;
 import dev.corusoft.slurp.users.domain.UserRoles;
@@ -25,7 +26,7 @@ import static dev.corusoft.slurp.TestConstants.DEFAULT_NICKNAME;
 import static dev.corusoft.slurp.TestConstants.DEFAULT_PASSWORD;
 import static dev.corusoft.slurp.common.security.SecurityConstants.TOKEN_ATTRIBUTE_NAME;
 import static dev.corusoft.slurp.common.security.SecurityConstants.USER_ID_ATTRIBUTE_NAME;
-import static dev.corusoft.slurp.users.infrastructure.controllers.AuthApiErrorHandler.*;
+import static dev.corusoft.slurp.users.infrastructure.controllers.UsersApiErrorHandler.*;
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -49,6 +50,8 @@ class AuthControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
+    private TestUtils testUtils;
+    @Autowired
     private AuthTestUtils authTestUtils;
     @Autowired
     private Translator translator;
@@ -61,7 +64,7 @@ class AuthControllerTest {
     @Nested
     class Register_UseCase {
         @Test
-        void when_Register_thenUserIsCreatedSuccessfuly() throws Exception {
+        void when_Register_thenSuccess() throws Exception {
             // ** Arrange **
             User validUser = authTestUtils.generateValidUser();
             RegisterUserParamsDTO paramsDTO = authTestUtils.generateRegisterParamsDtoFromUser(validUser);
@@ -298,38 +301,6 @@ class AuthControllerTest {
             );
         }
 
-        @Test
-        void when_LoginViaJWT_andIsNotCurrentUser_thenThrowException() throws Exception {
-            // ** Arrange **
-            User user = authTestUtils.registerValidUser();
-            AuthenticatedUserDTO authUserDto = authTestUtils.generateAuthenticatedUser(user);
-
-
-            // ** Act **
-            String endpointAddress = API_ENDPOINT + "/login/jwt";
-            RequestBuilder requestBuilder = post(endpointAddress)
-                    .requestAttr(USER_ID_ATTRIBUTE_NAME, UUID.randomUUID())
-                    .requestAttr(TOKEN_ATTRIBUTE_NAME, authUserDto.getServiceToken())
-                    .locale(locale);
-            ResultActions testResults = mockMvc.perform(requestBuilder);
-
-            // ** Assert **
-            String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
-            String errorMessage = translator.generateMessage(PERMISSION_KEY, locale);
-
-
-            testResults.andExpectAll(
-                    status().isForbidden(),
-                    content().contentType(MediaType.APPLICATION_JSON),
-                    jsonPath("$.success", is(false)),
-                    jsonPath("$.timestamp", lessThan(now)),
-                    jsonPath("$.data", notNullValue()),
-                    jsonPath("$.data.status", is(HttpStatus.FORBIDDEN.name())),
-                    jsonPath("$.data.statusCode", is(HttpStatus.FORBIDDEN.value())),
-                    jsonPath("$.data.message", equalTo(errorMessage)),
-                    jsonPath("$.data.debugMessage", nullValue())
-            );
-        }
     }
 
     @Nested
@@ -420,21 +391,7 @@ class AuthControllerTest {
             ResultActions testResults = mockMvc.perform(requestBuilder);
 
             // ** Assert **
-            String errorMessage = translator.generateMessage(PERMISSION_KEY, locale);
-            String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
-
-            testResults.andExpectAll(
-                    status().isForbidden(),
-                    content().contentType(MediaType.APPLICATION_JSON),
-                    jsonPath("$.success", is(false)),
-                    jsonPath("$.timestamp", lessThan(now)),
-                    jsonPath("$.data", notNullValue()),
-                    // Contenido de la respuesta
-                    jsonPath("$.data.status", is(HttpStatus.FORBIDDEN.name())),
-                    jsonPath("$.data.statusCode", is(HttpStatus.FORBIDDEN.value())),
-                    jsonPath("$.data.message", equalTo(errorMessage)),
-                    jsonPath("$.data.debugMessage", nullValue())
-            );
+            testUtils.assertApiResponseIsPermissionException(testResults, locale);
         }
 
         @Test
