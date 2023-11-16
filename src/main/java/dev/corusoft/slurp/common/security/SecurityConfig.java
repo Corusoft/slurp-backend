@@ -24,6 +24,7 @@ public class SecurityConfig {
 
                 // USER
                 .requestMatchers(HttpMethod.PATCH, "/v1/users/*/contact").authenticated()
+                .requestMatchers(HttpMethod.GET, "/v1/users/*").authenticated()
 
                 // DENEGAR EL RESTO DE PETICIONES
                 .anyRequest().denyAll()

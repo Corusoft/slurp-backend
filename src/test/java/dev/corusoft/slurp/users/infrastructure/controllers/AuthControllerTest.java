@@ -287,7 +287,6 @@ class AuthControllerTest {
             String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
             String errorMessage = translator.generateMessage(USER_NOT_FOUND_KEY, locale);
 
-
             testResults.andExpectAll(
                     status().isNotFound(),
                     content().contentType(MediaType.APPLICATION_JSON),
