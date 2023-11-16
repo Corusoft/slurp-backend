@@ -76,17 +76,4 @@ public class User {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public boolean equals(Object other) {
-        if (this == other) return true;
-        if (other == null || getClass() != other.getClass()) return false;
-        User user = (User) other;
-
-        return Objects.equals(getUserID(), user.getUserID());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getUserID());
-    }
 }

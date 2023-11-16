@@ -5,7 +5,8 @@ import lombok.extern.log4j.Log4j2;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.openssl.*;
+import org.bouncycastle.openssl.PEMException;
+import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 import org.bouncycastle.openssl.jcajce.JceOpenSSLPKCS8DecryptorProviderBuilder;
 import org.bouncycastle.operator.InputDecryptorProvider;
@@ -58,21 +59,12 @@ public class RSAKeyManager {
         try (StringReader reader = new StringReader(rawPrivateKey)) {
             PEMParser pemParser = new PEMParser(reader);
             Object pemObject = pemParser.readObject();
-            PEMKeyPair keyPair;
 
             // If key is encrypted, decrypt using its password
             if (pemObject instanceof PKCS8EncryptedPrivateKeyInfo encryptedKeyInfo) {
                 log.debug("Private key is encrypted with password. Decrypting using password.");
                 char[] privateKeyPasswordBytes = privateKeyPassword.toCharArray();
                 privateKey = decryptPrivateKey(encryptedKeyInfo, privateKeyPasswordBytes);
-            } else {
-                // Key is not encrypted
-                log.debug("Private key is not encrypted.");
-                keyPair = (PEMKeyPair) pemObject;
-                privateKey = new JcaPEMKeyConverter()
-                        .setProvider("BC")
-                        .getKeyPair(keyPair)
-                        .getPrivate();
             }
         } catch (IOException e) {
             log.error("Error parsing PEM private key:: {}", e.getMessage());
