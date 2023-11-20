@@ -14,8 +14,12 @@ CREATE TABLE IF NOT EXISTS users.UserTable (
     gender       VARCHAR(10) NOT NULL,
     birthDate    DATE        NOT NULL,
     registeredAt TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    isActive      BOOLEAN NOT NULL DEFAULT FALSE,
+    unactiveSince TIMESTAMP,
 
-    CONSTRAINT PK_UserTable PRIMARY KEY (user_id)
+    CONSTRAINT PK_UserTable PRIMARY KEY (user_id),
+    CONSTRAINT CHK_UserTable_unactiveSince_is_after_registeredAt
+        CHECK ( unactiveSince > registeredAt )
 );
 
 CREATE TABLE IF NOT EXISTS users.Credential (

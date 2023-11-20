@@ -21,6 +21,9 @@ public class UserConversor {
                 .nickname(entity.getCredential().getNickname())
                 .birthDate(entity.getBirthDate())
                 .registeredAt(entity.getRegisteredAt())
+                .isActive(entity.getIsActive())
+                .unactiveSince(entity.getUnactiveSince())
+                // Otras entidades
                 .roles(entity.getAttachedRoles())
                 .contactInfo(contactInfoDTO)
                 .build();

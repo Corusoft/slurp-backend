@@ -39,6 +39,13 @@ public class User {
     @Column(name = "registeredat", nullable = false)
     private LocalDateTime registeredAt = LocalDateTime.now();
 
+    @Builder.Default
+    @Column(name = "isactive", nullable = false)
+    private Boolean isActive = true;
+
+    @Column(name = "unactivesince")
+    private LocalDateTime unactiveSince;
+
 
     /* Relationships */
     @ToString.Exclude
@@ -74,6 +81,18 @@ public class User {
                 .stream()
                 .map(userRole -> userRole.getRole().getName())
                 .collect(Collectors.toList());
+    }
+
+    @Transient
+    public void markAsUnactive() {
+        this.isActive = false;
+        this.unactiveSince = LocalDateTime.now();
+    }
+
+    @Transient
+    public void markAsActive() {
+        this.isActive = true;
+        this.unactiveSince = null;
     }
 
 }

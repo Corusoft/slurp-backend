@@ -4,11 +4,12 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Configuration
 public class InternationalizationBean {
@@ -18,15 +19,28 @@ public class InternationalizationBean {
 
     @Bean
     public MessageSource messageSource() {
-        ReloadableResourceBundleMessageSource bean = new ReloadableResourceBundleMessageSource();
-        bean.setDefaultEncoding(StandardCharsets.UTF_8.name());
+        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+        messageSource.setDefaultEncoding(StandardCharsets.UTF_8.name());
 
         for (String basename: createBasenames()) {
-            bean.addBasenames(basename);
+            messageSource.addBasenames(basename);
         }
 
-        return bean;
+        return messageSource;
     }
+
+    // INFO: https://lokalise.com/blog/spring-boot-internationalization
+    @Bean
+    public LocaleResolver localeResolver() {
+        List<Locale> supportedLocales = getSupportedLocales();
+
+        AcceptHeaderLocaleResolver localeResolver = new AcceptHeaderLocaleResolver();
+        localeResolver.setSupportedLocales(supportedLocales);
+        localeResolver.setDefaultLocale(new Locale("es"));
+
+        return localeResolver;
+    }
+
 
     private List<String> createBasenames() {
         List<String> baseNamePaths = new ArrayList<>();
@@ -38,5 +52,11 @@ public class InternationalizationBean {
         }
 
         return baseNamePaths;
+    }
+
+    private List<Locale> getSupportedLocales() {
+        return Arrays.stream(supportedLanguages)
+                .map(Locale::new)
+                .toList();
     }
 }
