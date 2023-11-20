@@ -47,6 +47,7 @@ public class AuthServiceImpl implements AuthService {
                 .surname(paramsDTO.getSurname())
                 .gender(paramsDTO.getGender())
                 .birthDate(paramsDTO.getBirthDate())
+                .isActive(true)
                 .build();
         user = userRepo.save(user);
         createCredentialForUser(paramsDTO, user);
@@ -70,6 +71,12 @@ public class AuthServiceImpl implements AuthService {
             user = authUtils.fetchUserByNickname(nickname);
         } catch (UserNotFoundException e) {
             throw new IncorrectLoginException();
+        } catch (UserIsDeactivatedException e) {
+            // Si usuario estaba desactivado, lo marca como activo
+            user = credentialRepo.findByNicknameIgnoreCase(nickname)
+                    .get()
+                    .getUser();
+            user = reactivateUser(user);
         }
 
         // Comprobar si credenciales coinciden
@@ -77,16 +84,25 @@ public class AuthServiceImpl implements AuthService {
         if (!authUtils.doPasswordsMatch(rawPassword, userCredentials.getPasswordEncrypted())) {
             throw new IncorrectLoginException();
         }
-
         log.info("User {} authenticated using credentials", user.getUserID());
+
+
         return user;
     }
 
     @Override
     public User loginViaJWT(UUID userID) throws UserNotFoundException {
+        User user = null;
+        try {
         // Buscar al usuario
-        log.info("User {} authenticated using Json Web Token", userID);
-        return authUtils.fetchUserByID(userID);
+            log.info("User {} authenticated using Json Web Token", userID);
+            user = authUtils.fetchUserByID(userID);
+        } catch (UserIsDeactivatedException e) {
+            // Si usuario estaba desactivado, lo marca como activo
+            user = reactivateUser(user);
+        }
+
+        return user;
     }
 
     @Override
@@ -136,4 +152,13 @@ public class AuthServiceImpl implements AuthService {
         return user;
     }
 
+    private User reactivateUser(User user) {
+        if (user.getIsActive()) return user;
+
+        // Si usuario estaba desactivado, lo marca como activo
+        user.markAsActive();
+        log.info("User with ID {} was deactivated, but now is active again after login", user.getUserID());
+
+        return userRepo.save(user);
+    }
 }

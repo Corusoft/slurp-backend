@@ -37,4 +37,18 @@ public class TestUtils {
                 jsonPath("$.data.debugMessage", nullValue())
         );
     }
+
+    public void assertApiResponseIsSuccessWithEmptyData(ResultActions testResults, Locale locale) throws Exception {
+        String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
+
+        testResults.andExpectAll(
+                status().isNoContent(),
+                content().contentType(MediaType.APPLICATION_JSON),
+                jsonPath("$.success", is(true)),
+                jsonPath("$.timestamp", lessThan(now)),
+                jsonPath("$.data", nullValue())
+        );
+    }
+
+
 }

@@ -95,7 +95,7 @@ public class AuthController {
     public ApiResponse<AuthenticatedUserDTO> loginViaJWT(
             @RequestAttribute(USER_ID_ATTRIBUTE_NAME) UUID userID,
             @RequestAttribute(TOKEN_ATTRIBUTE_NAME) String jwt
-    ) throws UserNotFoundException, PermissionException {
+    ) throws UserNotFoundException, PermissionException, UserIsDeactivatedException {
         // Validar que JWT pertenece al usuario que intenta acceder
         JwtData jwtData = jwtGenerator.extractData(jwt);
         if (!authUtils.doUsersMatch(userID, jwtData.getUserID())) {

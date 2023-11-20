@@ -7,6 +7,7 @@ import dev.corusoft.slurp.users.domain.User;
 import dev.corusoft.slurp.users.infrastructure.dto.input.UpdateContactInfoParamsDTO;
 import dev.corusoft.slurp.users.infrastructure.dto.output.AuthenticatedUserDTO;
 import dev.corusoft.slurp.users.infrastructure.dto.output.UserDTO;
+import dev.corusoft.slurp.users.infrastructure.repositories.UserRepository;
 import dev.corusoft.slurp.utils.AuthTestUtils;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +26,10 @@ import java.util.UUID;
 import static dev.corusoft.slurp.TestConstants.DEFAULT_EMAIL_DOMAIN;
 import static dev.corusoft.slurp.TestConstants.DEFAULT_PHONE_NUMBER;
 import static dev.corusoft.slurp.common.security.SecurityConstants.PREFIX_BEARER_TOKEN;
+import static dev.corusoft.slurp.users.infrastructure.controllers.UsersApiErrorHandler.USER_IS_DEACTIVATED_KEY;
 import static dev.corusoft.slurp.users.infrastructure.controllers.UsersApiErrorHandler.USER_NOT_FOUND_KEY;
 import static org.hamcrest.Matchers.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
@@ -54,6 +55,8 @@ class UserControllerTest {
     private AuthTestUtils authTestUtils;
     @Autowired
     private Translator translator;
+    @Autowired
+    private UserRepository userRepo;
 
     /* ************************* CASOS DE PRUEBA ************************* */
     private User registeredUser;
@@ -151,13 +154,12 @@ class UserControllerTest {
             // ** Assert **
             testUtils.assertApiResponseIsPermissionException(testResults, locale);
         }
-
     }
 
     @Nested
     class FindUser_UseCase {
         @Test
-        void when_FindUserById_andIsCurrentUser_thenSuccess() throws Exception {
+        void when_FindUserById_thenSuccess() throws Exception {
             // ** Arrange **
 
             // ** Act **
@@ -185,6 +187,7 @@ class UserControllerTest {
                     jsonPath("$.data.gender", is(userDTO.getGender().name())),
                     jsonPath("$.data.nickname", is(userDTO.getNickname())),
                     jsonPath("$.data.birthDate", is(userBirthDateString)),
+                    jsonPath("$.data.isActive", is(true)),
                     jsonPath("$.data.registeredAt", lessThan(now)),
                     jsonPath("$.data.roles", hasSize(userDTO.getRoles().size())),
                     jsonPath("$.data.contactInfo", notNullValue())
@@ -194,7 +197,6 @@ class UserControllerTest {
         @Test
         void when_FindUserById_andIsAnotherUser_thenSuccess() throws Exception {
             // ** Arrange **
-            int userDtoComparedFieldsCount = 9;
 
             // ** Act **
             String endpointAddress = API_ENDPOINT + "/%s".formatted(otherRegisteredUser.getUserID());
@@ -222,8 +224,40 @@ class UserControllerTest {
                     jsonPath("$.data.nickname", is(userDTO.getNickname())),
                     jsonPath("$.data.birthDate", is(userBirthDateString)),
                     jsonPath("$.data.registeredAt", lessThan(now)),
+                    jsonPath("$.data.isActive", is(true)),
                     jsonPath("$.data.roles", hasSize(userDTO.getRoles().size())),
                     jsonPath("$.data.contactInfo", notNullValue())
+            );
+        }
+
+        @Test
+        void when_FindUserById_andIsDeactivated_thenThrowException() throws Exception {
+            // ** Arrange **
+            registeredUser.markAsUnactive();
+            userRepo.save(registeredUser);
+
+            // ** Act **
+            String endpointAddress = API_ENDPOINT + "/%s".formatted(registeredUser.getUserID());
+            RequestBuilder requestBuilder = get(endpointAddress)
+                    .header(HttpHeaders.AUTHORIZATION, bearerToken)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .locale(locale);
+            ResultActions testResults = mockMvc.perform(requestBuilder);
+
+            // ** Assert **
+            String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
+            String errorMessage = translator.generateMessage(USER_IS_DEACTIVATED_KEY, locale);
+
+            testResults.andExpectAll(
+                    status().isUnauthorized(),
+                    content().contentType(MediaType.APPLICATION_JSON),
+                    jsonPath("$.success", is(false)),
+                    jsonPath("$.timestamp", lessThan(now)),
+                    jsonPath("$.data", notNullValue()),
+                    jsonPath("$.data.status", is(HttpStatus.UNAUTHORIZED.name())),
+                    jsonPath("$.data.statusCode", is(HttpStatus.UNAUTHORIZED.value())),
+                    jsonPath("$.data.message", equalTo(errorMessage)),
+                    jsonPath("$.data.debugMessage", nullValue())
             );
         }
 
@@ -258,4 +292,183 @@ class UserControllerTest {
 
     }
 
+    @Nested
+    class UserActivation_UseCase {
+        @Nested
+        class ActivateUser {
+            @Test
+            void when_ActivateUser_thenSuccess() throws Exception {
+                // ** Arrange **
+
+                // ** Act **
+                String endpointAddress = API_ENDPOINT + "/%s/activate".formatted(registeredUser.getUserID());
+                RequestBuilder requestBuilder = post(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, bearerToken)
+                        .locale(locale);
+                ResultActions testResults = mockMvc.perform(requestBuilder);
+
+                // ** Assert **
+                String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
+
+                testResults.andExpectAll(
+                        status().isOk(),
+                        content().contentType(MediaType.APPLICATION_JSON),
+                        jsonPath("$.success", is(true)),
+                        jsonPath("$.timestamp", lessThan(now)),
+                        // Datos de la respuesta
+                        jsonPath("$.data.isActive", is(true))
+                );
+
+            }
+
+            @Test
+            void when_ActivateUser_andIsNotCurrentUser_thenThrowException() throws Exception {
+                // ** Arrange **
+
+                // ** Act **
+                String endpointAddress = API_ENDPOINT + "/%s/activate".formatted(registeredUser.getUserID());
+                RequestBuilder requestBuilder = post(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, otherBearerToken)
+                        .locale(locale);
+                ResultActions testResults = mockMvc.perform(requestBuilder);
+
+                // ** Assert **
+                testUtils.assertApiResponseIsPermissionException(testResults, locale);
+            }
+
+            @Test
+            void when_ActivateUser_andUserDoesNotExist_thenThrowException() throws Exception {
+                // ** Arrange **
+                authTestUtils.removeRegisteredUser(registeredUser);
+
+                // ** Act **
+                String endpointAddress = API_ENDPOINT + "/%s/activate".formatted(registeredUser.getUserID());
+                RequestBuilder requestBuilder = post(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, bearerToken)
+                        .locale(locale);
+                ResultActions testResults = mockMvc.perform(requestBuilder);
+
+                // ** Assert **
+                String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
+                String errorMessage = translator.generateMessage(USER_NOT_FOUND_KEY, locale);
+
+                testResults.andExpectAll(
+                        status().isNotFound(),
+                        content().contentType(MediaType.APPLICATION_JSON),
+                        jsonPath("$.success", is(false)),
+                        jsonPath("$.timestamp", lessThan(now)),
+                        jsonPath("$.data", notNullValue()),
+                        jsonPath("$.data.status", is(HttpStatus.NOT_FOUND.name())),
+                        jsonPath("$.data.statusCode", is(HttpStatus.NOT_FOUND.value())),
+                        jsonPath("$.data.message", equalTo(errorMessage)),
+                        jsonPath("$.data.debugMessage", nullValue())
+                );
+            }
+
+            @Test
+            void when_ActivateUser_andUserWasDesactivated_thenSuccess() throws Exception {
+                // ** Arrange **
+                registeredUser.markAsUnactive();
+                userRepo.save(registeredUser);
+
+                // ** Act **
+                String endpointAddress = API_ENDPOINT + "/%s/activate".formatted(registeredUser.getUserID());
+                RequestBuilder requestBuilder = post(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, bearerToken)
+                        .locale(locale);
+                ResultActions testResults = mockMvc.perform(requestBuilder);
+
+                // ** Assert **
+                String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
+
+                testResults.andExpectAll(
+                        status().isOk(),
+                        content().contentType(MediaType.APPLICATION_JSON),
+                        jsonPath("$.success", is(true)),
+                        jsonPath("$.timestamp", lessThan(now)),
+                        // Datos de la respuesta
+                        jsonPath("$.data.isActive", is(true))
+                );
+            }
+        }
+
+        @Nested
+        class DeactivateUser {
+
+            @Test
+            void when_DeactivateUser_thenSuccess() throws Exception {
+                // ** Arrange **
+
+                // ** Act **
+                String endpointAddress = API_ENDPOINT + "/%s/deactivate".formatted(registeredUser.getUserID());
+                RequestBuilder requestBuilder = delete(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, bearerToken)
+                        .locale(locale);
+                ResultActions testResults = mockMvc.perform(requestBuilder);
+
+                // ** Assert **
+                testUtils.assertApiResponseIsSuccessWithEmptyData(testResults, locale);
+            }
+
+            @Test
+            void when_DeactivateUser_andIsNotCurrentUser_thenThrowException() throws Exception {
+                // ** Arrange **
+
+                // ** Act **
+                String endpointAddress = API_ENDPOINT + "/%s/deactivate".formatted(registeredUser.getUserID());
+                RequestBuilder requestBuilder = delete(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, otherBearerToken)
+                        .locale(locale);
+                ResultActions testResults = mockMvc.perform(requestBuilder);
+
+                // ** Assert **
+                testUtils.assertApiResponseIsPermissionException(testResults, locale);
+            }
+
+            @Test
+            void when_DeactivateUser_andUserDoesNotExist_thenThrowException() throws Exception {
+                // ** Arrange **
+                authTestUtils.removeRegisteredUser(registeredUser);
+
+                // ** Act **
+                String endpointAddress = API_ENDPOINT + "/%s/deactivate".formatted(registeredUser.getUserID());
+                RequestBuilder requestBuilder = delete(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, bearerToken)
+                        .locale(locale);
+                ResultActions testResults = mockMvc.perform(requestBuilder);
+
+                // ** Assert **
+                String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
+                String errorMessage = translator.generateMessage(USER_NOT_FOUND_KEY, locale);
+
+                testResults.andExpectAll(
+                        status().isNotFound(),
+                        content().contentType(MediaType.APPLICATION_JSON),
+                        jsonPath("$.success", is(false)),
+                        jsonPath("$.timestamp", lessThan(now)),
+                        jsonPath("$.data", notNullValue()),
+                        jsonPath("$.data.status", is(HttpStatus.NOT_FOUND.name())),
+                        jsonPath("$.data.statusCode", is(HttpStatus.NOT_FOUND.value())),
+                        jsonPath("$.data.message", equalTo(errorMessage)),
+                        jsonPath("$.data.debugMessage", nullValue())
+                );
+            }
+
+            @Test
+            void when_DeactivateUser_andUserIsAlreadyDeactivated_thenSuccess() throws Exception {
+                // ** Arrange **
+
+                // ** Act **
+                String endpointAddress = API_ENDPOINT + "/%s/deactivate".formatted(registeredUser.getUserID());
+                RequestBuilder requestBuilder = delete(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, bearerToken)
+                        .locale(locale);
+                ResultActions testResults = mockMvc.perform(requestBuilder);
+
+                // ** Assert **
+                testUtils.assertApiResponseIsSuccessWithEmptyData(testResults, locale);
+            }
+        }
+
+    }
 }

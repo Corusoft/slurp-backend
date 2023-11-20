@@ -32,10 +32,6 @@ public class AuthTestUtils {
     }
 
     /* ************************* MÉTODOS AUXILIARES ************************* */
-    public String encryptPassword(String password) {
-        return passwordEncoder.encode(password);
-    }
-
     public User generateValidUser() {
         return this.generateValidUser(DEFAULT_NAME);
     }
@@ -49,6 +45,7 @@ public class AuthTestUtils {
                 .gender(Gender.MALE)
                 .birthDate(DEFAULT_BIRTHDATE)
                 .registeredAt(LocalDateTime.now())
+                .isActive(true)
                 .build();
 
         Credential credential = generateValidCredentialForUser();

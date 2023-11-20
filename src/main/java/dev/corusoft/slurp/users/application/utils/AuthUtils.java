@@ -3,6 +3,7 @@ package dev.corusoft.slurp.users.application.utils;
 import dev.corusoft.slurp.common.security.jwt.application.JwtGenerator;
 import dev.corusoft.slurp.common.security.jwt.domain.JwtData;
 import dev.corusoft.slurp.users.domain.*;
+import dev.corusoft.slurp.users.domain.exceptions.UserIsDeactivatedException;
 import dev.corusoft.slurp.users.domain.exceptions.UserNotFoundException;
 import dev.corusoft.slurp.users.infrastructure.repositories.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -10,7 +11,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
+import java.util.UUID;
 
 @Component
 @Transactional(readOnly = true)
@@ -78,18 +80,31 @@ public class AuthUtils {
         return userRoleRepo.save(userRole);
     }
 
-    public User fetchUserByNickname(String nickname) throws UserNotFoundException {
+    public User fetchUserByNickname(String nickname) throws UserNotFoundException, UserIsDeactivatedException {
         // Comprobar si existen credenciales para el nickname recibido
-        Optional<Credential> optionalCredential = credentialRepo.findByNicknameIgnoreCase(nickname);
-        Credential credential = optionalCredential.orElseThrow(() -> new UserNotFoundException(nickname));
+        User user = credentialRepo.findByNicknameIgnoreCase(nickname)
+                .orElseThrow(() -> new UserNotFoundException(nickname))
+                .getUser();
 
-        return credential.getUser();
+        // Comprobar si usuario está activo
+        if (!user.getIsActive()) {
+            throw new UserIsDeactivatedException();
+        }
+
+        return user;
     }
 
-    public User fetchUserByID(UUID userID) throws UserNotFoundException {
+    public User fetchUserByID(UUID userID) throws UserNotFoundException, UserIsDeactivatedException {
         // Comprobar si existe el usuario
-        return userRepo.findById(userID)
+        User user = userRepo.findById(userID)
                 .orElseThrow(() -> new UserNotFoundException(userID));
+
+        // Comprobar si usuario está activo
+        if (!user.getIsActive()) {
+            throw new UserIsDeactivatedException();
+        }
+
+        return user;
     }
 
     public Credential findUserCredential(UUID userID) throws UserNotFoundException {

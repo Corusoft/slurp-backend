@@ -7,11 +7,13 @@ import dev.corusoft.slurp.users.domain.User;
 import dev.corusoft.slurp.users.domain.UserRoles;
 import dev.corusoft.slurp.users.infrastructure.dto.input.*;
 import dev.corusoft.slurp.users.infrastructure.dto.output.AuthenticatedUserDTO;
+import dev.corusoft.slurp.users.infrastructure.repositories.UserRepository;
 import dev.corusoft.slurp.utils.AuthTestUtils;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
@@ -41,8 +43,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class AuthControllerTest {
     /* ************************* CONSTANTES ************************* */
     private final String API_ENDPOINT = "/v1/auth";
-    private final Locale locale = Locale.getDefault();
-
+    //private final Locale locale = Locale.getDefault();
+    private final Locale locale = LocaleContextHolder.getLocale();
 
     /* ************************* DEPENDENCIAS ************************* */
     @Autowired
@@ -55,6 +57,8 @@ class AuthControllerTest {
     private AuthTestUtils authTestUtils;
     @Autowired
     private Translator translator;
+    @Autowired
+    private UserRepository userRepo;
 
 
     /* ************************* CICLO VIDA TESTS ************************* */
@@ -91,6 +95,7 @@ class AuthControllerTest {
                     jsonPath("$.data.serviceToken", notNullValue()),
                     // Valores autogenerados
                     jsonPath("$.data.user.registeredAt", lessThan(now)),
+                    jsonPath("$.data.user.isActive", is(true)),
                     jsonPath("$.data.user.roles", containsInAnyOrder(expectedRoles.toArray()))
             );
         }
@@ -162,6 +167,7 @@ class AuthControllerTest {
                     jsonPath("$.data", notNullValue()),
                     jsonPath("$.data.serviceToken", notNullValue()),
                     jsonPath("$.data.user.registeredAt", lessThan(now)),
+                    jsonPath("$.data.user.isActive", is(true)),
                     jsonPath("$.data.user.roles", containsInAnyOrder(expectedRoles.toArray()))
             );
         }
@@ -262,6 +268,7 @@ class AuthControllerTest {
                     jsonPath("$.data", notNullValue()),
                     jsonPath("$.data.serviceToken", notNullValue()),
                     jsonPath("$.data.user.registeredAt", lessThan(now)),
+                    jsonPath("$.data.user.isActive", is(true)),
                     jsonPath("$.data.user.roles", containsInAnyOrder(expectedRoles.toArray()))
             );
         }
@@ -297,6 +304,41 @@ class AuthControllerTest {
                     jsonPath("$.data.statusCode", is(HttpStatus.NOT_FOUND.value())),
                     jsonPath("$.data.message", equalTo(errorMessage)),
                     jsonPath("$.data.debugMessage", nullValue())
+            );
+        }
+
+        @Test
+        void when_Login_andUserIsDeactivated_thenSuccess() throws Exception {
+            // ** Arrange **
+            User user = authTestUtils.registerValidUser();
+            user.markAsUnactive();
+            LoginParamsDTO paramsDTO = new LoginParamsDTO(DEFAULT_NICKNAME, DEFAULT_PASSWORD);
+
+            // ** Act **
+            String endpointAddress = API_ENDPOINT + "/login";
+            String encodedRequestBody = jsonMapper.writeValueAsString(paramsDTO);
+            RequestBuilder requestBuilder = post(endpointAddress)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(encodedRequestBody)
+                    .locale(locale);
+            ResultActions testResults = mockMvc.perform(requestBuilder);
+
+            // ** Assert **
+            String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
+            List<String> expectedRoles = user.getAttachedRoles().stream()
+                    .map(role -> role.name())
+                    .toList();
+
+            testResults.andExpectAll(
+                    status().isOk(),
+                    content().contentType(MediaType.APPLICATION_JSON),
+                    jsonPath("$.success", is(true)),
+                    jsonPath("$.timestamp", lessThan(now)),
+                    jsonPath("$.data", notNullValue()),
+                    jsonPath("$.data.serviceToken", notNullValue()),
+                    jsonPath("$.data.user.registeredAt", lessThan(now)),
+                    jsonPath("$.data.user.isActive", is(true)),
+                    jsonPath("$.data.user.roles", containsInAnyOrder(expectedRoles.toArray()))
             );
         }
 

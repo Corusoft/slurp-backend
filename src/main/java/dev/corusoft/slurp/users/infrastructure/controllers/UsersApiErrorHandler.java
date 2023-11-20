@@ -20,6 +20,7 @@ public class UsersApiErrorHandler {
     public static final String USER_NOT_FOUND_KEY = "UserNotFoundException";
     public static final String PASSWORD_DO_NOT_MATCH_KEY = "PasswordsDoNotMatchException";
     public static final String PERMISSION_KEY = "PermissionException";
+    public static final String USER_IS_DEACTIVATED_KEY = "UserIsDeactivatedException";
 
 
     private final Translator translator;
@@ -75,5 +76,14 @@ public class UsersApiErrorHandler {
         String errorMessage = translator.generateMessage(PERMISSION_KEY, locale);
 
         return buildErrorApiResponse(HttpStatus.FORBIDDEN, errorMessage);
+    }
+
+    @ExceptionHandler(UserIsDeactivatedException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)     //401
+    @ResponseBody
+    public ApiResponse<ErrorApiResponseBody> handleUserIsDeactivatedException(UserIsDeactivatedException exception, Locale locale) {
+        String errorMessage = translator.generateMessage(USER_IS_DEACTIVATED_KEY, locale);
+
+        return buildErrorApiResponse(HttpStatus.UNAUTHORIZED, errorMessage);
     }
 }
