@@ -23,4 +23,7 @@ public class EnvironmentConfiguration {
 
     @Value("${JWT_PRIVATE_SIGN_KEY_PASSWORD}")
     private String JWT_PRIVATE_SIGN_KEY_PASSWORD;
+
+    @Value("${GOOGLE_API_KEY}")
+    private String GOOGLE_API_KEY;
 }

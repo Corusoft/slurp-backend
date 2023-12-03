@@ -28,6 +28,9 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.DELETE, "/v1/users/*/deactivate").authenticated()
                 .requestMatchers(HttpMethod.POST, "/v1/users/*/activate").authenticated()
 
+                // PLACES
+                .requestMatchers(HttpMethod.GET, "/v1/places/*").permitAll()
+
                 // DENEGAR EL RESTO DE PETICIONES
                 .anyRequest().denyAll()
         );

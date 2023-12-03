@@ -37,9 +37,11 @@
 		<dependencies.version.postgresqldriver>42.6.0</dependencies.version.postgresqldriver>
 		<dependencies.version.spring-boot-starter>3.1.4</dependencies.version.spring-boot-starter>
 		<dependencies.version.spring-security>6.1.4</dependencies.version.spring-security>
+		<dependencies.version.google.services>2.2.0</dependencies.version.google.services>
+		<dependencies.version.apache.math>1.0</dependencies.version.apache.math>
 
 		<!-- Project plugins versions -->
-		<plugins.version.failsafe>3.2.1</plugins.version.failsafe>
+		<plugins.version.failsafe>3.2.2</plugins.version.failsafe>
 		<plugins.maven-help.version>3.4.0</plugins.maven-help.version>
 
 
@@ -57,6 +59,12 @@
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-jsr310</artifactId>
 			<version>${dependencies.version.jackson-datatype}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.maps</groupId>
+			<artifactId>google-maps-services</artifactId>
+			<version>${dependencies.version.google.services}</version>
 		</dependency>
 
 		<!-- Group "io.jsonwebtoken" -->
@@ -81,11 +89,16 @@
 
 		<!-- Group "org.apache" -->
 		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-geometry-core</artifactId>
+			<version>${dependencies.version.apache.math}</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.apache.maven.plugins</groupId>
 			<artifactId>maven-failsafe-plugin</artifactId>
 			<version>${plugins.version.failsafe}</version>
 		</dependency>
-
 
 		<!-- Group "org.bouncycastle" -->
 		<dependency>
