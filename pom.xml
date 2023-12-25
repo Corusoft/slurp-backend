@@ -95,6 +95,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-math3</artifactId>
+			<version>3.6.1</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.apache.maven.plugins</groupId>
 			<artifactId>maven-failsafe-plugin</artifactId>
 			<version>${plugins.version.failsafe}</version>
@@ -155,7 +161,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 			<version>${dependencies.version.spring-boot-starter}</version>
-
 		</dependency>
 
 		<dependency>
@@ -220,7 +225,8 @@
 			<version>${dependencies.version.spring-security}</version>
 			<scope>test</scope>
 		</dependency>
-	</dependencies>
+
+    </dependencies>
 
 	<build>
 		<!-- Build name: slurp-backend_Mayor.Minor.Patch -->
