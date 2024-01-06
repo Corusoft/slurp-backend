@@ -1,5 +1,6 @@
 package dev.corusoft.slurp.places.application.region;
 
+import dev.corusoft.slurp.places.domain.SearchPerimeter;
 import org.apache.commons.math3.geometry.euclidean.twod.PolygonsSet;
 import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 
@@ -13,7 +14,14 @@ public interface RegionStrategy {
      * @param radius2 Radio alrededor del segundo punto
      * @return Región generada a partir de ambos puntos y sus respectivos radios
      */
-    PolygonsSet generateRegion(Vector2D point1, float radius1, Vector2D point2, float radius2);
+    PolygonsSet generateRegionOfCandidates(SearchPerimeter range1, SearchPerimeter range2);
 
-    boolean checkRegionContainsPoint(PolygonsSet region, Vector2D point);
+    /**
+     * Comprueba si el punto dado está contenido en la región recibida
+     *
+     * @param region Región a observar
+     * @param point  Punto a comparar
+     * @return Booleano indicando si el punto está dentro de la región
+     */
+    boolean checkRegionContainsCandidate(PolygonsSet region, Vector2D point);
 }

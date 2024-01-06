@@ -57,7 +57,7 @@ public class User {
 
     @ToString.Exclude
     @Builder.Default
-    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    @OneToMany(mappedBy = "user", orphanRemoval = true, fetch = FetchType.EAGER)
     private List<UserRole> userRoles = new ArrayList<>();
 
 

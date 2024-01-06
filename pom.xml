@@ -38,7 +38,8 @@
 		<dependencies.version.spring-boot-starter>3.1.4</dependencies.version.spring-boot-starter>
 		<dependencies.version.spring-security>6.1.4</dependencies.version.spring-security>
 		<dependencies.version.google.services>2.2.0</dependencies.version.google.services>
-		<dependencies.version.apache.math>1.0</dependencies.version.apache.math>
+		<dependencies.version.apache.math>3.6.1</dependencies.version.apache.math>
+		<dependencies.version.simplelatlng>1.4.0</dependencies.version.simplelatlng>
 
 		<!-- Project plugins versions -->
 		<plugins.version.failsafe>3.2.2</plugins.version.failsafe>
@@ -67,6 +68,14 @@
 			<version>${dependencies.version.google.services}</version>
 		</dependency>
 
+		<!-- Group "com.javadocmd" -->
+		<dependency>
+			<groupId>com.javadocmd</groupId>
+			<artifactId>simplelatlng</artifactId>
+			<version>${dependencies.version.simplelatlng}</version>
+		</dependency>
+
+
 		<!-- Group "io.jsonwebtoken" -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
@@ -90,7 +99,7 @@
 		<!-- Group "org.apache" -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-geometry-core</artifactId>
+			<artifactId>commons-math3</artifactId>
 			<version>${dependencies.version.apache.math}</version>
 		</dependency>
 

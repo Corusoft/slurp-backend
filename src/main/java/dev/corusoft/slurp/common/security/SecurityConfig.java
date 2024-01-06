@@ -29,7 +29,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/v1/users/*/activate").authenticated()
 
                 // PLACES
-                .requestMatchers(HttpMethod.GET, "/v1/places/*").permitAll()
+                .requestMatchers(HttpMethod.POST, "/v1/places/findNearby").authenticated()
 
                 // DENEGAR EL RESTO DE PETICIONES
                 .anyRequest().denyAll()
