@@ -1,9 +1,7 @@
 package dev.corusoft.slurp.users.infrastructure.dto.input;
 
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.apache.logging.log4j.core.config.plugins.validation.constraints.NotBlank;
 
 @Data

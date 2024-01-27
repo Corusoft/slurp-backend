@@ -1,7 +1,7 @@
 package dev.corusoft.slurp.places.infrastructure.dto;
 
-import dev.corusoft.slurp.common.vo.location.DistanceVO;
-import dev.corusoft.slurp.common.vo.location.LocationVO;
+import dev.corusoft.slurp.places.domain.location.DistanceVO;
+import dev.corusoft.slurp.places.domain.location.LocationVO;
 import jakarta.validation.constraints.*;
 import lombok.*;
 

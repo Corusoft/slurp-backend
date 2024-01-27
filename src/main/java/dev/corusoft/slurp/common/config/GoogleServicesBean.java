@@ -3,9 +3,7 @@ package dev.corusoft.slurp.common.config;
 import com.google.maps.GeoApiContext;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.*;
 
 import javax.annotation.PreDestroy;
 

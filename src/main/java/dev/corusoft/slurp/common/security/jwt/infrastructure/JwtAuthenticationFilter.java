@@ -83,7 +83,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
             authorities.add(authority);
         }
 
-        log.info("Registering granted authorities for user {}", token.getUserID());
+        log.debug("Registering granted authorities for user {}", token.getUserID());
         return authorities;
     }
 }

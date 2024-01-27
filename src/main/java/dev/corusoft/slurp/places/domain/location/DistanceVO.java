@@ -1,4 +1,4 @@
-package dev.corusoft.slurp.common.vo.location;
+package dev.corusoft.slurp.places.domain.location;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

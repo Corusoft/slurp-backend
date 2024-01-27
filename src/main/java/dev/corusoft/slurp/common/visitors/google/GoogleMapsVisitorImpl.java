@@ -1,8 +1,8 @@
 package dev.corusoft.slurp.common.visitors.google;
 
 import com.google.maps.model.PlacesSearchResult;
-import dev.corusoft.slurp.common.vo.location.LocationVO;
 import dev.corusoft.slurp.places.domain.Candidate;
+import dev.corusoft.slurp.places.domain.location.LocationVO;
 
 public class GoogleMapsVisitorImpl implements GoogleMapsVisitor {
 

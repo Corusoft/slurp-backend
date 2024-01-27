@@ -6,11 +6,12 @@ import com.google.maps.errors.ApiException;
 import com.google.maps.model.*;
 import com.javadocmd.simplelatlng.LatLngTool;
 import com.javadocmd.simplelatlng.util.LengthUnit;
+import dev.corusoft.slurp.common.pagination.Block;
 import dev.corusoft.slurp.common.visitors.google.GoogleMapsVisitor;
 import dev.corusoft.slurp.common.visitors.google.GoogleMapsVisitorImpl;
-import dev.corusoft.slurp.common.vo.location.DistanceVO;
 import dev.corusoft.slurp.places.domain.Candidate;
 import dev.corusoft.slurp.places.domain.SearchPerimeter;
+import dev.corusoft.slurp.places.domain.location.DistanceVO;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,26 +37,29 @@ public class PlacesServiceImpl implements PlacesService {
     /* USE CASES */
 
     @Override
-    public List<Candidate> findCandidatesNearby(SearchPerimeter perimeter) {
+    public Block<Candidate> findCandidatesNearby(SearchPerimeter perimeter) {
         List<Candidate> candidates = new ArrayList<>();
 
-        PlacesSearchResponse response;
+        PlacesSearchResponse apiRespose;
+        Block<Candidate> result = new Block<>();
         try {
             // Hacer petición a Maps
             LatLng latLng = new LatLng(perimeter.getYCoordinate(), perimeter.getXCoordinate());
-            response = PlacesApi.nearbySearchQuery(context, latLng)
+            apiRespose = PlacesApi.nearbySearchQuery(context, latLng)
                     .type(PlaceType.RESTAURANT, PlaceType.BAR)
                     .radius((int) perimeter.getRadius())
                     .await();
 
             // Generar candidatos con los resultados de Maps
-            candidates = Arrays.stream(response.results)
-                    .map(place -> gMapsVisitor.visit(place))
+            candidates = Arrays.stream(apiRespose.results)
+                    .map(gMapsVisitor::visit)
                     .map(candidate -> {
                         candidate.setDistance(calculateDistance(candidate, latLng));
                         return candidate;
                     })
                     .toList();
+            result.setItems(candidates);
+            result.setHasMoreItems(apiRespose.nextPageToken != null);
         } catch (ApiException e) {
             log.error("ApiException: ", e);
         } catch (InterruptedException e) {
@@ -64,7 +68,7 @@ public class PlacesServiceImpl implements PlacesService {
             log.error("IOException: ", e);
         }
 
-        return candidates;
+        return result;
     }
 
 
