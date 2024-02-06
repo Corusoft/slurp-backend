@@ -1,13 +1,13 @@
 package dev.corusoft.slurp.users.infrastructure.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.corusoft.slurp.TestUtils;
 import dev.corusoft.slurp.common.i18n.Translator;
 import dev.corusoft.slurp.users.domain.User;
 import dev.corusoft.slurp.users.infrastructure.dto.input.UpdateContactInfoParamsDTO;
 import dev.corusoft.slurp.users.infrastructure.dto.output.AuthenticatedUserDTO;
 import dev.corusoft.slurp.users.infrastructure.dto.output.UserDTO;
 import dev.corusoft.slurp.users.infrastructure.repositories.UserRepository;
+import dev.corusoft.slurp.utils.ApiResponseUtils;
 import dev.corusoft.slurp.utils.AuthTestUtils;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +50,7 @@ class UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
-    private TestUtils testUtils;
+    private ApiResponseUtils apiResponseUtils;
     @Autowired
     private AuthTestUtils authTestUtils;
     @Autowired
@@ -152,7 +152,7 @@ class UserControllerTest {
             ResultActions testResults = mockMvc.perform(requestBuilder);
 
             // ** Assert **
-            testUtils.assertApiResponseIsPermissionException(testResults, locale);
+            apiResponseUtils.assertApiResponseIsPermissionException(testResults, locale);
         }
     }
 
@@ -333,7 +333,7 @@ class UserControllerTest {
                 ResultActions testResults = mockMvc.perform(requestBuilder);
 
                 // ** Assert **
-                testUtils.assertApiResponseIsPermissionException(testResults, locale);
+                apiResponseUtils.assertApiResponseIsPermissionException(testResults, locale);
             }
 
             @Test
@@ -407,7 +407,7 @@ class UserControllerTest {
                 ResultActions testResults = mockMvc.perform(requestBuilder);
 
                 // ** Assert **
-                testUtils.assertApiResponseIsSuccessWithEmptyData(testResults, locale);
+                apiResponseUtils.assertApiResponseIsSuccessWithEmptyData(testResults, locale);
             }
 
             @Test
@@ -422,7 +422,7 @@ class UserControllerTest {
                 ResultActions testResults = mockMvc.perform(requestBuilder);
 
                 // ** Assert **
-                testUtils.assertApiResponseIsPermissionException(testResults, locale);
+                apiResponseUtils.assertApiResponseIsPermissionException(testResults, locale);
             }
 
             @Test
@@ -466,7 +466,7 @@ class UserControllerTest {
                 ResultActions testResults = mockMvc.perform(requestBuilder);
 
                 // ** Assert **
-                testUtils.assertApiResponseIsSuccessWithEmptyData(testResults, locale);
+                apiResponseUtils.assertApiResponseIsSuccessWithEmptyData(testResults, locale);
             }
         }
 

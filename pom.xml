@@ -40,6 +40,7 @@
 		<dependencies.version.google.services>2.2.0</dependencies.version.google.services>
 		<dependencies.version.apache.math>3.6.1</dependencies.version.apache.math>
 		<dependencies.version.simplelatlng>1.4.0</dependencies.version.simplelatlng>
+		<dependencies.version.mockito>5.10.0</dependencies.version.mockito>
 
 		<!-- Project plugins versions -->
 		<plugins.version.failsafe>3.2.2</plugins.version.failsafe>
@@ -134,6 +135,14 @@
 			<groupId>org.jacoco</groupId>
 			<artifactId>jacoco-maven-plugin</artifactId>
 			<version>${dependencies.version.jacoco}</version>
+		</dependency>
+
+		<!-- Group "org.mockito" -->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>${dependencies.version.mockito}</version>
+			<scope>test</scope>
 		</dependency>
 
 		<!-- Group "org.postgresql" -->

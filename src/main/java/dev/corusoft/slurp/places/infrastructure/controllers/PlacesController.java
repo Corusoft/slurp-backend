@@ -4,7 +4,7 @@ import dev.corusoft.slurp.common.api.ApiResponse;
 import dev.corusoft.slurp.common.pagination.Block;
 import dev.corusoft.slurp.common.pagination.BlockDTO;
 import dev.corusoft.slurp.places.application.PlacesService;
-import dev.corusoft.slurp.places.domain.Candidate;
+import dev.corusoft.slurp.places.domain.CandidateSummary;
 import dev.corusoft.slurp.places.domain.SearchPerimeter;
 import dev.corusoft.slurp.places.infrastructure.dto.CandidateSummaryDTO;
 import dev.corusoft.slurp.places.infrastructure.dto.conversors.CandidateConversor;
@@ -37,7 +37,7 @@ public class PlacesController {
         SearchPerimeter searchPerimeter = SearchParamsConversor.fromSearchPerimeterParamsDTO(params);
 
         // Petición al servicio
-        Block<Candidate> candidatesBlock = placesService.findCandidatesNearby(searchPerimeter);
+        Block<CandidateSummary> candidatesBlock = placesService.findCandidatesNearby(searchPerimeter);
 
         // Convertir a DTO
         List<CandidateSummaryDTO> items = CandidateConversor.toCandidateSummaryDTOList(candidatesBlock.getItems());

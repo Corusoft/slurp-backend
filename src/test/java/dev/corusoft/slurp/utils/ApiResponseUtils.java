@@ -1,4 +1,4 @@
-package dev.corusoft.slurp;
+package dev.corusoft.slurp.utils;
 
 import dev.corusoft.slurp.common.i18n.Translator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Component
-public class TestUtils {
+public class ApiResponseUtils {
     @Autowired
     private Translator translator;
 

@@ -1,0 +1,402 @@
+{
+  "items": [
+    {
+      "placeId": "ChIJ3aNabn4oQg0RUZW-XLWz1e8",
+      "name": "Casa Labra",
+      "location": {
+        "longitude": -3.70459,
+        "latitude": 40.41717
+      },
+      "formattedAddress": null,
+      "types": [
+        "bar",
+        "restaurant",
+        "food",
+        "point_of_interest",
+        "establishment"
+      ],
+      "distance": {
+        "distance": 0.093,
+        "unit": "KILOMETER"
+      }
+    },
+    {
+      "placeId": "ChIJFYRHQH4oQg0RanKiSJecoTo",
+      "name": "Estancia La Adriana",
+      "location": {
+        "longitude": -3.7044,
+        "latitude": 40.41641
+      },
+      "formattedAddress": null,
+      "types": [
+        "restaurant",
+        "food",
+        "point_of_interest",
+        "establishment"
+      ],
+      "distance": {
+        "distance": 0.095,
+        "unit": "KILOMETER"
+      }
+    },
+    {
+      "placeId": "ChIJoVPyIX4oQg0RZC8gg6Rk9A0",
+      "name": "Papizza",
+      "location": {
+        "longitude": -3.7032,
+        "latitude": 40.41654
+      },
+      "formattedAddress": null,
+      "types": [
+        "restaurant",
+        "food",
+        "point_of_interest",
+        "establishment"
+      ],
+      "distance": {
+        "distance": 0.053,
+        "unit": "KILOMETER"
+      }
+    },
+    {
+      "placeId": "ChIJl1MtA34oQg0RawTlFJNTq1I",
+      "name": "VIANDAS",
+      "location": {
+        "longitude": -3.70307,
+        "latitude": 40.41731
+      },
+      "formattedAddress": null,
+      "types": [
+        "grocery_or_supermarket",
+        "store",
+        "restaurant",
+        "food",
+        "point_of_interest",
+        "establishment"
+      ],
+      "distance": {
+        "distance": 0.056,
+        "unit": "KILOMETER"
+      }
+    },
+    {
+      "placeId": "ChIJtVdpFn4oQg0RjTomatmzQ9k",
+      "name": "El Coto",
+      "location": {
+        "longitude": -3.70373,
+        "latitude": 40.41735
+      },
+      "formattedAddress": null,
+      "types": [
+        "restaurant",
+        "food",
+        "point_of_interest",
+        "establishment"
+      ],
+      "distance": {
+        "distance": 0.048,
+        "unit": "KILOMETER"
+      }
+    },
+    {
+      "placeId": "ChIJI1gsE34oQg0R1jCEla7VNaU",
+      "name": "Taberna Puertalsol",
+      "location": {
+        "longitude": -3.70417,
+        "latitude": 40.41711
+      },
+      "formattedAddress": null,
+      "types": [
+        "restaurant",
+        "food",
+        "point_of_interest",
+        "establishment"
+      ],
+      "distance": {
+        "distance": 0.057,
+        "unit": "KILOMETER"
+      }
+    },
+    {
+      "placeId": "ChIJaYNlBn4oQg0RR2GhZxm0RB4",
+      "name": "All You Can Eat",
+      "location": {
+        "longitude": -3.70346,
+        "latitude": 40.41762
+      },
+      "formattedAddress": null,
+      "types": [
+        "restaurant",
+        "food",
+        "point_of_interest",
+        "establishment"
+      ],
+      "distance": {
+        "distance": 0.075,
+        "unit": "KILOMETER"
+      }
+    },
+    {
+      "placeId": "ChIJjfz9poAoQg0RgTLNvTU9olc",
+      "name": "Rodilla",
+      "location": {
+        "longitude": -3.70273,
+        "latitude": 40.4173
+      },
+      "formattedAddress": null,
+      "types": [
+        "restaurant",
+        "cafe",
+        "meal_delivery",
+        "meal_takeaway",
+        "store",
+        "food",
+        "point_of_interest",
+        "establishment"
+      ],
+      "distance": {
+        "distance": 0.078,
+        "unit": "KILOMETER"
+      }
+    },
+    {
+      "placeId": "ChIJs8irc34oQg0RGOTEPE-oCXQ",
+      "name": "Starbucks",
+      "location": {
+        "longitude": -3.70439,
+        "latitude": 40.41746
+      },
+      "formattedAddress": null,
+      "types": [
+        "cafe",
+        "bakery",
+        "store",
+        "restaurant",
+        "food",
+        "point_of_interest",
+        "establishment"
+      ],
+      "distance": {
+        "distance": 0.093,
+        "unit": "KILOMETER"
+      }
+    },
+    {
+      "placeId": "ChIJ67pYAn4oQg0R0tlpVQhnExY",
+      "name": "KFC",
+      "location": {
+        "longitude": -3.70298,
+        "latitude": 40.4175
+      },
+      "formattedAddress": null,
+      "types": [
+        "meal_delivery",
+        "meal_takeaway",
+        "restaurant",
+        "food",
+        "point_of_interest",
+        "establishment"
+      ],
+      "distance": {
+        "distance": 0.077,
+        "unit": "KILOMETER"
+      }
+    },
+    {
+      "placeId": "ChIJ10KZIn4oQg0RIQuKIt7UzWg",
+      "name": "Wok Garden",
+      "location": {
+        "longitude": -3.70342,
+        "latitude": 40.4166
+      },
+      "formattedAddress": null,
+      "types": [
+        "restaurant",
+        "food",
+        "point_of_interest",
+        "establishment"
+      ],
+      "distance": {
+        "distance": 0.04,
+        "unit": "KILOMETER"
+      }
+    },
+    {
+      "placeId": "ChIJZcheBX4oQg0RhdrWSoNHvhs",
+      "name": "Café Europa",
+      "location": {
+        "longitude": -3.70352,
+        "latitude": 40.41738
+      },
+      "formattedAddress": null,
+      "types": [
+        "restaurant",
+        "food",
+        "point_of_interest",
+        "establishment"
+      ],
+      "distance": {
+        "distance": 0.048,
+        "unit": "KILOMETER"
+      }
+    },
+    {
+      "placeId": "ChIJaXLyyMcpQg0RMqZjAOMkaG8",
+      "name": "Chocolatería de la Puerta del Sol",
+      "location": {
+        "longitude": -3.70319,
+        "latitude": 40.41649
+      },
+      "formattedAddress": null,
+      "types": [
+        "meal_takeaway",
+        "restaurant",
+        "food",
+        "point_of_interest",
+        "establishment"
+      ],
+      "distance": {
+        "distance": 0.058,
+        "unit": "KILOMETER"
+      }
+    },
+    {
+      "placeId": "ChIJT-0lgeIpQg0RawTBDk11HFs",
+      "name": "llaollao",
+      "location": {
+        "longitude": -3.70313,
+        "latitude": 40.41651
+      },
+      "formattedAddress": null,
+      "types": [
+        "meal_delivery",
+        "meal_takeaway",
+        "store",
+        "restaurant",
+        "food",
+        "point_of_interest",
+        "establishment"
+      ],
+      "distance": {
+        "distance": 0.059,
+        "unit": "KILOMETER"
+      }
+    },
+    {
+      "placeId": "ChIJey8LXeIpQg0RecuAvZzR6Rw",
+      "name": "Opera Victoria",
+      "location": {
+        "longitude": -3.70375,
+        "latitude": 40.41749
+      },
+      "formattedAddress": null,
+      "types": [
+        "restaurant",
+        "food",
+        "point_of_interest",
+        "establishment"
+      ],
+      "distance": {
+        "distance": 0.063,
+        "unit": "KILOMETER"
+      }
+    },
+    {
+      "placeId": "ChIJKZV3SHsoQg0R9f-uXEQMidY",
+      "name": "Natura Gran Vía S.A.",
+      "location": {
+        "longitude": -3.7037,
+        "latitude": 40.41764
+      },
+      "formattedAddress": null,
+      "types": [
+        "restaurant",
+        "food",
+        "point_of_interest",
+        "establishment"
+      ],
+      "distance": {
+        "distance": 0.078,
+        "unit": "KILOMETER"
+      }
+    },
+    {
+      "placeId": "ChIJrU-WBKgpQg0RbQ9ZjyQfC8k",
+      "name": "La Arepera",
+      "location": {
+        "longitude": -3.70341,
+        "latitude": 40.41769
+      },
+      "formattedAddress": null,
+      "types": [
+        "restaurant",
+        "food",
+        "point_of_interest",
+        "establishment"
+      ],
+      "distance": {
+        "distance": 0.083,
+        "unit": "KILOMETER"
+      }
+    },
+    {
+      "placeId": "ChIJA0NvBn4oQg0RIVwKElG-3u4",
+      "name": "La Farola",
+      "location": {
+        "longitude": -3.70341,
+        "latitude": 40.41769
+      },
+      "formattedAddress": null,
+      "types": [
+        "restaurant",
+        "food",
+        "point_of_interest",
+        "establishment"
+      ],
+      "distance": {
+        "distance": 0.083,
+        "unit": "KILOMETER"
+      }
+    },
+    {
+      "placeId": "ChIJndQZnRspQg0RadRZWMji2XI",
+      "name": "Pignic Ibérico | Bocadillos de Jamón a Domicilio | Catering de Bocadillos",
+      "location": {
+        "longitude": -3.70397,
+        "latitude": 40.41761
+      },
+      "formattedAddress": null,
+      "types": [
+        "restaurant",
+        "food",
+        "point_of_interest",
+        "establishment"
+      ],
+      "distance": {
+        "distance": 0.083,
+        "unit": "KILOMETER"
+      }
+    },
+    {
+      "placeId": "ChIJX1nHqIAoQg0RucP7xJEX2Gk",
+      "name": "El Manantial Restaurante",
+      "location": {
+        "longitude": -3.7028,
+        "latitude": 40.41749
+      },
+      "formattedAddress": null,
+      "types": [
+        "restaurant",
+        "food",
+        "point_of_interest",
+        "establishment"
+      ],
+      "distance": {
+        "distance": 0.086,
+        "unit": "KILOMETER"
+      }
+    }
+  ],
+  "itemsCount": 20,
+  "hasMoreItems": true
+}

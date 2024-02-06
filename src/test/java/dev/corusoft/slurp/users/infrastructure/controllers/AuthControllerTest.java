@@ -1,13 +1,13 @@
 package dev.corusoft.slurp.users.infrastructure.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.corusoft.slurp.TestUtils;
 import dev.corusoft.slurp.common.i18n.Translator;
 import dev.corusoft.slurp.users.domain.User;
 import dev.corusoft.slurp.users.domain.UserRoles;
 import dev.corusoft.slurp.users.infrastructure.dto.input.*;
 import dev.corusoft.slurp.users.infrastructure.dto.output.AuthenticatedUserDTO;
 import dev.corusoft.slurp.users.infrastructure.repositories.UserRepository;
+import dev.corusoft.slurp.utils.ApiResponseUtils;
 import dev.corusoft.slurp.utils.AuthTestUtils;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +52,7 @@ class AuthControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
-    private TestUtils testUtils;
+    private ApiResponseUtils apiResponseUtils;
     @Autowired
     private AuthTestUtils authTestUtils;
     @Autowired
@@ -432,7 +432,7 @@ class AuthControllerTest {
             ResultActions testResults = mockMvc.perform(requestBuilder);
 
             // ** Assert **
-            testUtils.assertApiResponseIsPermissionException(testResults, locale);
+            apiResponseUtils.assertApiResponseIsPermissionException(testResults, locale);
         }
 
         @Test

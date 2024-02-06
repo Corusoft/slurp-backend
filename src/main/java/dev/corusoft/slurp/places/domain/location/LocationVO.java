@@ -1,11 +1,13 @@
 package dev.corusoft.slurp.places.domain.location;
 
-import lombok.Data;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor(force = true)
 public class LocationVO {
     private final BigDecimal longitude;
     private final BigDecimal latitude;

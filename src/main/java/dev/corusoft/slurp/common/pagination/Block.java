@@ -1,6 +1,8 @@
 package dev.corusoft.slurp.common.pagination;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
+import lombok.experimental.Accessors;
 
 import java.util.List;
 
@@ -16,8 +18,8 @@ public class Block<T> {
     /**
      * Indica si hay más elementos
      */
-    @Getter(AccessLevel.NONE)
-    @Setter(AccessLevel.NONE)
+    @Accessors(fluent = true)
+    @JsonProperty("hasMoreItems")
     private boolean hasMoreItems;
 
     /**
@@ -30,13 +32,5 @@ public class Block<T> {
         this.items = items;
         this.hasMoreItems = hasMoreItems;
         this.itemsCount = items.size();
-    }
-
-    public boolean hasMoreItems() {
-        return this.hasMoreItems;
-    }
-
-    public void setHasMoreItems(boolean hasMoreItems) {
-        this.hasMoreItems = hasMoreItems;
     }
 }

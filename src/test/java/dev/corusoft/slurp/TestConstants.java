@@ -16,4 +16,8 @@ public class TestConstants {
     public final static String LOCALDATETIME_ISO_FORMAT = DateTimeFormat.ISO.DATE_TIME.name();
     public final static String LOCALDATE_ISO_FORMAT = DateTimeFormat.ISO.DATE.name();
     public final static String DATETIME_FORMAT = "dd-MM-yyyy";
+
+    public final static double DEFAULT_SEARCH_PERIMETER_RADIUS = 200;
+    public final static double MADRID_KILOMETRIC_POINT_0_LATITUDE = 40.4169473;
+    public final static double MADRID_KILOMETRIC_POINT_0_LONGITUDE = -3.7035285;
 }
