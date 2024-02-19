@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.maps.PlacesApi;
 import dev.corusoft.slurp.TestResourcesDirectories;
 import dev.corusoft.slurp.common.pagination.Block;
+import dev.corusoft.slurp.places.application.criteria.PlacesCriteria;
 import dev.corusoft.slurp.places.domain.CandidateSummary;
-import dev.corusoft.slurp.places.domain.SearchPerimeter;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,8 +28,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
 
-import static dev.corusoft.slurp.TestConstants.DEFAULT_SEARCH_PERIMETER_RADIUS;
-import static dev.corusoft.slurp.TestConstants.MADRID_KILOMETRIC_POINT_0_LONGITUDE;
+import static dev.corusoft.slurp.TestConstants.*;
 import static dev.corusoft.slurp.utils.TestResourceUtils.readExpectedFile;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -84,23 +83,23 @@ class PlacesServiceTest {
         @ParameterizedTest
         @ValueSource(strings = {"findCandidatesNearby_success.json"})
         void when_findCandidatesNearby_thenSuccess(String expectedFile) {
-            SearchPerimeter perimeter = new SearchPerimeter(
-                    MADRID_KILOMETRIC_POINT_0_LONGITUDE,
-                    MADRID_KILOMETRIC_POINT_0_LONGITUDE,
-                    DEFAULT_SEARCH_PERIMETER_RADIUS
-            );
+            PlacesCriteria searchCriteria = PlacesCriteria.builder()
+                    .latitude(MADRID_KILOMETRIC_POINT_0_LATITUDE)
+                    .longitude(MADRID_KILOMETRIC_POINT_0_LONGITUDE)
+                    .radius(DEFAULT_SEARCH_PERIMETER_RADIUS)
+                    .build();
 
             // ** Arrange **
             Block<CandidateSummary> expectedResponse = readExpectedDataFromFile(expectedFile, new TypeReference<>() {
             });
-            when(placesServiceMock.findCandidatesNearby(perimeter))
+            when(placesServiceMock.findCandidatesNearby(searchCriteria))
                     .thenReturn(expectedResponse);
             // TODO Mockear solo llamada a Places API
             // TODO Patrón Comando para medir cobertura de mi código y solo mockear llamada a api
 
 
             // ** Act **
-            Block<CandidateSummary> actualResponse = placesServiceMock.findCandidatesNearby(perimeter);
+            Block<CandidateSummary> actualResponse = placesServiceMock.findCandidatesNearby(searchCriteria);
 
             // ** Assert **
             assertAll(
@@ -110,8 +109,11 @@ class PlacesServiceTest {
                     () -> assertTrue(actualResponse.getItemsCount() > 0),
                     // Hay más valores esperados
                     () -> assertTrue(actualResponse.hasMoreItems()),
+                    // Hay enlace para ver más resultados
+                    () -> assertNotNull(actualResponse.getNextPageToken()),
                     // Los resultados son los esperados
-                    () -> assertEquals(actualResponse.getItems(), expectedResponse.getItems())
+                    () -> assertEquals(actualResponse.getItems(), expectedResponse.getItems()),
+                    () -> assertEquals(actualResponse.getNextPageToken(), expectedResponse.getNextPageToken())
             );
         }
 

@@ -1,7 +1,6 @@
 package dev.corusoft.slurp.places.application;
 
-import com.google.maps.GeoApiContext;
-import com.google.maps.PlacesApi;
+import com.google.maps.*;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.*;
 import com.javadocmd.simplelatlng.LatLngTool;
@@ -9,8 +8,8 @@ import com.javadocmd.simplelatlng.util.LengthUnit;
 import dev.corusoft.slurp.common.pagination.Block;
 import dev.corusoft.slurp.google.visitors.GoogleMapsVisitor;
 import dev.corusoft.slurp.google.visitors.GoogleMapsVisitorImpl;
+import dev.corusoft.slurp.places.application.criteria.PlacesCriteria;
 import dev.corusoft.slurp.places.domain.CandidateSummary;
-import dev.corusoft.slurp.places.domain.SearchPerimeter;
 import dev.corusoft.slurp.places.domain.location.DistanceVO;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -19,7 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Log4j2
 @Transactional
@@ -36,30 +36,10 @@ public class PlacesServiceImpl implements PlacesService {
 
     /* USE CASES */
 
-    @Override
-    public Block<CandidateSummary> findCandidatesNearby(SearchPerimeter perimeter) {
-        List<CandidateSummary> candidateSummaries = new ArrayList<>();
-
-        PlacesSearchResponse apiResponse;
-        boolean hasMoreItems = false;
+    private static PlacesSearchResponse executeRequest(NearbySearchRequest request) {
+        PlacesSearchResponse response = null;
         try {
-            // Hacer petición a Maps
-            LatLng latLng = new LatLng(perimeter.getYCoordinate(), perimeter.getXCoordinate());
-            apiResponse = PlacesApi.nearbySearchQuery(context, latLng)
-                    .type(PlaceType.RESTAURANT, PlaceType.BAR)
-                    .radius((int) perimeter.getRadius())
-                    .await();
-
-            // Generar candidatos con los resultados de Maps
-            candidateSummaries = Arrays.stream(apiResponse.results)
-                    .map(gMapsVisitor::visit)
-                    .map(candidate -> {
-                        candidate.setDistance(calculateDistance(candidate, latLng));
-                        return candidate;
-                    })
-                    .toList();
-
-            hasMoreItems = apiResponse.nextPageToken != null;
+            response = request.await();
         } catch (ApiException e) {
             log.error("ApiException: ", e);
         } catch (InterruptedException e) {
@@ -68,13 +48,49 @@ public class PlacesServiceImpl implements PlacesService {
             log.error("IOException: ", e);
         }
 
-        Block<CandidateSummary> block = new Block<>(candidateSummaries, hasMoreItems);
-
-        return block;
+        return response;
     }
 
+    @Override
+    public Block<CandidateSummary> findCandidatesNearby(PlacesCriteria criteria) {
+        // Configurar petición
+        LatLng currentPosition = new LatLng(criteria.getLatitude(), criteria.getLongitude());
+        NearbySearchRequest request = PlacesApi.nearbySearchQuery(context, currentPosition);
+        configureRequestUsingCriteria(request, criteria);
+
+        // Realizar petición y gestionar errores
+        PlacesSearchResponse apiResponse = executeRequest(request);
+        if (apiResponse.results == null) {
+            return Block.emptyBlock();
+        }
+
+        // Convertir resultados recibidos
+        List<CandidateSummary> candidateSummaries = new ArrayList<>();
+        for (PlacesSearchResult result : apiResponse.results) {
+            CandidateSummary candidateSummary = createCandidateSummary(result, currentPosition);
+            candidateSummaries.add(candidateSummary);
+        }
+
+        return new Block<>(candidateSummaries, apiResponse.nextPageToken);
+    }
+
+    private CandidateSummary createCandidateSummary(PlacesSearchResult result, LatLng currentPosition) {
+        CandidateSummary candidateSummary = gMapsVisitor.visit(result);
+        DistanceVO distance = calculateDistance(candidateSummary, currentPosition);
+        candidateSummary.setDistance(distance);
+        return candidateSummary;
+    }
 
     /* HELPER FUNCTIONS */
+    private void configureRequestUsingCriteria(NearbySearchRequest request, PlacesCriteria criteria) {
+        if (criteria.getRadius() != null) request.radius(criteria.getRadius());
+        if (criteria.getPlaceType() != null) request.type(criteria.getPlaceType());
+        if (criteria.getKeywords() != null) request.keyword(criteria.getKeywords());
+        if (criteria.getMinPriceLevel() != null) request.minPrice(criteria.getMinPriceLevel());
+        if (criteria.getMaxPriceLevel() != null) request.maxPrice(criteria.getMaxPriceLevel());
+        if (criteria.getIsOpenNow() != null) request.openNow(criteria.getIsOpenNow());
+    }
+
     private DistanceVO calculateDistance(CandidateSummary candidateSummary, LatLng currentLocation) {
 
         com.javadocmd.simplelatlng.LatLng candidateLatLng = new com.javadocmd.simplelatlng.LatLng(
@@ -90,7 +106,6 @@ public class PlacesServiceImpl implements PlacesService {
         BigDecimal roundedDistance = BigDecimal.valueOf(distance).setScale(3, RoundingMode.HALF_DOWN);
 
         return new DistanceVO(roundedDistance, DistanceVO.DistanceVOUnits.KILOMETER);
-
     }
 
 }

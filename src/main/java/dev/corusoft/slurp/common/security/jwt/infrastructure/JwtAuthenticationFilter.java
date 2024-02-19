@@ -41,6 +41,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         if (authHeaderValue == null || !authHeaderValue.startsWith(PREFIX_BEARER_TOKEN)) {
             log.warn("Received request without JWT in the Authorization header");
             chain.doFilter(request, response);
+            return;
         }
 
         // Al obtener el JWT, extrae sus atributos y se los comunica a Spring

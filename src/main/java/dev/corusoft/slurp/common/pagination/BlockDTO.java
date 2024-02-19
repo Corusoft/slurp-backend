@@ -20,9 +20,19 @@ public class BlockDTO<T> {
     @PositiveOrZero
     private int itemsCount;
 
-    public BlockDTO(List<T> items, boolean hasMoreItems) {
+    private String nextPageToken;
+
+    public BlockDTO(List<T> items, String nextPageToken) {
         this.items = items;
-        this.hasMoreItems = hasMoreItems;
+        this.nextPageToken = nextPageToken;
+        this.hasMoreItems = nextPageToken != null;
         this.itemsCount = items.size();
+    }
+
+    public BlockDTO(Block<T> block) {
+        this.items = block.getItems();
+        this.hasMoreItems = block.hasMoreItems();
+        this.itemsCount = block.getItemsCount();
+        this.nextPageToken = block.getNextPageToken();
     }
 }

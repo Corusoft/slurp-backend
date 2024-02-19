@@ -4,12 +4,12 @@ import dev.corusoft.slurp.common.api.ApiResponse;
 import dev.corusoft.slurp.common.pagination.Block;
 import dev.corusoft.slurp.common.pagination.BlockDTO;
 import dev.corusoft.slurp.places.application.PlacesService;
+import dev.corusoft.slurp.places.application.criteria.PlacesCriteria;
 import dev.corusoft.slurp.places.domain.CandidateSummary;
-import dev.corusoft.slurp.places.domain.SearchPerimeter;
 import dev.corusoft.slurp.places.infrastructure.dto.CandidateSummaryDTO;
+import dev.corusoft.slurp.places.infrastructure.dto.PlacesCriteriaDTO;
 import dev.corusoft.slurp.places.infrastructure.dto.conversors.CandidateConversor;
-import dev.corusoft.slurp.places.infrastructure.dto.conversors.SearchParamsConversor;
-import dev.corusoft.slurp.places.infrastructure.dto.input.SearchPerimeterParamsDTO;
+import dev.corusoft.slurp.places.infrastructure.dto.conversors.PlacesCriteriaConversor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,16 +32,16 @@ public class PlacesController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ApiResponse<BlockDTO<CandidateSummaryDTO>> findCandidatesNearby(@RequestBody SearchPerimeterParamsDTO params) {
+    public ApiResponse<BlockDTO<CandidateSummaryDTO>> findCandidatesNearby(@RequestBody PlacesCriteriaDTO params) {
         // Castear ubicación
-        SearchPerimeter searchPerimeter = SearchParamsConversor.fromSearchPerimeterParamsDTO(params);
+        PlacesCriteria criteria = PlacesCriteriaConversor.toPlacesCriteria(params);
 
         // Petición al servicio
-        Block<CandidateSummary> candidatesBlock = placesService.findCandidatesNearby(searchPerimeter);
+        Block<CandidateSummary> candidatesBlock = placesService.findCandidatesNearby(criteria);
 
         // Convertir a DTO
         List<CandidateSummaryDTO> items = CandidateConversor.toCandidateSummaryDTOList(candidatesBlock.getItems());
-        BlockDTO<CandidateSummaryDTO> blockDto = new BlockDTO<>(items, candidatesBlock.hasMoreItems());
+        BlockDTO<CandidateSummaryDTO> blockDto = new BlockDTO<>(items, candidatesBlock.getNextPageToken());
 
         return buildSuccessApiResponse(blockDto);
     }

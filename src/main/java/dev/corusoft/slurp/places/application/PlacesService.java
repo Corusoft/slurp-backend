@@ -1,8 +1,8 @@
 package dev.corusoft.slurp.places.application;
 
 import dev.corusoft.slurp.common.pagination.Block;
+import dev.corusoft.slurp.places.application.criteria.PlacesCriteria;
 import dev.corusoft.slurp.places.domain.CandidateSummary;
-import dev.corusoft.slurp.places.domain.SearchPerimeter;
 
 public interface PlacesService {
     /**
@@ -11,6 +11,6 @@ public interface PlacesService {
      * @param perimeter Ubicación y radio de búsqueda
      * @return Lista de candidatos encontrados
      */
-    Block<CandidateSummary> findCandidatesNearby(SearchPerimeter perimeter);
+    Block<CandidateSummary> findCandidatesNearby(PlacesCriteria criteria);
 
 }
