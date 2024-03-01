@@ -10,3 +10,8 @@ spring:
     password: mypassword
 logging:
   config: 'classpath:log4j2.dev.xml'
+project:
+  security:
+    jwt:
+      expirationInMilliseconds: 1209600000     # 1000 ms * 60 s * 60 m * 24 h * 14 d
+

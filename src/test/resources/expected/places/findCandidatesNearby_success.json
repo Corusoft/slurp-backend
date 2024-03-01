@@ -1,378 +1,1005 @@
 {
-  "success": true,
-  "timestamp": "2024-02-19T19:18:10.774279",
-  "data": {
-    "items": [
-      {
-        "placeId": "ChIJgTwKgJcpQg0RaSKMYcHeNsQ",
-        "name": "Madrid",
+  "results": [
+    {
+      "formattedAddress": null,
+      "geometry": {
+        "bounds": null,
         "location": {
-          "longitude": -3.70379,
-          "latitude": 40.41677
+          "lat": 40.4167754,
+          "lng": -3.7037902
         },
-        "formattedAddress": null,
-        "types": [
-          "locality",
-          "political"
-        ],
-        "distance": {
-          "distance": 0.030,
-          "unit": "KILOMETER"
+        "locationType": null,
+        "viewport": {
+          "northeast": {
+            "lat": 40.56384473341083,
+            "lng": -3.524911528167741
+          },
+          "southwest": {
+            "lat": 40.31206394740597,
+            "lng": -3.834161809872056
+          }
         }
       },
-      {
-        "placeId": "ChIJA6qiBX4oQg0RMNeuHkeyP0Y",
-        "name": "Hotel Europa",
+      "name": "Madrid",
+      "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/geocode-71.png",
+      "placeId": "ChIJgTwKgJcpQg0RaSKMYcHeNsQ",
+      "scope": "GOOGLE",
+      "rating": 0,
+      "types": [
+        "locality",
+        "political"
+      ],
+      "openingHours": null,
+      "photos": [
+        {
+          "photoReference": "ATplDJaS8dgIgeJ3m-q-NSXcnMNsGmVQ0QCZvjmVido9ZN45MbycS3i6pXMVci2OsECjsMeck91-zylffV2sxUFqjU1VD_Oi1HFPV7GIl9O7CrUuCwVbdBdlxL2L_oYAIU4miU9bKUOztu-pkbI_mz7EqrrQgcKWbHnWuS8TiplZIfLBYElT",
+          "height": 3120,
+          "width": 3120,
+          "htmlAttributions": [
+            "<a href=\"https://maps.google.com/maps/contrib/117982344443470655427\">Diana De Vasconcellos</a>"
+          ]
+        }
+      ],
+      "vicinity": "Madrid",
+      "permanentlyClosed": false,
+      "userRatingsTotal": 0,
+      "businessStatus": null
+    },
+    {
+      "formattedAddress": null,
+      "geometry": {
+        "bounds": null,
         "location": {
-          "longitude": -3.70349,
-          "latitude": 40.41749
+          "lat": 40.4174939,
+          "lng": -3.703499199999999
         },
-        "formattedAddress": null,
-        "types": [
-          "lodging",
-          "point_of_interest",
-          "establishment"
-        ],
-        "distance": {
-          "distance": 0.060,
-          "unit": "KILOMETER"
+        "locationType": null,
+        "viewport": {
+          "northeast": {
+            "lat": 40.4184057302915,
+            "lng": -3.702584469708497
+          },
+          "southwest": {
+            "lat": 40.4157077697085,
+            "lng": -3.705282430291502
+          }
         }
       },
-      {
-        "placeId": "ChIJZZfGkoAoQg0RHKhODVpsn4o",
-        "name": "Hotel Victoria 4",
+      "name": "Hotel Europa",
+      "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/lodging-71.png",
+      "placeId": "ChIJA6qiBX4oQg0RMNeuHkeyP0Y",
+      "scope": "GOOGLE",
+      "rating": 4.3,
+      "types": [
+        "lodging",
+        "point_of_interest",
+        "establishment"
+      ],
+      "openingHours": {
+        "openNow": true,
+        "periods": null,
+        "specialDays": null,
+        "type": null,
+        "weekdayText": null
+      },
+      "photos": [
+        {
+          "photoReference": "ATplDJaCUSNPGAQC_sPuR9ExrWMQj1U0fu0vPZSKGY1h33rlABIpxNk4JPwPQr6B4saObcc0Eyplisf5vg8go81F-n4dx2GH79GHPMnsakmTFsWGr9707oylbeI7lRZ6pZ6yT_BcRB2SV7dllM2E-xQGeF97Z6qhV_pUlcVGYcExXTnxdfqI",
+          "height": 1792,
+          "width": 828,
+          "htmlAttributions": [
+            "<a href=\"https://maps.google.com/maps/contrib/102954749350346905187\">Hotel Europa Madrid</a>"
+          ]
+        }
+      ],
+      "vicinity": "Calle del Carmen, 4, Madrid",
+      "permanentlyClosed": false,
+      "userRatingsTotal": 1646,
+      "businessStatus": "OPERATIONAL"
+    },
+    {
+      "formattedAddress": null,
+      "geometry": {
+        "bounds": null,
         "location": {
-          "longitude": -3.70174,
-          "latitude": 40.41637
+          "lat": 40.416379,
+          "lng": -3.701742399999999
         },
-        "formattedAddress": null,
-        "types": [
-          "lodging",
-          "point_of_interest",
-          "establishment"
-        ],
-        "distance": {
-          "distance": 0.164,
-          "unit": "KILOMETER"
+        "locationType": null,
+        "viewport": {
+          "northeast": {
+            "lat": 40.4173577802915,
+            "lng": -3.700350219708497
+          },
+          "southwest": {
+            "lat": 40.4146598197085,
+            "lng": -3.703048180291502
+          }
         }
       },
-      {
-        "placeId": "ChIJSdM5pIAoQg0RDgUDAuCd6tk",
-        "name": "Hostal Puerta del Sol",
+      "name": "Hotel Victoria 4",
+      "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/lodging-71.png",
+      "placeId": "ChIJZZfGkoAoQg0RHKhODVpsn4o",
+      "scope": "GOOGLE",
+      "rating": 4,
+      "types": [
+        "lodging",
+        "point_of_interest",
+        "establishment"
+      ],
+      "openingHours": null,
+      "photos": [
+        {
+          "photoReference": "ATplDJbnsefwyDQIaObQgiZnXYrNsiiE7goHiHo4O_LSFxhD1JBmdtIzNsgC19dRR4kYXtOESeK_kRuLTA9nc0qcGQuCD-W6EezkQO9NZXvLKTOzKBlSFIc8b9N4UfrF3xroIYeOjEOg4-lMOJjf1lO80TnNOvnh9NEpA1iUZQDKBRmT22Ar",
+          "height": 4000,
+          "width": 3000,
+          "htmlAttributions": [
+            "<a href=\"https://maps.google.com/maps/contrib/100300864505552079896\">Gareth Lowe</a>"
+          ]
+        }
+      ],
+      "vicinity": "Calle de la Victoria, 4, Madrid",
+      "permanentlyClosed": false,
+      "userRatingsTotal": 981,
+      "businessStatus": "OPERATIONAL"
+    },
+    {
+      "formattedAddress": null,
+      "geometry": {
+        "bounds": null,
         "location": {
-          "longitude": -3.70252,
-          "latitude": 40.41715
+          "lat": 40.4171537,
+          "lng": -3.7025296
         },
-        "formattedAddress": null,
-        "types": [
-          "lodging",
-          "point_of_interest",
-          "establishment"
-        ],
-        "distance": {
-          "distance": 0.088,
-          "unit": "KILOMETER"
+        "locationType": null,
+        "viewport": {
+          "northeast": {
+            "lat": 40.4183454302915,
+            "lng": -3.699197349999999
+          },
+          "southwest": {
+            "lat": 40.4156474697085,
+            "lng": -3.703769950000001
+          }
         }
       },
-      {
-        "placeId": "ChIJ_2Iz3H0oQg0RCovvEPhsQvQ",
-        "name": "Petit Palace Preciados",
+      "name": "Hostal Puerta del Sol",
+      "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/lodging-71.png",
+      "placeId": "ChIJSdM5pIAoQg0RDgUDAuCd6tk",
+      "scope": "GOOGLE",
+      "rating": 4,
+      "types": [
+        "lodging",
+        "point_of_interest",
+        "establishment"
+      ],
+      "openingHours": null,
+      "photos": [
+        {
+          "photoReference": "ATplDJb6pwaauhbMO7lc8nnratSYZ5WINbQD1m_SvWZjmxUz9rFk_HvES4JbueJ-jBqKm45gejy209pDC739VuuDdefFpA_hTSThBYpS3vTKHYUPGFvsb2yv5FK8VBXJai689TOsbNXpmkH2v3FYKkKisNkHIJvnKArWYEHwRLqMRcgN8sZn",
+          "height": 3024,
+          "width": 4032,
+          "htmlAttributions": [
+            "<a href=\"https://maps.google.com/maps/contrib/116728811206216046623\">LUCA MARRAFFA</a>"
+          ]
+        }
+      ],
+      "vicinity": "Puerta del Sol, 14, Madrid",
+      "permanentlyClosed": false,
+      "userRatingsTotal": 275,
+      "businessStatus": "OPERATIONAL"
+    },
+    {
+      "formattedAddress": null,
+      "geometry": {
+        "bounds": null,
         "location": {
-          "longitude": -3.70434,
-          "latitude": 40.41810
+          "lat": 40.4181053,
+          "lng": -3.7043429
         },
-        "formattedAddress": null,
-        "types": [
-          "lodging",
-          "point_of_interest",
-          "establishment"
-        ],
-        "distance": {
-          "distance": 0.145,
-          "unit": "KILOMETER"
+        "locationType": null,
+        "viewport": {
+          "northeast": {
+            "lat": 40.4197585302915,
+            "lng": -3.702711669708497
+          },
+          "southwest": {
+            "lat": 40.4170605697085,
+            "lng": -3.705409630291502
+          }
         }
       },
-      {
-        "placeId": "ChIJO_wsZH4oQg0RLvCVFpy4CtQ",
-        "name": "Hotel Moderno Puerta del Sol Madrid",
+      "name": "Petit Palace Preciados",
+      "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/lodging-71.png",
+      "placeId": "ChIJ_2Iz3H0oQg0RCovvEPhsQvQ",
+      "scope": "GOOGLE",
+      "rating": 4.2,
+      "types": [
+        "lodging",
+        "point_of_interest",
+        "establishment"
+      ],
+      "openingHours": null,
+      "photos": [
+        {
+          "photoReference": "ATplDJYCI0oC9PJbKhJgMtZx-6Ml6xQzDJXgcyRmWIvUCQptT734iNURvRrO64kuSZLri0bxoTFHJIB2OYuFwF9UCn7_GQS7zgcgJUHhZrXjeOurPYjIBmptrwPwaJ-IbJ89dxJaW3ItFeiAduRwXDWUzVJmc0_jgRUVw55rZKANMT8im72s",
+          "height": 3858,
+          "width": 5779,
+          "htmlAttributions": [
+            "<a href=\"https://maps.google.com/maps/contrib/108730032018318408916\">Petit Palace Preciados</a>"
+          ]
+        }
+      ],
+      "vicinity": "Calle de Galdo, 2, Madrid",
+      "permanentlyClosed": false,
+      "userRatingsTotal": 1164,
+      "businessStatus": "OPERATIONAL"
+    },
+    {
+      "formattedAddress": null,
+      "geometry": {
+        "bounds": null,
         "location": {
-          "longitude": -3.70489,
-          "latitude": 40.41704
+          "lat": 40.4170417,
+          "lng": -3.7048905
         },
-        "formattedAddress": null,
-        "types": [
-          "lodging",
-          "point_of_interest",
-          "establishment"
-        ],
-        "distance": {
-          "distance": 0.116,
-          "unit": "KILOMETER"
+        "locationType": null,
+        "viewport": {
+          "northeast": {
+            "lat": 40.4183447802915,
+            "lng": -3.704073369708498
+          },
+          "southwest": {
+            "lat": 40.4156468197085,
+            "lng": -3.706771330291502
+          }
         }
       },
-      {
-        "placeId": "ChIJPx2oU4coQg0Rd5L_R_4CYbw",
-        "name": "Hotel Ateneo Puerta del Sol",
+      "name": "Hotel Moderno Puerta del Sol Madrid",
+      "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/lodging-71.png",
+      "placeId": "ChIJO_wsZH4oQg0RLvCVFpy4CtQ",
+      "scope": "GOOGLE",
+      "rating": 4.4,
+      "types": [
+        "lodging",
+        "point_of_interest",
+        "establishment"
+      ],
+      "openingHours": {
+        "openNow": true,
+        "periods": null,
+        "specialDays": null,
+        "type": null,
+        "weekdayText": null
+      },
+      "photos": [
+        {
+          "photoReference": "ATplDJYa4Q24uvmb4_Eye4k-4LSv9R4OGCzzybUrewb9FE4fJvejoBKz8uQgZSu-My41ZVM_ufoWUOJpF5jy5MH-y2vsQg1xx8pZrnuq4Cy_-dwGVpMN4-sqt-TGfSuJC9qWpXulL1QzrOQTFuj6vU-7N1zUCtra5qzfMBtXC9eb18NJkP8",
+          "height": 2304,
+          "width": 4096,
+          "htmlAttributions": [
+            "<a href=\"https://maps.google.com/maps/contrib/106965460046473062124\">Hotel Moderno Puerta del Sol Madrid</a>"
+          ]
+        }
+      ],
+      "vicinity": "Calle del Arenal, 2, Madrid",
+      "permanentlyClosed": false,
+      "userRatingsTotal": 1974,
+      "businessStatus": "OPERATIONAL"
+    },
+    {
+      "formattedAddress": null,
+      "geometry": {
+        "bounds": null,
         "location": {
-          "longitude": -3.70241,
-          "latitude": 40.41823
+          "lat": 40.4182378,
+          "lng": -3.7024151
         },
-        "formattedAddress": null,
-        "types": [
-          "lodging",
-          "point_of_interest",
-          "establishment"
-        ],
-        "distance": {
-          "distance": 0.171,
-          "unit": "KILOMETER"
+        "locationType": null,
+        "viewport": {
+          "northeast": {
+            "lat": 40.4198768802915,
+            "lng": -3.701719619708498
+          },
+          "southwest": {
+            "lat": 40.4171789197085,
+            "lng": -3.704417580291502
+          }
         }
       },
-      {
-        "placeId": "ChIJAQDUrIAoQg0RFIcrTDJ1xkA",
-        "name": "Madridcito B&B",
+      "name": "Hotel Ateneo Puerta del Sol",
+      "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/lodging-71.png",
+      "placeId": "ChIJPx2oU4coQg0Rd5L_R_4CYbw",
+      "scope": "GOOGLE",
+      "rating": 4.1,
+      "types": [
+        "lodging",
+        "point_of_interest",
+        "establishment"
+      ],
+      "openingHours": null,
+      "photos": [
+        {
+          "photoReference": "ATplDJZabuysvVu5RkzXHJie5KaxjeqgoSHEITBZbcKKHPsimjWAr9UswSjfsEsvpGgNsXV2L9MMEhDnx6KoA0hbu0i2odI3NzebyHLEreUESELEEUbdzQ4kxCec-HUkIT0rnw6h8Rwx-YF76vHGrrFkH1he4auhv1SvhddJZjiNgvyp4yAK",
+          "height": 2448,
+          "width": 3264,
+          "htmlAttributions": [
+            "<a href=\"https://maps.google.com/maps/contrib/106733449934263531608\">German Moralejo</a>"
+          ]
+        }
+      ],
+      "vicinity": "Calle de la Montera, 22, Madrid",
+      "permanentlyClosed": false,
+      "userRatingsTotal": 525,
+      "businessStatus": "OPERATIONAL"
+    },
+    {
+      "formattedAddress": null,
+      "geometry": {
+        "bounds": null,
         "location": {
-          "longitude": -3.70254,
-          "latitude": 40.41800
+          "lat": 40.4180078,
+          "lng": -3.7025435
         },
-        "formattedAddress": null,
-        "types": [
-          "lodging",
-          "point_of_interest",
-          "establishment"
-        ],
-        "distance": {
-          "distance": 0.144,
-          "unit": "KILOMETER"
+        "locationType": null,
+        "viewport": {
+          "northeast": {
+            "lat": 40.4197624802915,
+            "lng": -3.701785569708497
+          },
+          "southwest": {
+            "lat": 40.4170645197085,
+            "lng": -3.704483530291502
+          }
         }
       },
-      {
-        "placeId": "ChIJwa9GjYAoQg0RLXRpmWI3RF8",
-        "name": "Barbieri SOL Hostel",
+      "name": "Madridcito B&B",
+      "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/lodging-71.png",
+      "placeId": "ChIJAQDUrIAoQg0RFIcrTDJ1xkA",
+      "scope": "GOOGLE",
+      "rating": 4.5,
+      "types": [
+        "lodging",
+        "point_of_interest",
+        "establishment"
+      ],
+      "openingHours": null,
+      "photos": [
+        {
+          "photoReference": "ATplDJb6e5KNeGqSedg61SdXkHUspo8bd11fwUzyUHIEBbPLwGW3E59bbuqqzsqVZ_qtpslK0u_KuuNYVdpJD61zwLRqfVpagfWlTxmCF9jzfweE_eOyYvJ32xd6QvIhCqrP3g1LzJPkeZXi94ru8UnicrbumnV5CuPZLpBVcF5M3DBT83Ss",
+          "height": 1367,
+          "width": 2048,
+          "htmlAttributions": [
+            "<a href=\"https://maps.google.com/maps/contrib/114261096578825047519\">Madridcito</a>"
+          ]
+        }
+      ],
+      "vicinity": "Calle de la Montera, 20, 4ta planta puerta Izquierda, Madrid",
+      "permanentlyClosed": false,
+      "userRatingsTotal": 108,
+      "businessStatus": "OPERATIONAL"
+    },
+    {
+      "formattedAddress": null,
+      "geometry": {
+        "bounds": null,
         "location": {
-          "longitude": -3.70191,
-          "latitude": 40.41597
+          "lat": 40.41597429999999,
+          "lng": -3.701911700000001
         },
-        "formattedAddress": null,
-        "types": [
-          "lodging",
-          "point_of_interest",
-          "establishment"
-        ],
-        "distance": {
-          "distance": 0.175,
-          "unit": "KILOMETER"
+        "locationType": null,
+        "viewport": {
+          "northeast": {
+            "lat": 40.41715723029149,
+            "lng": -3.700436619708498
+          },
+          "southwest": {
+            "lat": 40.41445926970849,
+            "lng": -3.703134580291502
+          }
         }
       },
-      {
-        "placeId": "ChIJJVn26H0oQg0R0ptTwDL8X5Y",
-        "name": "Hotel Liabeny",
+      "name": "Barbieri SOL Hostel",
+      "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/lodging-71.png",
+      "placeId": "ChIJwa9GjYAoQg0RLXRpmWI3RF8",
+      "scope": "GOOGLE",
+      "rating": 4.1,
+      "types": [
+        "lodging",
+        "point_of_interest",
+        "establishment"
+      ],
+      "openingHours": {
+        "openNow": true,
+        "periods": null,
+        "specialDays": null,
+        "type": null,
+        "weekdayText": null
+      },
+      "photos": [
+        {
+          "photoReference": "ATplDJan--___2sdYx61-pbBjD9Bp_M0M5DmVX57FQG0KMBFnvwG8MNoePOYpZFcYiqZVK9CoWxTkm1UyEckUU6OFE34WUAn9NFDUo9Wm0--3JowCghAkS0gKJ4u8_X1H4g3_eM59yRPTStAakxlEDh6XrJ5fsG0zoL1YOeQuz0VqwCBiSoL",
+          "height": 4032,
+          "width": 3024,
+          "htmlAttributions": [
+            "<a href=\"https://maps.google.com/maps/contrib/114235736332276244824\">Barbieri SOL Hostel</a>"
+          ]
+        }
+      ],
+      "vicinity": "Calle de la Victoria, 6, Madrid",
+      "permanentlyClosed": false,
+      "userRatingsTotal": 267,
+      "businessStatus": "OPERATIONAL"
+    },
+    {
+      "formattedAddress": null,
+      "geometry": {
+        "bounds": null,
         "location": {
-          "longitude": -3.70400,
-          "latitude": 40.41868
+          "lat": 40.4186836,
+          "lng": -3.7040003
         },
-        "formattedAddress": null,
-        "types": [
-          "lodging",
-          "point_of_interest",
-          "establishment"
-        ],
-        "distance": {
-          "distance": 0.197,
-          "unit": "KILOMETER"
+        "locationType": null,
+        "viewport": {
+          "northeast": {
+            "lat": 40.4200116302915,
+            "lng": -3.702613269708498
+          },
+          "southwest": {
+            "lat": 40.4173136697085,
+            "lng": -3.705311230291502
+          }
         }
       },
-      {
-        "placeId": "ChIJVak6hIAoQg0RDYHmzVgnW5I",
-        "name": "La Negra Tomasa",
+      "name": "Hotel Liabeny",
+      "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/lodging-71.png",
+      "placeId": "ChIJJVn26H0oQg0R0ptTwDL8X5Y",
+      "scope": "GOOGLE",
+      "rating": 4.5,
+      "types": [
+        "lodging",
+        "point_of_interest",
+        "establishment"
+      ],
+      "openingHours": {
+        "openNow": true,
+        "periods": null,
+        "specialDays": null,
+        "type": null,
+        "weekdayText": null
+      },
+      "photos": [
+        {
+          "photoReference": "ATplDJZnZB-p1OKJ0FrNm2s8Uq2L5JRIFy1tJm98zxKmygDK4oI8C3qSnR7eizHA5rKvW0AQe5RsZbVWJHHN_HSyY8R0pAiY3Q_TLddhNQubXZ1TU0UT5yg4XvBGHgzwHeWjFjFUtd-sA1pHczgX1_tGRSfvLxyKHnudi2ylM-0Xny__mInY",
+          "height": 394,
+          "width": 702,
+          "htmlAttributions": [
+            "<a href=\"https://maps.google.com/maps/contrib/114583736396757688656\">Hotel Liabeny</a>"
+          ]
+        }
+      ],
+      "vicinity": "Calle de la Salud, 3, Madrid",
+      "permanentlyClosed": false,
+      "userRatingsTotal": 2619,
+      "businessStatus": "OPERATIONAL"
+    },
+    {
+      "formattedAddress": null,
+      "geometry": {
+        "bounds": null,
         "location": {
-          "longitude": -3.70238,
-          "latitude": 40.41584
+          "lat": 40.4158479,
+          "lng": -3.7023806
         },
-        "formattedAddress": null,
-        "types": [
-          "bar",
-          "restaurant",
-          "point_of_interest",
-          "food",
-          "establishment"
-        ],
-        "distance": {
-          "distance": 0.157,
-          "unit": "KILOMETER"
+        "locationType": null,
+        "viewport": {
+          "northeast": {
+            "lat": 40.41684603029149,
+            "lng": -3.701001019708497
+          },
+          "southwest": {
+            "lat": 40.41414806970849,
+            "lng": -3.703698980291502
+          }
         }
       },
-      {
-        "placeId": "ChIJB7pdV34oQg0RBPl9sest4IA",
-        "name": "Hostal Madrid",
+      "name": "La Negra Tomasa",
+      "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/restaurant-71.png",
+      "placeId": "ChIJVak6hIAoQg0RDYHmzVgnW5I",
+      "scope": "GOOGLE",
+      "rating": 4.2,
+      "types": [
+        "restaurant",
+        "food",
+        "bar",
+        "point_of_interest",
+        "establishment"
+      ],
+      "openingHours": {
+        "openNow": true,
+        "periods": null,
+        "specialDays": null,
+        "type": null,
+        "weekdayText": null
+      },
+      "photos": [
+        {
+          "photoReference": "ATplDJaULeLdC7eLGF88qKApJNw2HcKW5pMITI70MlKqaDQSyxbGJRM8SOQyGuqHzCaTIZCJOX6uJ5-duA89fZqesgw6t_oi65FWcn9REIr9YZRLVZZqttwWGttB6EUUQVxe0xN41Cq1KwiU-xZ5gwm3yd7ym0_Vf4gDR2sqqO4eWac4H7FJ",
+          "height": 768,
+          "width": 1024,
+          "htmlAttributions": [
+            "<a href=\"https://maps.google.com/maps/contrib/118274254472622261662\">La Negra Tomasa</a>"
+          ]
+        }
+      ],
+      "vicinity": "Calle de Cádiz, 9, Madrid",
+      "permanentlyClosed": false,
+      "userRatingsTotal": 6076,
+      "businessStatus": "OPERATIONAL"
+    },
+    {
+      "formattedAddress": null,
+      "geometry": {
+        "bounds": null,
         "location": {
-          "longitude": -3.70520,
-          "latitude": 40.41604
+          "lat": 40.41604799999999,
+          "lng": -3.705202899999999
         },
-        "formattedAddress": null,
-        "types": [
-          "lodging",
-          "point_of_interest",
-          "establishment"
-        ],
-        "distance": {
-          "distance": 0.174,
-          "unit": "KILOMETER"
+        "locationType": null,
+        "viewport": {
+          "northeast": {
+            "lat": 40.4173745302915,
+            "lng": -3.703831669708498
+          },
+          "southwest": {
+            "lat": 40.4146765697085,
+            "lng": -3.706529630291503
+          }
         }
       },
-      {
-        "placeId": "ChIJ3aNabn4oQg0RUZW-XLWz1e8",
-        "name": "Casa Labra",
+      "name": "Hostal Madrid",
+      "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/lodging-71.png",
+      "placeId": "ChIJB7pdV34oQg0RBPl9sest4IA",
+      "scope": "GOOGLE",
+      "rating": 4.3,
+      "types": [
+        "lodging",
+        "point_of_interest",
+        "establishment"
+      ],
+      "openingHours": {
+        "openNow": true,
+        "periods": null,
+        "specialDays": null,
+        "type": null,
+        "weekdayText": null
+      },
+      "photos": [
+        {
+          "photoReference": "ATplDJbBl-OF8WXZFUDhHIYnFHhOIXB1chPaOvyM3iILQV3kXi9GDBhDf-TrEca7vLHq5fzpSjdzDti4W3XzQ5HJF3XVQ68MuGgzGdSw2NR99Vi0s3rbAbZcPh0CLRhYekWYQ1720V1i2Gk0a2bF1jysq3YXGqTOsMxeyxgZG6VHga5QSVI0",
+          "height": 1314,
+          "width": 3547,
+          "htmlAttributions": [
+            "<a href=\"https://maps.google.com/maps/contrib/107426278015648000680\">Hostal Madrid</a>"
+          ]
+        }
+      ],
+      "vicinity": "Calle de Esparteros, 6, Madrid",
+      "permanentlyClosed": false,
+      "userRatingsTotal": 858,
+      "businessStatus": "OPERATIONAL"
+    },
+    {
+      "formattedAddress": null,
+      "geometry": {
+        "bounds": null,
         "location": {
-          "longitude": -3.70459,
-          "latitude": 40.41717
+          "lat": 40.41717239999999,
+          "lng": -3.704593
         },
-        "formattedAddress": null,
-        "types": [
-          "bar",
-          "restaurant",
-          "point_of_interest",
-          "food",
-          "establishment"
-        ],
-        "distance": {
-          "distance": 0.093,
-          "unit": "KILOMETER"
+        "locationType": null,
+        "viewport": {
+          "northeast": {
+            "lat": 40.41860833029149,
+            "lng": -3.703511819708497
+          },
+          "southwest": {
+            "lat": 40.41591036970849,
+            "lng": -3.706209780291502
+          }
         }
       },
-      {
-        "placeId": "ChIJq5LFz30oQg0RFzX14va-Wi8",
-        "name": "Intimissimi",
+      "name": "Casa Labra",
+      "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/bar-71.png",
+      "placeId": "ChIJ3aNabn4oQg0RUZW-XLWz1e8",
+      "scope": "GOOGLE",
+      "rating": 4.4,
+      "types": [
+        "restaurant",
+        "food",
+        "bar",
+        "point_of_interest",
+        "establishment"
+      ],
+      "openingHours": {
+        "openNow": true,
+        "periods": null,
+        "specialDays": null,
+        "type": null,
+        "weekdayText": null
+      },
+      "photos": [
+        {
+          "photoReference": "ATplDJZ147K_pCrcFVh6QG0_oAjdRU6l7tZJCY63KW-R3g45uFVIqfQF8_BnDyVs-Pl8oazymRHITW-nbCp8vs1pt_auoxOjDAj0mrDQ6s8LYGVqCnCh_kj_rQbGBD-qjMdyGPBj8MLjxCyhH1POG6p7jU275ZxB0uP68sGnBNHcCKWgd-S1",
+          "height": 433,
+          "width": 886,
+          "htmlAttributions": [
+            "<a href=\"https://maps.google.com/maps/contrib/104652958064596771627\">Antonio Quiles Garcia</a>"
+          ]
+        }
+      ],
+      "vicinity": "Calle de Tetuán, 12, Madrid",
+      "permanentlyClosed": false,
+      "userRatingsTotal": 13085,
+      "businessStatus": "OPERATIONAL"
+    },
+    {
+      "formattedAddress": null,
+      "geometry": {
+        "bounds": null,
         "location": {
-          "longitude": -3.70437,
-          "latitude": 40.41791
+          "lat": 40.4179192,
+          "lng": -3.704376799999999
         },
-        "formattedAddress": null,
-        "types": [
-          "clothing_store",
-          "store",
-          "point_of_interest",
-          "establishment"
-        ],
-        "distance": {
-          "distance": 0.129,
-          "unit": "KILOMETER"
+        "locationType": null,
+        "viewport": {
+          "northeast": {
+            "lat": 40.41965213029149,
+            "lng": -3.702803769708498
+          },
+          "southwest": {
+            "lat": 40.41695416970849,
+            "lng": -3.705501730291502
+          }
         }
       },
-      {
-        "placeId": "ChIJfX-xJn4oQg0RKi7vadOsS_4",
-        "name": "Hostal Victoria I",
+      "name": "Intimissimi",
+      "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/shopping-71.png",
+      "placeId": "ChIJq5LFz30oQg0RFzX14va-Wi8",
+      "scope": "GOOGLE",
+      "rating": 4.1,
+      "types": [
+        "clothing_store",
+        "store",
+        "point_of_interest",
+        "establishment"
+      ],
+      "openingHours": {
+        "openNow": true,
+        "periods": null,
+        "specialDays": null,
+        "type": null,
+        "weekdayText": null
+      },
+      "photos": [
+        {
+          "photoReference": "ATplDJY4sTjAW4vvosheRziIFrh_6NevkLS7Btcg7ZDJMO8I93OlkZx6Ch-wt5FCwuueMLQxfm6P5TYTUzOfJuTAbRCdoC4TAdq9dlqiT1NPsajiD5SvRlb-wRn7Br6bZXBJ-0wTvXuv-XBnQ8_pHqA6wTiEfz2UuyHWhYSh0_1W5oL1jQYl",
+          "height": 1860,
+          "width": 3826,
+          "htmlAttributions": [
+            "<a href=\"https://maps.google.com/maps/contrib/114118451392288609524\">Pako Valera</a>"
+          ]
+        }
+      ],
+      "vicinity": "Calle de Preciados, 12, Madrid",
+      "permanentlyClosed": false,
+      "userRatingsTotal": 380,
+      "businessStatus": "OPERATIONAL"
+    },
+    {
+      "formattedAddress": null,
+      "geometry": {
+        "bounds": null,
         "location": {
-          "longitude": -3.70310,
-          "latitude": 40.41631
+          "lat": 40.4163138,
+          "lng": -3.703102100000001
         },
-        "formattedAddress": null,
-        "types": [
-          "lodging",
-          "point_of_interest",
-          "establishment"
-        ],
-        "distance": {
-          "distance": 0.080,
-          "unit": "KILOMETER"
+        "locationType": null,
+        "viewport": {
+          "northeast": {
+            "lat": 40.4178133802915,
+            "lng": -3.702373219708498
+          },
+          "southwest": {
+            "lat": 40.41511541970851,
+            "lng": -3.705071180291503
+          }
         }
       },
-      {
-        "placeId": "ChIJGW7hcn4oQg0RZm30jMmV4Zs",
-        "name": "Sfera",
+      "name": "Hostal Victoria I",
+      "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/lodging-71.png",
+      "placeId": "ChIJfX-xJn4oQg0RKi7vadOsS_4",
+      "scope": "GOOGLE",
+      "rating": 3.9,
+      "types": [
+        "lodging",
+        "point_of_interest",
+        "establishment"
+      ],
+      "openingHours": null,
+      "photos": [
+        {
+          "photoReference": "ATplDJYcBPquvOD19zbyUMABOmXt-QfeusZshU40jbYYqmTW5GU6p0Osa7TjZhX0mY2Qxcw2I9906x84AAxDbDrNPTQrrL3aU0gWUhR9EzM-iZglJJdlvgOeY_Mj1V8TPRFCXRlVhwoiQ-SxXS0puDwAIoWfAxnQSIGxzsSyDHhs4st7WGZW",
+          "height": 1848,
+          "width": 4000,
+          "htmlAttributions": [
+            "<a href=\"https://maps.google.com/maps/contrib/103956357961532401447\">Hai Hui Zhang</a>"
+          ]
+        }
+      ],
+      "vicinity": "Calle de Carretas, 7, Madrid",
+      "permanentlyClosed": false,
+      "userRatingsTotal": 706,
+      "businessStatus": "OPERATIONAL"
+    },
+    {
+      "formattedAddress": null,
+      "geometry": {
+        "bounds": null,
         "location": {
-          "longitude": -3.70420,
-          "latitude": 40.41749
+          "lat": 40.4174952,
+          "lng": -3.7042031
         },
-        "formattedAddress": null,
-        "types": [
-          "clothing_store",
-          "store",
-          "point_of_interest",
-          "establishment"
-        ],
-        "distance": {
-          "distance": 0.083,
-          "unit": "KILOMETER"
+        "locationType": null,
+        "viewport": {
+          "northeast": {
+            "lat": 40.41877453029149,
+            "lng": -3.703303869708498
+          },
+          "southwest": {
+            "lat": 40.41607656970849,
+            "lng": -3.706001830291502
+          }
         }
       },
-      {
-        "placeId": "ChIJFYRHQH4oQg0RanKiSJecoTo",
-        "name": "Estancia La Adriana",
+      "name": "Sfera",
+      "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/shopping-71.png",
+      "placeId": "ChIJGW7hcn4oQg0RZm30jMmV4Zs",
+      "scope": "GOOGLE",
+      "rating": 4.2,
+      "types": [
+        "clothing_store",
+        "store",
+        "point_of_interest",
+        "establishment"
+      ],
+      "openingHours": {
+        "openNow": true,
+        "periods": null,
+        "specialDays": null,
+        "type": null,
+        "weekdayText": null
+      },
+      "photos": [
+        {
+          "photoReference": "ATplDJaUUsLlTQP4xVVO9fAcIJNL-bRVBApUsPK50QFozoJ2A3DC20w-Q-3oNGyStllev-GakNw3_hEjU7BOcL2bEWeMeAMrKD1347mhZMjQwSu6nkNbkhcJ7E50yHyqke9Kl4hE0twBF9ofdyIV6qvO58hvq9q1jc3aJ2EGuWzcr8T79JB2",
+          "height": 2252,
+          "width": 4000,
+          "htmlAttributions": [
+            "<a href=\"https://maps.google.com/maps/contrib/114118451392288609524\">Pako Valera</a>"
+          ]
+        }
+      ],
+      "vicinity": "Calle de Preciados, 4, Madrid",
+      "permanentlyClosed": false,
+      "userRatingsTotal": 1641,
+      "businessStatus": "OPERATIONAL"
+    },
+    {
+      "formattedAddress": null,
+      "geometry": {
+        "bounds": null,
         "location": {
-          "longitude": -3.70440,
-          "latitude": 40.41641
+          "lat": 40.416417,
+          "lng": -3.704406999999999
         },
-        "formattedAddress": null,
-        "types": [
-          "restaurant",
-          "point_of_interest",
-          "food",
-          "establishment"
-        ],
-        "distance": {
-          "distance": 0.095,
-          "unit": "KILOMETER"
+        "locationType": null,
+        "viewport": {
+          "northeast": {
+            "lat": 40.4178531802915,
+            "lng": -3.702995069708498
+          },
+          "southwest": {
+            "lat": 40.4151552197085,
+            "lng": -3.705693030291502
+          }
         }
       },
-      {
-        "placeId": "ChIJAXTWUH4oQg0RgZ6jy2pQQMY",
-        "name": "Almacén de Pontejos",
+      "name": "Estancia La Adriana",
+      "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/restaurant-71.png",
+      "placeId": "ChIJFYRHQH4oQg0RanKiSJecoTo",
+      "scope": "GOOGLE",
+      "rating": 4.5,
+      "types": [
+        "restaurant",
+        "food",
+        "point_of_interest",
+        "establishment"
+      ],
+      "openingHours": {
+        "openNow": true,
+        "periods": null,
+        "specialDays": null,
+        "type": null,
+        "weekdayText": null
+      },
+      "photos": [
+        {
+          "photoReference": "ATplDJap-ppjs3kZadlRFMd50LgTErWyAGRhJK0q5eVbWk0qye0oN1ypcYI4IM8Zw5UD9obpJq5ZQfF-LycV8XyXphrGienlxFR04e8vQfMefm2gAsP6vjdx8SmhRXpaHTNgFTyFbgm0jC_E4pYwdT1g6LrrD5xQKydFjee3S6qwAUuS5rfk",
+          "height": 900,
+          "width": 2000,
+          "htmlAttributions": [
+            "<a href=\"https://maps.google.com/maps/contrib/103881556375951048846\">Estancia La Adriana</a>"
+          ]
+        }
+      ],
+      "vicinity": "Calle del Correo, 2, Madrid",
+      "permanentlyClosed": false,
+      "userRatingsTotal": 1940,
+      "businessStatus": "OPERATIONAL"
+    },
+    {
+      "formattedAddress": null,
+      "geometry": {
+        "bounds": null,
         "location": {
-          "longitude": -3.70440,
-          "latitude": 40.41610
+          "lat": 40.41610959999999,
+          "lng": -3.7044032
         },
-        "formattedAddress": null,
-        "types": [
-          "home_goods_store",
-          "store",
-          "point_of_interest",
-          "establishment"
-        ],
-        "distance": {
-          "distance": 0.120,
-          "unit": "KILOMETER"
+        "locationType": null,
+        "viewport": {
+          "northeast": {
+            "lat": 40.41724643029151,
+            "lng": -3.703037619708498
+          },
+          "southwest": {
+            "lat": 40.41454846970851,
+            "lng": -3.705735580291502
+          }
         }
       },
-      {
-        "placeId": "ChIJrbS8KH4oQg0RL4frkHztQZ4",
-        "name": "Hostal El Pilar",
+      "name": "Almacén de Pontejos",
+      "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/shopping-71.png",
+      "placeId": "ChIJAXTWUH4oQg0RgZ6jy2pQQMY",
+      "scope": "GOOGLE",
+      "rating": 4.4,
+      "types": [
+        "home_goods_store",
+        "store",
+        "point_of_interest",
+        "establishment"
+      ],
+      "openingHours": {
+        "openNow": false,
+        "periods": null,
+        "specialDays": null,
+        "type": null,
+        "weekdayText": null
+      },
+      "photos": [
+        {
+          "photoReference": "ATplDJbLwyMW7CMC7SfHmaV6MaJQwP-l5zqy2s99Wfa_wuaXvMKk-fjiYbYp9-V8Am2wRAxm0H6XrypFNBr34fEaMM4rj-V-rHzt7napxWYBz2qW4H96K65cbVfdxWPS9NapyGbJ16Nrfx_VDNeA4dEE_DisE-JI18krdHG6JVJd-4x-ceOy",
+          "height": 800,
+          "width": 1200,
+          "htmlAttributions": [
+            "<a href=\"https://maps.google.com/maps/contrib/107972249587171105074\">Almacén de Pontejos</a>"
+          ]
+        }
+      ],
+      "vicinity": "Calle del Correo, 4, Madrid",
+      "permanentlyClosed": false,
+      "userRatingsTotal": 3986,
+      "businessStatus": "OPERATIONAL"
+    },
+    {
+      "formattedAddress": null,
+      "geometry": {
+        "bounds": null,
         "location": {
-          "longitude": -3.70306,
-          "latitude": 40.41599
+          "lat": 40.41599889999999,
+          "lng": -3.703063499999999
         },
-        "formattedAddress": null,
-        "types": [
-          "lodging",
-          "point_of_interest",
-          "establishment"
-        ],
-        "distance": {
-          "distance": 0.114,
-          "unit": "KILOMETER"
+        "locationType": null,
+        "viewport": {
+          "northeast": {
+            "lat": 40.41670435,
+            "lng": -3.701860969708497
+          },
+          "southwest": {
+            "lat": 40.41388255,
+            "lng": -3.704558930291502
+          }
         }
       },
-      {
-        "placeId": "ChIJFWLQn34oQg0RwdDjI_8J4dU",
-        "name": "Centro",
-        "location": {
-          "longitude": -3.70338,
-          "latitude": 40.41672
-        },
-        "formattedAddress": null,
-        "types": [
-          "sublocality_level_1",
-          "sublocality",
-          "political"
-        ],
-        "distance": {
-          "distance": 0.028,
-          "unit": "KILOMETER"
+      "name": "Hostal El Pilar",
+      "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/lodging-71.png",
+      "placeId": "ChIJrbS8KH4oQg0RL4frkHztQZ4",
+      "scope": "GOOGLE",
+      "rating": 3.9,
+      "types": [
+        "lodging",
+        "point_of_interest",
+        "establishment"
+      ],
+      "openingHours": {
+        "openNow": true,
+        "periods": null,
+        "specialDays": null,
+        "type": null,
+        "weekdayText": null
+      },
+      "photos": [
+        {
+          "photoReference": "ATplDJawWRSqXYFxEpsCimkc8flWTZZaSvumtwwppqQcbY9paJxsfiojeW-gPOyoBSOhF8JroIFQnaw9cdaiTrD2qTCUayI1ovXTElcD2ORTQTi51F8T9MLKzF1PKjO3MMGncUBV9CDyGHkoLjrsvFWzx1AKZwaF_MMViLorqHrepfowoVAv",
+          "height": 2160,
+          "width": 3840,
+          "htmlAttributions": [
+            "<a href=\"https://maps.google.com/maps/contrib/115707698131318488273\">Hostal El Pilar</a>"
+          ]
         }
-      }
-    ],
-    "hasMoreItems": true,
-    "itemsCount": 20,
-    "nextPageLink": "ATplDJZuFASBO1Usu3-_YgJL3Q-BJ8gxpQq0U3bNyMckyfyH7tks73qTTgAQAy9DeGbNaZGk84vrJjTrvFdu1oOHbWExqIym-OtokIERMffmIgxBNhh1gg0oebNcjrQRsg-FSIxmN2r7T-h-e1BeDN-79BGH3vC59dxAfaPU0liiGpQWBvd4P3jmap9zFA-kt2Hyi7WbpGBrECDcqfIE4Z6HBAUL77GjXcxuQfI_D7XKq5ob408t7oJNH9VpqtrwVtyyb_oR2YAWN4Eis6glYh6Yea_GbCbmZJCYW4EslIFmONNvfGjBk1fTa9OlaBkS1MBOysiKXOGMGAgBP25ozmXVOy9y0TdKx8jJLqrvruXSYzz26jneZpLaJXpJ4pdvCMewOhpsbGNismV-LYrVZkn8SGhJoK-HrFMzkNZI1z2BKgIt"
-  }
+      ],
+      "vicinity": "Calle de Carretas, 13, Madrid",
+      "permanentlyClosed": false,
+      "userRatingsTotal": 842,
+      "businessStatus": "OPERATIONAL"
+    },
+    {
+      "formattedAddress": null,
+      "geometry": {
+        "bounds": null,
+        "location": {
+          "lat": 40.4167234,
+          "lng": -3.7033851
+        },
+        "locationType": null,
+        "viewport": {
+          "northeast": {
+            "lat": 40.43061606023851,
+            "lng": -3.690288963431012
+          },
+          "southwest": {
+            "lat": 40.40504105097957,
+            "lng": -3.72287807086027
+          }
+        }
+      },
+      "name": "Centro",
+      "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/geocode-71.png",
+      "placeId": "ChIJFWLQn34oQg0RwdDjI_8J4dU",
+      "scope": "GOOGLE",
+      "rating": 0,
+      "types": [
+        "sublocality_level_1",
+        "sublocality",
+        "political"
+      ],
+      "openingHours": null,
+      "photos": [
+        {
+          "photoReference": "ATplDJbSNGIUkrWeNZEtuzE3uO4Sjy4wqFyoq3Wl7Sn41uCPT2bQkRf_gWXDV9jFBkVFbUizl4mVxqoo6AW5_Gc9kVBRMCfwDt6boMU5q5Lhhm6ofeD1OzFX1d6anRLlLYG7HqpjJVgVl3CVBoECeHzb_FNVWhQoduYTkbqdPVFVabdMCkHh",
+          "height": 3000,
+          "width": 4000,
+          "htmlAttributions": [
+            "<a href=\"https://maps.google.com/maps/contrib/110831516290657520585\">Gilis Patrick L.</a>"
+          ]
+        }
+      ],
+      "vicinity": "Centro",
+      "permanentlyClosed": false,
+      "userRatingsTotal": 0,
+      "businessStatus": null
+    }
+  ],
+  "htmlAttributions": [],
+  "nextPageToken": "ATplDJYThBy0-XOb8qazyfimVR3ypbuBR2URmCknBpBYKwQjd6kQEPXBrAUzZxl50eYHIQVLKpLwpuem-UT8KbpcbbRqp8FB-kSxPbsdaEkNsk1rnTgdoBgVF-qPdm-WcMUfPbwBCZOapkO1t3MPK43khY5C0TiVUnCeVM9XMn85hFjjQSmFfpqP8hEy2Ui5GTtKll9fOT4p0-XItA0v7Nqzc3AmRaB28LIdSabd-jC6S0-ppg-hBxPjE2WYLIwQIrYfwOYSiTFmWHFFasWoUywwNL7exaNynl3b5UUFiE1UE9vIR5_1s871wI5r5zb5jAijhHLgSdSsYPGsd6d1-5sHXSQbVQOEvEANp3Dm2pjHyn-TVGj9kcStq1NIYjFtcSAgrWvCjeeo9dbdjVrYpf3KXHuU8uX8LR7umWPJXNH-9y4V"
 }

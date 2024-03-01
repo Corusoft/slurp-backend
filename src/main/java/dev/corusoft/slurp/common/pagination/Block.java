@@ -30,12 +30,6 @@ public class Block<T> {
      */
     private int itemsCount;
 
-    public Block(List<T> items, boolean hasMoreItems) {
-        this.items = items;
-        this.hasMoreItems = hasMoreItems;
-        this.itemsCount = items.size();
-    }
-
     public Block(List<T> items, String nextPageToken) {
         this.items = items;
         this.itemsCount = items.size();
@@ -44,6 +38,6 @@ public class Block<T> {
     }
 
     public static <T> Block<T> emptyBlock() {
-        return new Block<>(new ArrayList<>(0), false);
+        return new Block<>(new ArrayList<>(0), null);
     }
 }

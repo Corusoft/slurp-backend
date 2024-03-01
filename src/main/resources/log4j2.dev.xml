@@ -21,5 +21,15 @@
             <AppenderRef ref="Console"/>
             <AppenderRef ref="File"/>
         </Root>
+
+        <!-- Custom loggers -->
+        <!--
+        <Logger level="debug" additivity="false"
+                name="dev.corusoft.slurp.*"
+        >
+            <AppenderRef ref="Console"/>
+        </Logger>
+        -->
+
     </Loggers>
 </Configuration>
