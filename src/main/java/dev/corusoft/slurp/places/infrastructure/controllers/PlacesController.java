@@ -1,15 +1,19 @@
 package dev.corusoft.slurp.places.infrastructure.controllers;
 
 import dev.corusoft.slurp.common.api.ApiResponse;
+import dev.corusoft.slurp.common.api.error.ServiceException;
 import dev.corusoft.slurp.common.pagination.Block;
 import dev.corusoft.slurp.common.pagination.BlockDTO;
 import dev.corusoft.slurp.places.application.PlacesService;
 import dev.corusoft.slurp.places.application.criteria.PlacesCriteria;
+import dev.corusoft.slurp.places.application.criteria.PlacesCriteriaValidator;
 import dev.corusoft.slurp.places.domain.CandidateSummary;
 import dev.corusoft.slurp.places.infrastructure.dto.CandidateSummaryDTO;
 import dev.corusoft.slurp.places.infrastructure.dto.PlacesCriteriaDTO;
 import dev.corusoft.slurp.places.infrastructure.dto.conversors.CandidateConversor;
 import dev.corusoft.slurp.places.infrastructure.dto.conversors.PlacesCriteriaConversor;
+import jakarta.validation.ValidationException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +26,8 @@ import static dev.corusoft.slurp.common.api.ApiResponseHelper.buildSuccessApiRes
 @RequestMapping("/v1/places")
 public class PlacesController {
     private final PlacesService placesService;
+    @Autowired
+    private PlacesCriteriaValidator placesCriteriaValidator;
 
     public PlacesController(PlacesService placesService) {
         this.placesService = placesService;
@@ -32,9 +38,10 @@ public class PlacesController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ApiResponse<BlockDTO<CandidateSummaryDTO>> findCandidatesNearby(@RequestBody PlacesCriteriaDTO params) {
+    public ApiResponse<BlockDTO<CandidateSummaryDTO>> findCandidatesNearby(@RequestBody PlacesCriteriaDTO params) throws ServiceException, ValidationException {
         // Castear ubicación
         PlacesCriteria criteria = PlacesCriteriaConversor.toPlacesCriteria(params);
+        placesCriteriaValidator.validate(criteria);
 
         // Petición al servicio
         Block<CandidateSummary> candidatesBlock = placesService.findCandidatesNearby(criteria);

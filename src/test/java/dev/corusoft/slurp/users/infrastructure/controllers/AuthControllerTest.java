@@ -1,7 +1,7 @@
 package dev.corusoft.slurp.users.infrastructure.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.corusoft.slurp.common.i18n.Translator;
+import dev.corusoft.slurp.common.Translator;
 import dev.corusoft.slurp.users.domain.User;
 import dev.corusoft.slurp.users.domain.UserRoles;
 import dev.corusoft.slurp.users.infrastructure.dto.input.*;
@@ -52,11 +52,7 @@ class AuthControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
-    private ApiResponseUtils apiResponseUtils;
-    @Autowired
     private AuthTestUtils authTestUtils;
-    @Autowired
-    private Translator translator;
     @Autowired
     private UserRepository userRepo;
 
@@ -117,7 +113,7 @@ class AuthControllerTest {
 
             // ** Assert **
             Object[] errorMessageParams = new Object[]{paramsDTO.getNickname()};
-            String errorMessage = translator.generateMessage(USER_ALREADY_EXISTS_KEY, errorMessageParams, locale);
+            String errorMessage = Translator.generateMessage(USER_ALREADY_EXISTS_KEY, errorMessageParams, locale);
             String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
 
             testResults.andExpectAll(
@@ -189,7 +185,7 @@ class AuthControllerTest {
             ResultActions testResults = mockMvc.perform(requestBuilder);
 
             // ** Assert **
-            String errorMessage = translator.generateMessage(INCORRECT_LOGIN_KEY, locale);
+            String errorMessage = Translator.generateMessage(INCORRECT_LOGIN_KEY, locale);
             String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
 
             testResults.andExpectAll(
@@ -222,7 +218,7 @@ class AuthControllerTest {
             ResultActions testResults = mockMvc.perform(requestBuilder);
 
             // ** Assert **
-            String errorMessage = translator.generateMessage(INCORRECT_LOGIN_KEY, locale);
+            String errorMessage = Translator.generateMessage(INCORRECT_LOGIN_KEY, locale);
             String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
 
             testResults.andExpectAll(
@@ -292,7 +288,7 @@ class AuthControllerTest {
 
             // ** Assert **
             String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
-            String errorMessage = translator.generateMessage(USER_NOT_FOUND_KEY, locale);
+            String errorMessage = Translator.generateMessage(USER_NOT_FOUND_KEY, locale);
 
             testResults.andExpectAll(
                     status().isNotFound(),
@@ -396,7 +392,7 @@ class AuthControllerTest {
             ResultActions testResults = mockMvc.perform(requestBuilder);
 
             // ** Assert **
-            String errorMessage = translator.generateMessage(PASSWORD_DO_NOT_MATCH_KEY, locale);
+            String errorMessage = Translator.generateMessage(PASSWORD_DO_NOT_MATCH_KEY, locale);
             String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
 
             testResults.andExpectAll(
@@ -432,7 +428,7 @@ class AuthControllerTest {
             ResultActions testResults = mockMvc.perform(requestBuilder);
 
             // ** Assert **
-            apiResponseUtils.assertApiResponseIsPermissionException(testResults, locale);
+            ApiResponseUtils.assertApiResponseIsPermissionException(testResults, locale);
         }
 
         @Test
@@ -452,7 +448,7 @@ class AuthControllerTest {
             ResultActions testResults = mockMvc.perform(requestBuilder);
 
             // ** Assert **
-            String errorMessage = translator.generateMessage(USER_NOT_FOUND_KEY, locale);
+            String errorMessage = Translator.generateMessage(USER_NOT_FOUND_KEY, locale);
             String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
 
             testResults.andExpectAll(

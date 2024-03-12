@@ -1,10 +1,8 @@
 package dev.corusoft.slurp.utils;
 
-import dev.corusoft.slurp.common.i18n.Translator;
-import org.springframework.beans.factory.annotation.Autowired;
+import dev.corusoft.slurp.common.Translator;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.LocalDateTime;
@@ -15,13 +13,10 @@ import static dev.corusoft.slurp.users.infrastructure.controllers.UsersApiErrorH
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@Component
 public class ApiResponseUtils {
-    @Autowired
-    private Translator translator;
 
-    public void assertApiResponseIsPermissionException(ResultActions testResults, Locale locale) throws Exception {
-        String errorMessage = translator.generateMessage(PERMISSION_KEY, locale);
+    public static void assertApiResponseIsPermissionException(ResultActions testResults, Locale locale) throws Exception {
+        String errorMessage = Translator.generateMessage(PERMISSION_KEY, locale);
         String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
 
         testResults.andExpectAll(
@@ -38,7 +33,7 @@ public class ApiResponseUtils {
         );
     }
 
-    public void assertApiResponseIsSuccessWithEmptyData(ResultActions testResults, Locale locale) throws Exception {
+    public static void assertApiResponseIsSuccessWithEmptyData(ResultActions testResults, Locale locale) throws Exception {
         String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
 
         testResults.andExpectAll(

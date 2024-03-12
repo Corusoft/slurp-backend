@@ -19,6 +19,7 @@ public class PlacesCriteria {
     private final double longitude;
 
     @Positive
+    @NotNull
     @Max(value = 50000)
     private final Integer radius;
 

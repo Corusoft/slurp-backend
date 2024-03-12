@@ -35,4 +35,4 @@ server:
 project:
   security:
     jwt:
-      expirationInMilliseconds: 604800000     # 1000 ms * 60 s * 60 m * 24 h * 7 d
+      expirationInMilliseconds: 2592000000     # 1000 ms * 60 s * 60 m * 24 h * 30 d

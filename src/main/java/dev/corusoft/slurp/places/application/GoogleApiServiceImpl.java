@@ -4,7 +4,10 @@ import com.google.maps.*;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.LatLng;
 import com.google.maps.model.PlacesSearchResponse;
+import dev.corusoft.slurp.common.api.error.ServiceException;
 import dev.corusoft.slurp.places.application.criteria.PlacesCriteria;
+import jakarta.validation.Valid;
+import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
@@ -12,9 +15,10 @@ import java.io.IOException;
 
 @Log4j2
 @Service
+@NoArgsConstructor
 public class GoogleApiServiceImpl implements GoogleApiService {
     /* DEPENDENCIES */
-    private final GeoApiContext geoApiContext;
+    private GeoApiContext geoApiContext;
 
     public GoogleApiServiceImpl(GeoApiContext geoApiContext) {
         this.geoApiContext = geoApiContext;
@@ -24,10 +28,10 @@ public class GoogleApiServiceImpl implements GoogleApiService {
     /* USE CASES */
 
     @Override
-    public PlacesSearchResponse findNearbyPlaces(PlacesCriteria criteria) {
+    public PlacesSearchResponse findNearbyPlaces(@Valid PlacesCriteria criteria) throws ServiceException {
         // Configurar petición
         LatLng position = new LatLng(criteria.getLatitude(), criteria.getLongitude());
-        NearbySearchRequest request = PlacesApi.nearbySearchQuery(geoApiContext, position);
+        NearbySearchRequest request = createNearbySearchRequest(position);
         configureRequestUsingCriteria(request, criteria);
 
         // Ejecutar petición
@@ -37,6 +41,10 @@ public class GoogleApiServiceImpl implements GoogleApiService {
     }
 
     /* HELPER METHODS */
+    private NearbySearchRequest createNearbySearchRequest(LatLng position) {
+        return PlacesApi.nearbySearchQuery(geoApiContext, position);
+    }
+
     private void configureRequestUsingCriteria(NearbySearchRequest request, PlacesCriteria criteria) {
         if (criteria.getRadius() != null) request.radius(criteria.getRadius());
         if (criteria.getPlaceType() != null) request.type(criteria.getPlaceType());
@@ -46,19 +54,13 @@ public class GoogleApiServiceImpl implements GoogleApiService {
         if (criteria.getIsOpenNow() != null) request.openNow(criteria.getIsOpenNow());
     }
 
-    private PlacesSearchResponse executeRequest(NearbySearchRequest request) {
-        PlacesSearchResponse response = null;
+    PlacesSearchResponse executeRequest(NearbySearchRequest request) throws ServiceException {
         try {
-            response = request.await();
-        } catch (ApiException e) {
-            log.error("ApiException: ", e);
-        } catch (InterruptedException e) {
-            log.error("InterruptedException: ", e);
-        } catch (IOException e) {
-            log.error("IOException: ", e);
+            return request.await();
+        } catch (ApiException | InterruptedException | IOException e) {
+            log.error("An {} ocurred while executing request: \n{}", e.getClass().getSimpleName(), e);
+            throw new ServiceException(e.getLocalizedMessage());
         }
-
-        return response;
     }
 
 }

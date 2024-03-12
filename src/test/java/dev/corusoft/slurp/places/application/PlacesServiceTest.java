@@ -8,6 +8,7 @@ import dev.corusoft.slurp.common.pagination.Block;
 import dev.corusoft.slurp.places.application.criteria.PlacesCriteria;
 import dev.corusoft.slurp.places.domain.CandidateSummary;
 import dev.corusoft.slurp.utils.TestResourceUtils;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,8 +47,6 @@ public class PlacesServiceTest {
     private ObjectMapper jsonMapper;
     @Autowired
     private GeoApiContext geoApiContext;
-    @Autowired
-    private TestResourceUtils resourceUtils;
     @Mock
     private GoogleApiService googleApiMock;
     @Mock
@@ -58,7 +57,6 @@ public class PlacesServiceTest {
     @BeforeEach
     public void beforeAll() {
         this.placesServiceMock = new PlacesServiceImpl(this.googleApiMock);
-
     }
 
     /* ************************* CASOS DE PRUEBA ************************* */
@@ -68,20 +66,17 @@ public class PlacesServiceTest {
 
         @ParameterizedTest
         @ValueSource(strings = {"findCandidatesNearby_success.json"})
-        public void when_findCandidatesNearby_thenSuccess(String expectedFile) {
+        public void when_findCandidatesNearby_thenSuccess(String expectedFile) throws Exception {
             // ** Arrange **
             PlacesCriteria searchCriteria = PlacesCriteria.builder()
                     .latitude(MADRID_KILOMETRIC_POINT_0_LATITUDE)
                     .longitude(MADRID_KILOMETRIC_POINT_0_LONGITUDE)
                     .radius(DEFAULT_SEARCH_PERIMETER_RADIUS)
                     .build();
-            PlacesSearchResponse expectedResponseFromFile = resourceUtils.readDataFromFile(resourcesDirectory, expectedFile, PlacesSearchResponse.class);
-
-            when(googleApiMock.findNearbyPlaces(any(PlacesCriteria.class))).thenReturn(expectedResponseFromFile);
-            log.info("Configuración del mock: {}", googleApiMock.findNearbyPlaces(searchCriteria));
-
+            PlacesSearchResponse expectedResponseFromFile = TestResourceUtils.readDataFromFile(resourcesDirectory, expectedFile, PlacesSearchResponse.class);
 
             // ** Act **
+            when(googleApiMock.findNearbyPlaces(any(PlacesCriteria.class))).thenReturn(expectedResponseFromFile);
             Block<CandidateSummary> actualResponse = placesServiceMock.findCandidatesNearby(searchCriteria);
 
             // ** Assert **
@@ -99,21 +94,17 @@ public class PlacesServiceTest {
 
         @ParameterizedTest
         @ValueSource(strings = {"findCandidatesNearby_empty.json"})
-        public void when_findCandidatesNearby_andNoMatches_thenSuccess(String expectedFile) {
+        public void when_findCandidatesNearby_andNoMatches_thenSuccess(String expectedFile) throws Exception {
             // ** Arrange **
             PlacesCriteria searchCriteria = PlacesCriteria.builder()
                     .latitude(MADRID_KILOMETRIC_POINT_0_LATITUDE)
                     .longitude(MADRID_KILOMETRIC_POINT_0_LONGITUDE)
-                    .radius(0)
+                    .radius(1)
                     .build();
-            PlacesSearchResponse expectedResponseFromFile = resourceUtils.readDataFromFile(resourcesDirectory, expectedFile, PlacesSearchResponse.class);
-
-            // TODO Mockear solo llamada a Places API
-            when(googleApiMock.findNearbyPlaces(any(PlacesCriteria.class))).thenReturn(expectedResponseFromFile);
-            log.info("Configuración del mock: {}", googleApiMock.findNearbyPlaces(searchCriteria));
-
+            PlacesSearchResponse expectedResponseFromFile = TestResourceUtils.readDataFromFile(resourcesDirectory, expectedFile, PlacesSearchResponse.class);
 
             // ** Act **
+            when(googleApiMock.findNearbyPlaces(any(PlacesCriteria.class))).thenReturn(expectedResponseFromFile);
             Block<CandidateSummary> actualResponse = placesServiceMock.findCandidatesNearby(searchCriteria);
 
             // ** Assert **
@@ -126,6 +117,26 @@ public class PlacesServiceTest {
                     () -> assertFalse(actualResponse.hasMoreItems()),
                     // No hay enlace para ver más resultados
                     () -> assertNull(actualResponse.getNextPageToken())
+            );
+        }
+
+        @Test
+        public void when_findCandidatesNearby_andInvalidCriteria_thenThrowException() {
+            // ** Arrange **
+            PlacesCriteria searchCriteria = PlacesCriteria.builder()
+                    .latitude(MADRID_KILOMETRIC_POINT_0_LATITUDE)
+                    .longitude(MADRID_KILOMETRIC_POINT_0_LONGITUDE)
+                    .radius(0)
+                    .build();
+
+            // ** Act **
+
+            // ** Assert **
+            assertAll(
+                    () -> assertThrows(ConstraintViolationException.class,
+                            () -> placesServiceMock.findCandidatesNearby(searchCriteria)
+                    )
+
             );
         }
 

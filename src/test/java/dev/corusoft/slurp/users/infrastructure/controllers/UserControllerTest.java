@@ -1,7 +1,7 @@
 package dev.corusoft.slurp.users.infrastructure.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.corusoft.slurp.common.i18n.Translator;
+import dev.corusoft.slurp.common.Translator;
 import dev.corusoft.slurp.users.domain.User;
 import dev.corusoft.slurp.users.infrastructure.dto.input.UpdateContactInfoParamsDTO;
 import dev.corusoft.slurp.users.infrastructure.dto.output.AuthenticatedUserDTO;
@@ -50,15 +50,10 @@ class UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
-    private ApiResponseUtils apiResponseUtils;
-    @Autowired
     private AuthTestUtils authTestUtils;
-    @Autowired
-    private Translator translator;
     @Autowired
     private UserRepository userRepo;
 
-    /* ************************* CASOS DE PRUEBA ************************* */
     private User registeredUser;
     private AuthenticatedUserDTO registeredAuthUserDTO = null;
     private String bearerToken = null;
@@ -90,6 +85,8 @@ class UserControllerTest {
         this.registeredAuthUserDTO = null;
         this.bearerToken = null;
     }
+
+    /* ************************* CASOS DE PRUEBA ************************* */
 
     @Nested
     class UpdateContactInfo_UseCase {
@@ -152,7 +149,7 @@ class UserControllerTest {
             ResultActions testResults = mockMvc.perform(requestBuilder);
 
             // ** Assert **
-            apiResponseUtils.assertApiResponseIsPermissionException(testResults, locale);
+            ApiResponseUtils.assertApiResponseIsPermissionException(testResults, locale);
         }
     }
 
@@ -246,7 +243,7 @@ class UserControllerTest {
 
             // ** Assert **
             String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
-            String errorMessage = translator.generateMessage(USER_IS_DEACTIVATED_KEY, locale);
+            String errorMessage = Translator.generateMessage(USER_IS_DEACTIVATED_KEY, locale);
 
             testResults.andExpectAll(
                     status().isUnauthorized(),
@@ -275,7 +272,7 @@ class UserControllerTest {
 
             // ** Assert **
             String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
-            String errorMessage = translator.generateMessage(USER_NOT_FOUND_KEY, locale);
+            String errorMessage = Translator.generateMessage(USER_NOT_FOUND_KEY, locale);
 
             testResults.andExpectAll(
                     status().isNotFound(),
@@ -333,7 +330,7 @@ class UserControllerTest {
                 ResultActions testResults = mockMvc.perform(requestBuilder);
 
                 // ** Assert **
-                apiResponseUtils.assertApiResponseIsPermissionException(testResults, locale);
+                ApiResponseUtils.assertApiResponseIsPermissionException(testResults, locale);
             }
 
             @Test
@@ -350,7 +347,7 @@ class UserControllerTest {
 
                 // ** Assert **
                 String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
-                String errorMessage = translator.generateMessage(USER_NOT_FOUND_KEY, locale);
+                String errorMessage = Translator.generateMessage(USER_NOT_FOUND_KEY, locale);
 
                 testResults.andExpectAll(
                         status().isNotFound(),
@@ -407,7 +404,7 @@ class UserControllerTest {
                 ResultActions testResults = mockMvc.perform(requestBuilder);
 
                 // ** Assert **
-                apiResponseUtils.assertApiResponseIsSuccessWithEmptyData(testResults, locale);
+                ApiResponseUtils.assertApiResponseIsSuccessWithEmptyData(testResults, locale);
             }
 
             @Test
@@ -422,7 +419,7 @@ class UserControllerTest {
                 ResultActions testResults = mockMvc.perform(requestBuilder);
 
                 // ** Assert **
-                apiResponseUtils.assertApiResponseIsPermissionException(testResults, locale);
+                ApiResponseUtils.assertApiResponseIsPermissionException(testResults, locale);
             }
 
             @Test
@@ -439,7 +436,7 @@ class UserControllerTest {
 
                 // ** Assert **
                 String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
-                String errorMessage = translator.generateMessage(USER_NOT_FOUND_KEY, locale);
+                String errorMessage = Translator.generateMessage(USER_NOT_FOUND_KEY, locale);
 
                 testResults.andExpectAll(
                         status().isNotFound(),
@@ -466,7 +463,7 @@ class UserControllerTest {
                 ResultActions testResults = mockMvc.perform(requestBuilder);
 
                 // ** Assert **
-                apiResponseUtils.assertApiResponseIsSuccessWithEmptyData(testResults, locale);
+                ApiResponseUtils.assertApiResponseIsSuccessWithEmptyData(testResults, locale);
             }
         }
 

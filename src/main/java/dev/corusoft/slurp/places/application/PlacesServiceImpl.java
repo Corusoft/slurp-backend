@@ -1,13 +1,17 @@
 package dev.corusoft.slurp.places.application;
 
 import com.google.maps.model.*;
+import dev.corusoft.slurp.common.api.error.ServiceException;
 import dev.corusoft.slurp.common.pagination.Block;
 import dev.corusoft.slurp.google.visitors.GoogleMapsVisitor;
 import dev.corusoft.slurp.google.visitors.GoogleMapsVisitorImpl;
 import dev.corusoft.slurp.places.application.criteria.PlacesCriteria;
+import dev.corusoft.slurp.places.application.criteria.PlacesCriteriaValidator;
 import dev.corusoft.slurp.places.application.utils.PlacesDistanceCalculator;
 import dev.corusoft.slurp.places.domain.CandidateSummary;
 import dev.corusoft.slurp.places.domain.location.DistanceVO;
+import jakarta.validation.ValidationException;
+import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
@@ -16,21 +20,26 @@ import java.util.List;
 
 @Log4j2
 @Service
+@NoArgsConstructor
 public class PlacesServiceImpl implements PlacesService {
     /* DEPENDENCIES */
-    private final GoogleMapsVisitor gMapsVisitor;
-    private final GoogleApiService googleApi;
+    private GoogleMapsVisitor gMapsVisitor;
+    private GoogleApiService googleApi;
+    private final PlacesCriteriaValidator placesCriteriaValidator = new PlacesCriteriaValidator();
 
     public PlacesServiceImpl(GoogleApiService googleApi) {
         this.gMapsVisitor = new GoogleMapsVisitorImpl();
         this.googleApi = googleApi;
     }
 
+
     /* USE CASES */
 
     @Override
-    public Block<CandidateSummary> findCandidatesNearby(PlacesCriteria criteria) {
+    public Block<CandidateSummary> findCandidatesNearby(PlacesCriteria criteria) throws ServiceException, ValidationException {
+        placesCriteriaValidator.validate(criteria);
         PlacesSearchResponse apiResponse = googleApi.findNearbyPlaces(criteria);
+
         // Realizar petición y gestionar errores
         if (apiResponse.results == null) {
             return Block.emptyBlock();
@@ -47,6 +56,8 @@ public class PlacesServiceImpl implements PlacesService {
         return new Block<>(candidateSummaries, apiResponse.nextPageToken);
     }
 
+
+    /* HELPER METHODS */
     private CandidateSummary createCandidateSummary(PlacesSearchResult result, LatLng currentPosition) {
         CandidateSummary candidateSummary = gMapsVisitor.visit(result);
         DistanceVO distance = PlacesDistanceCalculator.calculateDistance(candidateSummary, currentPosition);

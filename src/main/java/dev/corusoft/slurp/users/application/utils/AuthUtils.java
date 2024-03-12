@@ -1,5 +1,6 @@
 package dev.corusoft.slurp.users.application.utils;
 
+import dev.corusoft.slurp.common.security.PasswordEncoderBean;
 import dev.corusoft.slurp.common.security.jwt.application.JwtGenerator;
 import dev.corusoft.slurp.common.security.jwt.domain.JwtData;
 import dev.corusoft.slurp.users.domain.*;
@@ -17,7 +18,7 @@ import java.util.UUID;
 @Component
 @Transactional(readOnly = true)
 public class AuthUtils {
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder passwordEncoder = PasswordEncoderBean.passwordEncoder();
     private final JwtGenerator jwtGenerator;
     private final RoleRepository roleRepo;
     private final UserRoleRepository userRoleRepo;
@@ -27,13 +28,11 @@ public class AuthUtils {
 
     public AuthUtils(RoleRepository roleRepo,
                      UserRoleRepository userRoleRepo,
-                     BCryptPasswordEncoder passwordEncoder,
                      JwtGenerator jwtGenerator,
                      CredentialRepository credentialRepo,
                      UserRepository userRepo) {
         this.roleRepo = roleRepo;
         this.userRoleRepo = userRoleRepo;
-        this.passwordEncoder = passwordEncoder;
         this.jwtGenerator = jwtGenerator;
         this.credentialRepo = credentialRepo;
         this.userRepo = userRepo;

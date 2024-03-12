@@ -19,5 +19,5 @@ public class ErrorApiResponseBody implements ApiResponseBody {
     private final String debugMessage;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private List<ApiErrorDetails> errors;
+    private List<? extends ApiErrorDetails> errors;
 }

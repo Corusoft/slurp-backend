@@ -1,5 +1,6 @@
 package dev.corusoft.slurp.utils;
 
+import dev.corusoft.slurp.common.security.PasswordEncoderBean;
 import dev.corusoft.slurp.users.application.utils.AuthUtils;
 import dev.corusoft.slurp.users.domain.*;
 import dev.corusoft.slurp.users.infrastructure.dto.input.RegisterUserParamsDTO;
@@ -19,15 +20,13 @@ public class AuthTestUtils {
 
     /* ************************* DEPENDENCIAS ************************* */
     @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
-    @Autowired
     private UserRepository userRepo;
     @Autowired
     private AuthUtils authUtils;
+    private final BCryptPasswordEncoder passwordEncoder = PasswordEncoderBean.passwordEncoder();
 
 
-    public AuthTestUtils(BCryptPasswordEncoder passwordEncoder, UserRepository userRepo) {
-        this.passwordEncoder = passwordEncoder;
+    public AuthTestUtils(UserRepository userRepo) {
         this.userRepo = userRepo;
     }
 

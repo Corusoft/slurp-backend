@@ -1,4 +1,4 @@
-package dev.corusoft.slurp.common.i18n;
+package dev.corusoft.slurp.common.config;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -18,7 +18,7 @@ public class InternationalizationBean {
     private static final String CLASSPATH = "classpath:i18n";
 
     @Bean
-    public MessageSource messageSource() {
+    public static MessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setDefaultEncoding(StandardCharsets.UTF_8.name());
 
@@ -31,7 +31,7 @@ public class InternationalizationBean {
 
     // INFO: https://lokalise.com/blog/spring-boot-internationalization
     @Bean
-    public LocaleResolver localeResolver() {
+    public static LocaleResolver localeResolver() {
         List<Locale> supportedLocales = getSupportedLocales();
 
         AcceptHeaderLocaleResolver localeResolver = new AcceptHeaderLocaleResolver();
@@ -42,7 +42,7 @@ public class InternationalizationBean {
     }
 
 
-    private List<String> createBasenames() {
+    private static List<String> createBasenames() {
         List<String> baseNamePaths = new ArrayList<>();
 
         for (String lang : supportedLanguages) {
@@ -54,7 +54,7 @@ public class InternationalizationBean {
         return baseNamePaths;
     }
 
-    private List<Locale> getSupportedLocales() {
+    private static List<Locale> getSupportedLocales() {
         return Arrays.stream(supportedLanguages)
                 .map(Locale::new)
                 .toList();
