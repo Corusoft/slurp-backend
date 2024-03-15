@@ -32,6 +32,8 @@ spring:
 server:
   servlet:
     context-path: '/api'
+    encoding:
+      charset: UTF-8
 project:
   security:
     jwt:

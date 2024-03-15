@@ -43,7 +43,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class AuthControllerTest {
     /* ************************* CONSTANTES ************************* */
     private final String API_ENDPOINT = "/v1/auth";
-    //private final Locale locale = Locale.getDefault();
     private final Locale locale = LocaleContextHolder.getLocale();
 
     /* ************************* DEPENDENCIAS ************************* */
@@ -53,8 +52,6 @@ class AuthControllerTest {
     private MockMvc mockMvc;
     @Autowired
     private AuthTestUtils authTestUtils;
-    @Autowired
-    private UserRepository userRepo;
 
 
     /* ************************* CICLO VIDA TESTS ************************* */

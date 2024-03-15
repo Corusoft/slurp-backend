@@ -11,12 +11,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static dev.corusoft.slurp.TestConstants.*;
 import static dev.corusoft.slurp.users.infrastructure.dto.conversors.UserConversor.toAuthenticatedUserDTO;
 
 @Component
 public class AuthTestUtils {
+    private List<User> registeredUsers = new ArrayList<>();
 
     /* ************************* DEPENDENCIAS ************************* */
     @Autowired
@@ -97,11 +100,16 @@ public class AuthTestUtils {
         userRepo.save(user);
         authUtils.assignRoleToUser(user, UserRoles.BASIC);
 
+        registeredUsers.add(user);
         return userRepo.save(user);
     }
 
     public void removeRegisteredUser(User user) {
         userRepo.delete(user);
+    }
+
+    public void removeAllRegisteredUsers() {
+        userRepo.deleteAll(registeredUsers);
     }
 
     public AuthenticatedUserDTO generateAuthenticatedUser(User user) {

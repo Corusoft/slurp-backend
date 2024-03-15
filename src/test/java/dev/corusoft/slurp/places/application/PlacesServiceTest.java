@@ -1,7 +1,5 @@
 package dev.corusoft.slurp.places.application;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.maps.GeoApiContext;
 import com.google.maps.model.PlacesSearchResponse;
 import dev.corusoft.slurp.TestResourcesDirectories;
 import dev.corusoft.slurp.common.pagination.Block;
@@ -16,7 +14,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -26,8 +23,7 @@ import java.util.Locale;
 
 import static dev.corusoft.slurp.TestConstants.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 
 @Log4j2
@@ -37,16 +33,13 @@ import static org.mockito.Mockito.when;
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
 public class PlacesServiceTest {
-    private static final String resourcesDirectory = TestResourcesDirectories.PLACES.name();
+
     /* ************************* CONSTANTES ************************* */
+    private static final String resourcesDirectory = TestResourcesDirectories.PLACES.name();
     private final String API_ENDPOINT = "/v1/places";
     private final Locale locale = LocaleContextHolder.getLocale();
 
     /* ************************* DEPENDENCIAS ************************* */
-    @Autowired
-    private ObjectMapper jsonMapper;
-    @Autowired
-    private GeoApiContext geoApiContext;
     @Mock
     private GoogleApiService googleApiMock;
     @Mock

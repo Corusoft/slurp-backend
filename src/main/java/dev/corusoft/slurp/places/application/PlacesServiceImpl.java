@@ -41,7 +41,8 @@ public class PlacesServiceImpl implements PlacesService {
         PlacesSearchResponse apiResponse = googleApi.findNearbyPlaces(criteria);
 
         // Realizar petición y gestionar errores
-        if (apiResponse.results == null) {
+        boolean hasResults = (apiResponse.results != null) && (apiResponse.results.length > 0);
+        if (!hasResults) {
             return Block.emptyBlock();
         }
 
@@ -62,6 +63,7 @@ public class PlacesServiceImpl implements PlacesService {
         CandidateSummary candidateSummary = gMapsVisitor.visit(result);
         DistanceVO distance = PlacesDistanceCalculator.calculateDistance(candidateSummary, currentPosition);
         candidateSummary.setDistance(distance);
+        
         return candidateSummary;
     }
 

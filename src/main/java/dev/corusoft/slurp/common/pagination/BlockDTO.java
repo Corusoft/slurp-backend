@@ -1,9 +1,11 @@
 package dev.corusoft.slurp.common.pagination;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 import java.util.List;
 
@@ -13,6 +15,8 @@ public class BlockDTO<T> {
     @NotNull
     private List<T> items;
 
+    @Accessors(fluent = true)
+    @JsonProperty("hasMoreItems")
     @NotNull
     private boolean hasMoreItems;
 
@@ -27,12 +31,5 @@ public class BlockDTO<T> {
         this.nextPageToken = nextPageToken;
         this.hasMoreItems = nextPageToken != null;
         this.itemsCount = items.size();
-    }
-
-    public BlockDTO(Block<T> block) {
-        this.items = block.getItems();
-        this.hasMoreItems = block.hasMoreItems();
-        this.itemsCount = block.getItemsCount();
-        this.nextPageToken = block.getNextPageToken();
     }
 }

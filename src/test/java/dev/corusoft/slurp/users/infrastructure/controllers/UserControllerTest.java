@@ -404,7 +404,7 @@ class UserControllerTest {
                 ResultActions testResults = mockMvc.perform(requestBuilder);
 
                 // ** Assert **
-                ApiResponseUtils.assertApiResponseIsSuccessWithEmptyData(testResults, locale);
+                ApiResponseUtils.assertApiResponseIsSuccessWithEmptyData(testResults);
             }
 
             @Test
@@ -463,7 +463,7 @@ class UserControllerTest {
                 ResultActions testResults = mockMvc.perform(requestBuilder);
 
                 // ** Assert **
-                ApiResponseUtils.assertApiResponseIsSuccessWithEmptyData(testResults, locale);
+                ApiResponseUtils.assertApiResponseIsSuccessWithEmptyData(testResults);
             }
         }
 

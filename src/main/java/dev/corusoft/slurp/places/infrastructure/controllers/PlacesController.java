@@ -13,6 +13,7 @@ import dev.corusoft.slurp.places.infrastructure.dto.PlacesCriteriaDTO;
 import dev.corusoft.slurp.places.infrastructure.dto.conversors.CandidateConversor;
 import dev.corusoft.slurp.places.infrastructure.dto.conversors.PlacesCriteriaConversor;
 import jakarta.validation.ValidationException;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -26,8 +27,6 @@ import static dev.corusoft.slurp.common.api.ApiResponseHelper.buildSuccessApiRes
 @RequestMapping("/v1/places")
 public class PlacesController {
     private final PlacesService placesService;
-    @Autowired
-    private PlacesCriteriaValidator placesCriteriaValidator;
 
     public PlacesController(PlacesService placesService) {
         this.placesService = placesService;
@@ -41,7 +40,7 @@ public class PlacesController {
     public ApiResponse<BlockDTO<CandidateSummaryDTO>> findCandidatesNearby(@RequestBody PlacesCriteriaDTO params) throws ServiceException, ValidationException {
         // Castear ubicación
         PlacesCriteria criteria = PlacesCriteriaConversor.toPlacesCriteria(params);
-        placesCriteriaValidator.validate(criteria);
+        PlacesCriteriaValidator.validate(criteria);
 
         // Petición al servicio
         Block<CandidateSummary> candidatesBlock = placesService.findCandidatesNearby(criteria);

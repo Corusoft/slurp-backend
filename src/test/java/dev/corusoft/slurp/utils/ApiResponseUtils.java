@@ -33,7 +33,7 @@ public class ApiResponseUtils {
         );
     }
 
-    public static void assertApiResponseIsSuccessWithEmptyData(ResultActions testResults, Locale locale) throws Exception {
+    public static void assertApiResponseIsSuccessWithEmptyData(ResultActions testResults) throws Exception {
         String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
 
         testResults.andExpectAll(
@@ -42,6 +42,18 @@ public class ApiResponseUtils {
                 jsonPath("$.success", is(true)),
                 jsonPath("$.timestamp", lessThan(now)),
                 jsonPath("$.data", nullValue())
+        );
+    }
+
+    public static void assertApiResponseIsOk(ResultActions testResults) throws Exception {
+        String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
+
+        testResults.andExpectAll(
+                status().isOk(),
+                content().contentType(MediaType.APPLICATION_JSON),
+                jsonPath("$.success", is(true)),
+                jsonPath("$.timestamp", lessThan(now)),
+                jsonPath("$.data", notNullValue())
         );
     }
 
