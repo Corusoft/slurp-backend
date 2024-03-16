@@ -1,6 +1,9 @@
 package dev.corusoft.slurp.places.infrastructure.dto;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.*;
 import org.hibernate.validator.constraints.Range;
 
@@ -12,11 +15,11 @@ import org.hibernate.validator.constraints.Range;
 public class PlacesCriteriaDTO {
     @NotNull
     @Range(min = -90, max = 90)
-    private double latitude;
+    private Double latitude;
 
     @NotNull
     @Range(min = -180, max = 180)
-    private double longitude;
+    private Double longitude;
 
     @Positive
     @Max(value = 50000)

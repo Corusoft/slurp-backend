@@ -1,14 +1,16 @@
 package dev.corusoft.slurp.places.application.criteria;
 
-import jakarta.validation.*;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
 import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Component;
 
 import java.util.Set;
 
 @NoArgsConstructor
 public class PlacesCriteriaValidator {
-    private static Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+    private static final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     public static void validate(PlacesCriteria criteria) throws ConstraintViolationException {
         Set<ConstraintViolation<PlacesCriteria>> violations = validator.validate(criteria);

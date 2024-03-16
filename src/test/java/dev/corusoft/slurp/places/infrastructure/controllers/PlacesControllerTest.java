@@ -15,7 +15,10 @@ import dev.corusoft.slurp.places.infrastructure.dto.PlacesCriteriaDTO;
 import dev.corusoft.slurp.places.infrastructure.dto.conversors.CandidateConversor;
 import dev.corusoft.slurp.users.domain.User;
 import dev.corusoft.slurp.users.infrastructure.dto.output.AuthenticatedUserDTO;
-import dev.corusoft.slurp.utils.*;
+import dev.corusoft.slurp.utils.ApiResponseUtils;
+import dev.corusoft.slurp.utils.AuthTestUtils;
+import dev.corusoft.slurp.utils.PlacesTestUtils;
+import dev.corusoft.slurp.utils.TestResourceUtils;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,7 +34,9 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.*;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.RequestBuilder;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -40,7 +45,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static dev.corusoft.slurp.TestConstants.*;
-import static dev.corusoft.slurp.common.CommonControllerAdvice.API_VALIDATION_ERROR_DETAILS_KEY;
+import static dev.corusoft.slurp.common.CommonControllerAdvice.CONSTRAINT_VIOLATION_KEY;
 import static dev.corusoft.slurp.common.security.SecurityConstants.USER_ID_ATTRIBUTE_NAME;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -98,22 +103,17 @@ class PlacesControllerTest {
         @ValueSource(strings = {"findCandidatesNearby_success.json"})
         void when_findCandidatesNearby_thenSuccess(String expectedFile) throws Exception {
             // ** Arrange **
-            PlacesCriteria searchCriteria = PlacesCriteria.builder()
+            LatLng position = new LatLng(MADRID_KILOMETRIC_POINT_0_LATITUDE, MADRID_KILOMETRIC_POINT_0_LONGITUDE);
+            PlacesCriteriaDTO paramsDTO = PlacesCriteriaDTO.builder()
                     .latitude(MADRID_KILOMETRIC_POINT_0_LATITUDE)
                     .longitude(MADRID_KILOMETRIC_POINT_0_LONGITUDE)
                     .radius(DEFAULT_SEARCH_PERIMETER_RADIUS)
-                    .build();
-            LatLng position = new LatLng(searchCriteria.getLatitude(), searchCriteria.getLongitude());
-            PlacesCriteriaDTO paramsDTO = PlacesCriteriaDTO.builder()
-                    .latitude(searchCriteria.getLatitude())
-                    .longitude(searchCriteria.getLongitude())
-                    .radius(searchCriteria.getRadius())
                     .build();
 
             // ** Act **
             PlacesSearchResponse expectedResponseFromFile = TestResourceUtils.readDataFromFile(resourcesDirectory, expectedFile, PlacesSearchResponse.class);
             Block<CandidateSummary> mockedResponse = PlacesTestUtils.createBlockOfCandidateSummary(expectedResponseFromFile, position);
-            when(placesServiceMock.findCandidatesNearby(searchCriteria)).thenReturn(mockedResponse);
+            when(placesServiceMock.findCandidatesNearby(any(PlacesCriteria.class))).thenReturn(mockedResponse);
 
             String endpointAddress = API_ENDPOINT + "/findNearby";
             String encodedRequestBody = jsonMapper.writeValueAsString(paramsDTO);
@@ -142,16 +142,11 @@ class PlacesControllerTest {
         @ValueSource(strings = {"findCandidatesNearby_empty.json"})
         void when_findCandidatesNearby_andNoCandidatesFound_thenSuccess(String expectedFile) throws Exception {
             // ** Arrange **
-            PlacesCriteria searchCriteria = PlacesCriteria.builder()
+            LatLng position = new LatLng(MADRID_KILOMETRIC_POINT_0_LATITUDE, MADRID_KILOMETRIC_POINT_0_LONGITUDE);
+            PlacesCriteriaDTO paramsDTO = PlacesCriteriaDTO.builder()
                     .latitude(MADRID_KILOMETRIC_POINT_0_LATITUDE)
                     .longitude(MADRID_KILOMETRIC_POINT_0_LONGITUDE)
                     .radius(DEFAULT_SEARCH_PERIMETER_RADIUS)
-                    .build();
-            LatLng position = new LatLng(searchCriteria.getLatitude(), searchCriteria.getLongitude());
-            PlacesCriteriaDTO paramsDTO = PlacesCriteriaDTO.builder()
-                    .latitude(searchCriteria.getLatitude())
-                    .longitude(searchCriteria.getLongitude())
-                    .radius(searchCriteria.getRadius())
                     .build();
 
             // ** Act **
@@ -182,16 +177,9 @@ class PlacesControllerTest {
         @ValueSource(strings = {"findCandidatesNearby_empty.json"})
         void when_findCandidatesNearby_andInvalidCriteria_thenException(String expectedFile) throws Exception {
             // ** Arrange **
-            PlacesCriteria searchCriteria = PlacesCriteria.builder()
-                    //.latitude(MADRID_KILOMETRIC_POINT_0_LATITUDE)
-                    //.longitude(MADRID_KILOMETRIC_POINT_0_LONGITUDE)
-                    //.radius(DEFAULT_SEARCH_PERIMETER_RADIUS)
-                    .build();
-            LatLng position = new LatLng(searchCriteria.getLatitude(), searchCriteria.getLongitude());
+            LatLng position = new LatLng(MADRID_KILOMETRIC_POINT_0_LATITUDE, MADRID_KILOMETRIC_POINT_0_LONGITUDE);
             PlacesCriteriaDTO paramsDTO = PlacesCriteriaDTO.builder()
-                    .latitude(searchCriteria.getLatitude())
-                    .longitude(searchCriteria.getLongitude())
-                    .radius(searchCriteria.getRadius())
+                    .radius(DEFAULT_SEARCH_PERIMETER_RADIUS)
                     .build();
 
             // ** Act **
@@ -210,7 +198,7 @@ class PlacesControllerTest {
 
             // ** Assert **
             String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
-            String errorMessage = Translator.generateMessage(API_VALIDATION_ERROR_DETAILS_KEY, locale);
+            String errorMessage = Translator.generateMessage(CONSTRAINT_VIOLATION_KEY, locale);
 
             testResults.andExpectAll(
                     status().isBadRequest(),

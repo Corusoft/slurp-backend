@@ -1,6 +1,8 @@
 package dev.corusoft.slurp.places.application;
 
-import com.google.maps.model.*;
+import com.google.maps.model.LatLng;
+import com.google.maps.model.PlacesSearchResponse;
+import com.google.maps.model.PlacesSearchResult;
 import dev.corusoft.slurp.common.api.error.ServiceException;
 import dev.corusoft.slurp.common.pagination.Block;
 import dev.corusoft.slurp.google.visitors.GoogleMapsVisitor;
@@ -10,7 +12,7 @@ import dev.corusoft.slurp.places.application.criteria.PlacesCriteriaValidator;
 import dev.corusoft.slurp.places.application.utils.PlacesDistanceCalculator;
 import dev.corusoft.slurp.places.domain.CandidateSummary;
 import dev.corusoft.slurp.places.domain.location.DistanceVO;
-import jakarta.validation.ValidationException;
+import jakarta.validation.ConstraintViolationException;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -36,8 +38,8 @@ public class PlacesServiceImpl implements PlacesService {
     /* USE CASES */
 
     @Override
-    public Block<CandidateSummary> findCandidatesNearby(PlacesCriteria criteria) throws ServiceException, ValidationException {
-        placesCriteriaValidator.validate(criteria);
+    public Block<CandidateSummary> findCandidatesNearby(PlacesCriteria criteria) throws ServiceException, ConstraintViolationException {
+        PlacesCriteriaValidator.validate(criteria);
         PlacesSearchResponse apiResponse = googleApi.findNearbyPlaces(criteria);
 
         // Realizar petición y gestionar errores
