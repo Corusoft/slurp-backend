@@ -4,9 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.maps.model.LatLng;
 import com.google.maps.model.PlacesSearchResponse;
 import dev.corusoft.slurp.TestResourcesDirectories;
+import dev.corusoft.slurp.common.Translator;
 import dev.corusoft.slurp.common.pagination.Block;
 import dev.corusoft.slurp.common.pagination.BlockDTO;
-import dev.corusoft.slurp.places.application.*;
+import dev.corusoft.slurp.places.application.PlacesService;
 import dev.corusoft.slurp.places.application.criteria.PlacesCriteria;
 import dev.corusoft.slurp.places.domain.CandidateSummary;
 import dev.corusoft.slurp.places.infrastructure.dto.CandidateSummaryDTO;
@@ -16,33 +17,36 @@ import dev.corusoft.slurp.users.domain.User;
 import dev.corusoft.slurp.users.infrastructure.dto.output.AuthenticatedUserDTO;
 import dev.corusoft.slurp.utils.*;
 import lombok.extern.log4j.Log4j2;
-import org.hamcrest.Matcher;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.*;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.*;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 
 import static dev.corusoft.slurp.TestConstants.*;
-import static dev.corusoft.slurp.common.security.SecurityConstants.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static dev.corusoft.slurp.common.CommonControllerAdvice.API_VALIDATION_ERROR_DETAILS_KEY;
+import static dev.corusoft.slurp.common.security.SecurityConstants.USER_ID_ATTRIBUTE_NAME;
 import static org.hamcrest.Matchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Log4j2
 @ActiveProfiles("test")
@@ -173,5 +177,53 @@ class PlacesControllerTest {
                     jsonPath("$.data.nextPageToken", nullValue())
             );
         }
+
+        @ParameterizedTest
+        @ValueSource(strings = {"findCandidatesNearby_empty.json"})
+        void when_findCandidatesNearby_andInvalidCriteria_thenException(String expectedFile) throws Exception {
+            // ** Arrange **
+            PlacesCriteria searchCriteria = PlacesCriteria.builder()
+                    //.latitude(MADRID_KILOMETRIC_POINT_0_LATITUDE)
+                    //.longitude(MADRID_KILOMETRIC_POINT_0_LONGITUDE)
+                    //.radius(DEFAULT_SEARCH_PERIMETER_RADIUS)
+                    .build();
+            LatLng position = new LatLng(searchCriteria.getLatitude(), searchCriteria.getLongitude());
+            PlacesCriteriaDTO paramsDTO = PlacesCriteriaDTO.builder()
+                    .latitude(searchCriteria.getLatitude())
+                    .longitude(searchCriteria.getLongitude())
+                    .radius(searchCriteria.getRadius())
+                    .build();
+
+            // ** Act **
+            PlacesSearchResponse expectedResponseFromFile = TestResourceUtils.readDataFromFile(resourcesDirectory, expectedFile, PlacesSearchResponse.class);
+            Block<CandidateSummary> mockedResponse = PlacesTestUtils.createBlockOfCandidateSummary(expectedResponseFromFile, position);
+            when(placesServiceMock.findCandidatesNearby(any(PlacesCriteria.class))).thenReturn(mockedResponse);
+
+            String endpointAddress = API_ENDPOINT + "/findNearby";
+            String encodedRequestBody = jsonMapper.writeValueAsString(paramsDTO);
+            RequestBuilder requestBuilder = post(endpointAddress)
+                    .requestAttr(USER_ID_ATTRIBUTE_NAME, currentUserAuth.getUserDTO().getUserID())
+                    .content(encodedRequestBody)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .locale(locale);
+            ResultActions testResults = mockMvc.perform(requestBuilder);
+
+            // ** Assert **
+            String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
+            String errorMessage = Translator.generateMessage(API_VALIDATION_ERROR_DETAILS_KEY, locale);
+
+            testResults.andExpectAll(
+                    status().isBadRequest(),
+                    content().contentType(MediaType.APPLICATION_JSON),
+                    jsonPath("$.success", is(false)),
+                    jsonPath("$.timestamp", lessThan(now)),
+                    jsonPath("$.data", notNullValue()),
+                    jsonPath("$.data.status", is(HttpStatus.BAD_REQUEST.name())),
+                    jsonPath("$.data.statusCode", is(HttpStatus.BAD_REQUEST.value())),
+                    jsonPath("$.data.message", equalTo(errorMessage)),
+                    jsonPath("$.data.debugMessage", nullValue())
+            );
+        }
+
     }
 }
