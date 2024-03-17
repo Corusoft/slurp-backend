@@ -2,6 +2,7 @@ package dev.corusoft.slurp.places.infrastructure.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.maps.model.LatLng;
+import com.google.maps.model.PlaceType;
 import com.google.maps.model.PlacesSearchResponse;
 import dev.corusoft.slurp.TestResourcesDirectories;
 import dev.corusoft.slurp.common.Translator;
@@ -19,6 +20,7 @@ import dev.corusoft.slurp.utils.ApiResponseUtils;
 import dev.corusoft.slurp.utils.AuthTestUtils;
 import dev.corusoft.slurp.utils.PlacesTestUtils;
 import dev.corusoft.slurp.utils.TestResourceUtils;
+import jakarta.validation.Valid;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -45,7 +48,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static dev.corusoft.slurp.TestConstants.*;
-import static dev.corusoft.slurp.common.CommonControllerAdvice.CONSTRAINT_VIOLATION_KEY;
+import static dev.corusoft.slurp.common.CommonControllerAdvice.METHOD_ARGUMENT_NOT_VALID_KEY;
 import static dev.corusoft.slurp.common.security.SecurityConstants.USER_ID_ATTRIBUTE_NAME;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -53,6 +56,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+@ComponentScan(basePackages = {"dev.corusoft.slurp.common.config"})
 @Log4j2
 @ActiveProfiles("test")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -175,11 +179,12 @@ class PlacesControllerTest {
 
         @ParameterizedTest
         @ValueSource(strings = {"findCandidatesNearby_empty.json"})
-        void when_findCandidatesNearby_andInvalidCriteria_thenException(String expectedFile) throws Exception {
+        void when_findCandidatesNearby_andInvalidCriteria_thenException(@Valid String expectedFile) throws Exception {
             // ** Arrange **
             LatLng position = new LatLng(MADRID_KILOMETRIC_POINT_0_LATITUDE, MADRID_KILOMETRIC_POINT_0_LONGITUDE);
             PlacesCriteriaDTO paramsDTO = PlacesCriteriaDTO.builder()
-                    .radius(DEFAULT_SEARCH_PERIMETER_RADIUS)
+                    .placeType(PlaceType.BAR.toString())
+                    .radius(-1)
                     .build();
 
             // ** Act **
@@ -198,7 +203,7 @@ class PlacesControllerTest {
 
             // ** Assert **
             String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
-            String errorMessage = Translator.generateMessage(CONSTRAINT_VIOLATION_KEY, locale);
+            String errorMessage = Translator.generateMessage(METHOD_ARGUMENT_NOT_VALID_KEY, locale);
 
             testResults.andExpectAll(
                     status().isBadRequest(),

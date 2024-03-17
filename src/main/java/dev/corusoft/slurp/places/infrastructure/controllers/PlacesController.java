@@ -6,17 +6,17 @@ import dev.corusoft.slurp.common.pagination.Block;
 import dev.corusoft.slurp.common.pagination.BlockDTO;
 import dev.corusoft.slurp.places.application.PlacesService;
 import dev.corusoft.slurp.places.application.criteria.PlacesCriteria;
-import dev.corusoft.slurp.places.application.criteria.PlacesCriteriaValidator;
 import dev.corusoft.slurp.places.domain.CandidateSummary;
 import dev.corusoft.slurp.places.infrastructure.dto.CandidateSummaryDTO;
 import dev.corusoft.slurp.places.infrastructure.dto.PlacesCriteriaDTO;
 import dev.corusoft.slurp.places.infrastructure.dto.conversors.CandidateConversor;
 import dev.corusoft.slurp.places.infrastructure.dto.conversors.PlacesCriteriaConversor;
 import jakarta.validation.ValidationException;
-import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -40,7 +40,6 @@ public class PlacesController {
     public ApiResponse<BlockDTO<CandidateSummaryDTO>> findCandidatesNearby(@RequestBody PlacesCriteriaDTO params) throws ServiceException, ValidationException {
         // Castear ubicación
         PlacesCriteria criteria = PlacesCriteriaConversor.toPlacesCriteria(params);
-        PlacesCriteriaValidator.validate(criteria);
 
         // Petición al servicio
         Block<CandidateSummary> candidatesBlock = placesService.findCandidatesNearby(criteria);

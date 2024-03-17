@@ -8,11 +8,9 @@ import dev.corusoft.slurp.common.pagination.Block;
 import dev.corusoft.slurp.google.visitors.GoogleMapsVisitor;
 import dev.corusoft.slurp.google.visitors.GoogleMapsVisitorImpl;
 import dev.corusoft.slurp.places.application.criteria.PlacesCriteria;
-import dev.corusoft.slurp.places.application.criteria.PlacesCriteriaValidator;
 import dev.corusoft.slurp.places.application.utils.PlacesDistanceCalculator;
 import dev.corusoft.slurp.places.domain.CandidateSummary;
 import dev.corusoft.slurp.places.domain.location.DistanceVO;
-import jakarta.validation.ConstraintViolationException;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -27,7 +25,6 @@ public class PlacesServiceImpl implements PlacesService {
     /* DEPENDENCIES */
     private GoogleMapsVisitor gMapsVisitor;
     private GoogleApiService googleApi;
-    private final PlacesCriteriaValidator placesCriteriaValidator = new PlacesCriteriaValidator();
 
     public PlacesServiceImpl(GoogleApiService googleApi) {
         this.gMapsVisitor = new GoogleMapsVisitorImpl();
@@ -38,8 +35,7 @@ public class PlacesServiceImpl implements PlacesService {
     /* USE CASES */
 
     @Override
-    public Block<CandidateSummary> findCandidatesNearby(PlacesCriteria criteria) throws ServiceException, ConstraintViolationException {
-        PlacesCriteriaValidator.validate(criteria);
+    public Block<CandidateSummary> findCandidatesNearby(PlacesCriteria criteria) throws ServiceException {
         PlacesSearchResponse apiResponse = googleApi.findNearbyPlaces(criteria);
 
         // Realizar petición y gestionar errores
