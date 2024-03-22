@@ -95,13 +95,14 @@ public class AuthServiceImpl implements AuthService {
         User user = null;
         try {
         // Buscar al usuario
-            log.info("User {} authenticated using Json Web Token", userID);
             user = authUtils.fetchUserByID(userID);
         } catch (UserIsDeactivatedException e) {
             // Si usuario estaba desactivado, lo marca como activo
+            user = authUtils.findUserByID(userID);
             user = reactivateUser(user);
         }
 
+        log.info("User {} authenticated using Json Web Token", userID);
         return user;
     }
 

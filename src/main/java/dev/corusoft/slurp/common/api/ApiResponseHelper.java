@@ -58,7 +58,7 @@ public class ApiResponseHelper {
     }
 
     public static ApiResponse<ErrorApiResponseBody> buildErrorApiResponse(HttpStatus status, String message, Exception exception) {
-        ErrorApiResponseBody body = generateErrorResponseBody(status, message, exception, null);
+        ErrorApiResponseBody body = generateErrorResponseBody(status, message, exception);
 
         return createResponse(false, body);
     }

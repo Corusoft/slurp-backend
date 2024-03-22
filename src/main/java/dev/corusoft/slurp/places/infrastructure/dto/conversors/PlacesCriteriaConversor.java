@@ -14,7 +14,7 @@ public class PlacesCriteriaConversor {
                 .latitude(dto.getLatitude())
                 .longitude(dto.getLongitude())
                 .radius(dto.getRadius())
-                .placeType(parcePlaceType(dto.getPlaceType()))
+                .placeType(parsePlaceType(dto.getPlaceType()))
                 .keywords(cleanKeywords)
                 .maxPriceLevel(parsePriceLevel(dto.getMaxPriceLevel()))
                 .minPriceLevel(parsePriceLevel(dto.getMinPriceLevel()))
@@ -23,7 +23,7 @@ public class PlacesCriteriaConversor {
         return entityBuilder.build();
     }
 
-    private static PlaceType parcePlaceType(String value) {
+    private static PlaceType parsePlaceType(String value) {
         PlaceType placeType;
         try {
             placeType = PlaceType.valueOf(value);
@@ -44,6 +44,5 @@ public class PlacesCriteriaConversor {
 
         return priceLevel;
     }
-
 
 }

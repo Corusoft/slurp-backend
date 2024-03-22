@@ -1,10 +1,10 @@
 package dev.corusoft.slurp.common.exception;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
+@AllArgsConstructor
 public class MissingMandatoryValueException extends Exception {
-    private String fieldName;
+    private final String field;
 }

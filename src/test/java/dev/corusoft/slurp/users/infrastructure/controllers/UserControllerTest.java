@@ -113,12 +113,8 @@ class UserControllerTest {
             // ** Assert **
             String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
 
+            ApiResponseUtils.assertApiResponseIsOk(testResults);
             testResults.andExpectAll(
-                    status().isOk(),
-                    content().contentType(MediaType.APPLICATION_JSON),
-                    jsonPath("$.success", is(true)),
-                    jsonPath("$.timestamp", lessThan(now)),
-                    jsonPath("$.data", notNullValue()),
                     // Datos de la respuesta
                     jsonPath("$.data.contactInfo", notNullValue()),
                     jsonPath("$.data.contactInfo.email", is(newEmail)),
@@ -172,11 +168,8 @@ class UserControllerTest {
             UserDTO userDTO = registeredAuthUserDTO.getUserDTO();
             String userBirthDateString = DateTimeFormatter.ISO_DATE.format(userDTO.getBirthDate());
 
+            ApiResponseUtils.assertApiResponseIsOk(testResults);
             testResults.andExpectAll(
-                    status().isOk(),
-                    content().contentType(MediaType.APPLICATION_JSON),
-                    jsonPath("$.success", is(true)),
-                    jsonPath("$.timestamp", lessThan(now)),
                     // Datos de la respuesta
                     jsonPath("$.data.userID", is(userDTO.getUserID().toString())),
                     jsonPath("$.data.name", is(userDTO.getName())),
@@ -208,11 +201,8 @@ class UserControllerTest {
             UserDTO userDTO = otherRegisteredAuthUserDTO.getUserDTO();
             String userBirthDateString = DateTimeFormatter.ISO_DATE.format(userDTO.getBirthDate());
 
+            ApiResponseUtils.assertApiResponseIsOk(testResults);
             testResults.andExpectAll(
-                    status().isOk(),
-                    content().contentType(MediaType.APPLICATION_JSON),
-                    jsonPath("$.success", is(true)),
-                    jsonPath("$.timestamp", lessThan(now)),
                     // Datos de la respuesta
                     jsonPath("$.data.userID", is(userDTO.getUserID().toString())),
                     jsonPath("$.data.name", is(userDTO.getName())),
@@ -271,20 +261,9 @@ class UserControllerTest {
             ResultActions testResults = mockMvc.perform(requestBuilder);
 
             // ** Assert **
-            String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
             String errorMessage = Translator.generateMessage(USER_NOT_FOUND_KEY, locale);
 
-            testResults.andExpectAll(
-                    status().isNotFound(),
-                    content().contentType(MediaType.APPLICATION_JSON),
-                    jsonPath("$.success", is(false)),
-                    jsonPath("$.timestamp", lessThan(now)),
-                    jsonPath("$.data", notNullValue()),
-                    jsonPath("$.data.status", is(HttpStatus.NOT_FOUND.name())),
-                    jsonPath("$.data.statusCode", is(HttpStatus.NOT_FOUND.value())),
-                    jsonPath("$.data.message", equalTo(errorMessage)),
-                    jsonPath("$.data.debugMessage", nullValue())
-            );
+            ApiResponseUtils.assertApiResponseIsNotFound(testResults, errorMessage);
         }
 
     }
@@ -305,17 +284,11 @@ class UserControllerTest {
                 ResultActions testResults = mockMvc.perform(requestBuilder);
 
                 // ** Assert **
-                String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
-
+                ApiResponseUtils.assertApiResponseIsOk(testResults);
                 testResults.andExpectAll(
-                        status().isOk(),
-                        content().contentType(MediaType.APPLICATION_JSON),
-                        jsonPath("$.success", is(true)),
-                        jsonPath("$.timestamp", lessThan(now)),
                         // Datos de la respuesta
                         jsonPath("$.data.isActive", is(true))
                 );
-
             }
 
             @Test
@@ -346,20 +319,9 @@ class UserControllerTest {
                 ResultActions testResults = mockMvc.perform(requestBuilder);
 
                 // ** Assert **
-                String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
                 String errorMessage = Translator.generateMessage(USER_NOT_FOUND_KEY, locale);
 
-                testResults.andExpectAll(
-                        status().isNotFound(),
-                        content().contentType(MediaType.APPLICATION_JSON),
-                        jsonPath("$.success", is(false)),
-                        jsonPath("$.timestamp", lessThan(now)),
-                        jsonPath("$.data", notNullValue()),
-                        jsonPath("$.data.status", is(HttpStatus.NOT_FOUND.name())),
-                        jsonPath("$.data.statusCode", is(HttpStatus.NOT_FOUND.value())),
-                        jsonPath("$.data.message", equalTo(errorMessage)),
-                        jsonPath("$.data.debugMessage", nullValue())
-                );
+                ApiResponseUtils.assertApiResponseIsNotFound(testResults, errorMessage);
             }
 
             @Test
@@ -378,11 +340,8 @@ class UserControllerTest {
                 // ** Assert **
                 String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
 
+                ApiResponseUtils.assertApiResponseIsOk(testResults);
                 testResults.andExpectAll(
-                        status().isOk(),
-                        content().contentType(MediaType.APPLICATION_JSON),
-                        jsonPath("$.success", is(true)),
-                        jsonPath("$.timestamp", lessThan(now)),
                         // Datos de la respuesta
                         jsonPath("$.data.isActive", is(true))
                 );
@@ -404,7 +363,7 @@ class UserControllerTest {
                 ResultActions testResults = mockMvc.perform(requestBuilder);
 
                 // ** Assert **
-                ApiResponseUtils.assertApiResponseIsSuccessWithEmptyData(testResults);
+                ApiResponseUtils.assertApiResponseIsNoContent(testResults);
             }
 
             @Test
@@ -435,25 +394,16 @@ class UserControllerTest {
                 ResultActions testResults = mockMvc.perform(requestBuilder);
 
                 // ** Assert **
-                String now = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
                 String errorMessage = Translator.generateMessage(USER_NOT_FOUND_KEY, locale);
 
-                testResults.andExpectAll(
-                        status().isNotFound(),
-                        content().contentType(MediaType.APPLICATION_JSON),
-                        jsonPath("$.success", is(false)),
-                        jsonPath("$.timestamp", lessThan(now)),
-                        jsonPath("$.data", notNullValue()),
-                        jsonPath("$.data.status", is(HttpStatus.NOT_FOUND.name())),
-                        jsonPath("$.data.statusCode", is(HttpStatus.NOT_FOUND.value())),
-                        jsonPath("$.data.message", equalTo(errorMessage)),
-                        jsonPath("$.data.debugMessage", nullValue())
-                );
+                ApiResponseUtils.assertApiResponseIsNotFound(testResults, errorMessage);
             }
 
             @Test
             void when_DeactivateUser_andUserIsAlreadyDeactivated_thenSuccess() throws Exception {
                 // ** Arrange **
+                registeredUser.markAsUnactive();
+                authTestUtils.saveOrUpdateUser(registeredUser);
 
                 // ** Act **
                 String endpointAddress = API_ENDPOINT + "/%s/deactivate".formatted(registeredUser.getUserID());
@@ -463,7 +413,7 @@ class UserControllerTest {
                 ResultActions testResults = mockMvc.perform(requestBuilder);
 
                 // ** Assert **
-                ApiResponseUtils.assertApiResponseIsSuccessWithEmptyData(testResults);
+                ApiResponseUtils.assertApiResponseIsNoContent(testResults);
             }
         }
 

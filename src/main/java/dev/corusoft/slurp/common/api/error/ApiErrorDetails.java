@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public abstract class ApiErrorDetails extends Exception {
+public abstract class ApiErrorDetails extends RuntimeException {
 
     private String reason;
 

@@ -19,7 +19,7 @@ import static dev.corusoft.slurp.users.infrastructure.dto.conversors.UserConvers
 
 @Component
 public class AuthTestUtils {
-    private List<User> registeredUsers = new ArrayList<>();
+    private final List<User> registeredUsers = new ArrayList<>();
 
     /* ************************* DEPENDENCIAS ************************* */
     @Autowired
@@ -101,6 +101,10 @@ public class AuthTestUtils {
         authUtils.assignRoleToUser(user, UserRoles.BASIC);
 
         registeredUsers.add(user);
+        return userRepo.save(user);
+    }
+
+    public User saveOrUpdateUser(User user) {
         return userRepo.save(user);
     }
 

@@ -1,9 +1,6 @@
 package dev.corusoft.slurp.places.infrastructure.dto;
 
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import org.hibernate.validator.constraints.Range;
 
@@ -25,7 +22,6 @@ public class PlacesCriteriaDTO {
     @Max(value = 50000)
     private Integer radius;
 
-    @NotEmpty
     private String placeType;
 
     private String keywords;

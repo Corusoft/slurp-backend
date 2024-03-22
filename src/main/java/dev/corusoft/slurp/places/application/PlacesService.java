@@ -1,6 +1,8 @@
 package dev.corusoft.slurp.places.application;
 
 import dev.corusoft.slurp.common.api.error.ServiceException;
+import dev.corusoft.slurp.common.exception.InvalidArgumentException;
+import dev.corusoft.slurp.common.exception.MissingMandatoryValueException;
 import dev.corusoft.slurp.common.pagination.Block;
 import dev.corusoft.slurp.places.application.criteria.PlacesCriteria;
 import dev.corusoft.slurp.places.domain.CandidateSummary;
@@ -13,6 +15,6 @@ public interface PlacesService {
      * @throws ServiceException - Error procesando petición
      * @return Lista de candidatos encontrados
      */
-    Block<CandidateSummary> findCandidatesNearby(PlacesCriteria criteria) throws ServiceException;
+    Block<CandidateSummary> findCandidatesNearby(PlacesCriteria criteria) throws ServiceException, InvalidArgumentException, MissingMandatoryValueException;
 
 }

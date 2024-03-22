@@ -4,6 +4,7 @@ import com.google.maps.*;
 import com.google.maps.model.LatLng;
 import com.google.maps.model.PlacesSearchResponse;
 import dev.corusoft.slurp.TestResourcesDirectories;
+import dev.corusoft.slurp.common.api.error.ServiceException;
 import dev.corusoft.slurp.places.application.criteria.PlacesCriteria;
 import dev.corusoft.slurp.utils.TestResourceUtils;
 import lombok.extern.log4j.Log4j2;
@@ -90,5 +91,70 @@ class GoogleApiServiceTest {
             );
         }
 
+        @ParameterizedTest
+        @ValueSource(strings = {"findCandidatesNearby_empty.json"})
+        void when_FindNearbyPlaces_AndNoResultsFound_thenSuccess(String expectedFile) throws Exception {
+            // ** Arrange **
+            PlacesCriteria searchCriteria = PlacesCriteria.builder()
+                    .latitude(MADRID_KILOMETRIC_POINT_0_LATITUDE)
+                    .longitude(MADRID_KILOMETRIC_POINT_0_LONGITUDE)
+                    .radius(DEFAULT_SEARCH_PERIMETER_RADIUS)
+                    .build();
+            LatLng position = new LatLng(MADRID_KILOMETRIC_POINT_0_LATITUDE, MADRID_KILOMETRIC_POINT_0_LONGITUDE);
+            PlacesSearchResponse expectedResponseFromFile = TestResourceUtils.readDataFromFile(resourcesDirectory, expectedFile, PlacesSearchResponse.class);
+
+            // ** Act **
+            NearbySearchRequest nearbyRequestMock = mock(NearbySearchRequest.class);
+            when(nearbyRequestMock.await()).thenReturn(expectedResponseFromFile);
+
+            PlacesSearchResponse actualResponse;
+            try (MockedStatic<PlacesApi> mock = mockStatic(PlacesApi.class)) {
+                when(PlacesApi.nearbySearchQuery(eq(geoApiContext), eq(position)))
+                        .thenReturn(nearbyRequestMock);
+
+                actualResponse = googleApiServiceMock.findNearbyPlaces(searchCriteria);
+            }
+
+            // ** Assert **
+            assertAll(
+                    // Se recibe una respuesta
+                    () -> assertNotNull(actualResponse),
+                    // Respuesta tiene valores
+                    () -> assertEquals(0, actualResponse.results.length),
+                    // Resultados son los esperados (los mockeados)
+                    () -> assertEquals(expectedResponseFromFile, actualResponse),
+                    // Hay más valores esperados
+                    () -> assertNull(actualResponse.nextPageToken)
+            );
+        }
+
+        @Test
+        void when_FindNearbyPlaces_AndErrorInRequest_thenThrowException() throws Exception {
+            // ** Arrange **
+            PlacesCriteria searchCriteria = PlacesCriteria.builder()
+                    .latitude(MADRID_KILOMETRIC_POINT_0_LATITUDE)
+                    .longitude(MADRID_KILOMETRIC_POINT_0_LONGITUDE)
+                    .radius(DEFAULT_SEARCH_PERIMETER_RADIUS)
+                    .build();
+            LatLng position = new LatLng(MADRID_KILOMETRIC_POINT_0_LATITUDE, MADRID_KILOMETRIC_POINT_0_LONGITUDE);
+
+            // ** Act **
+            NearbySearchRequest nearbyRequestMock = mock(NearbySearchRequest.class);
+            when(googleApiServiceMock.executeRequest(nearbyRequestMock))
+                    .thenThrow(new ServiceException());
+            //.thenAnswer(invocation -> {throw new ServiceException();});
+
+            try (MockedStatic<PlacesApi> mock = mockStatic(PlacesApi.class)) {
+                when(PlacesApi.nearbySearchQuery(eq(geoApiContext), eq(position)))
+                        .thenReturn(nearbyRequestMock);
+            }
+
+            // ** Assert **
+            assertAll(
+                    () -> assertThrows(ServiceException.class,
+                            () -> googleApiServiceMock.findNearbyPlaces(searchCriteria)
+                    )
+            );
+        }
     }
 }

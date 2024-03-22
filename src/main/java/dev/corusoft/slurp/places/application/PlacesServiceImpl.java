@@ -1,13 +1,14 @@
 package dev.corusoft.slurp.places.application;
 
-import com.google.maps.model.LatLng;
-import com.google.maps.model.PlacesSearchResponse;
-import com.google.maps.model.PlacesSearchResult;
+import com.google.maps.model.*;
 import dev.corusoft.slurp.common.api.error.ServiceException;
+import dev.corusoft.slurp.common.exception.InvalidArgumentException;
+import dev.corusoft.slurp.common.exception.MissingMandatoryValueException;
 import dev.corusoft.slurp.common.pagination.Block;
 import dev.corusoft.slurp.google.visitors.GoogleMapsVisitor;
 import dev.corusoft.slurp.google.visitors.GoogleMapsVisitorImpl;
 import dev.corusoft.slurp.places.application.criteria.PlacesCriteria;
+import dev.corusoft.slurp.places.application.criteria.PlacesCriteriaValidator;
 import dev.corusoft.slurp.places.application.utils.PlacesDistanceCalculator;
 import dev.corusoft.slurp.places.domain.CandidateSummary;
 import dev.corusoft.slurp.places.domain.location.DistanceVO;
@@ -35,7 +36,9 @@ public class PlacesServiceImpl implements PlacesService {
     /* USE CASES */
 
     @Override
-    public Block<CandidateSummary> findCandidatesNearby(PlacesCriteria criteria) throws ServiceException {
+    public Block<CandidateSummary> findCandidatesNearby(PlacesCriteria criteria) throws ServiceException, InvalidArgumentException, MissingMandatoryValueException {
+        PlacesCriteriaValidator.validate(criteria);
+
         PlacesSearchResponse apiResponse = googleApi.findNearbyPlaces(criteria);
 
         // Realizar petición y gestionar errores

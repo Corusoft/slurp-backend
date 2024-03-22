@@ -25,6 +25,6 @@ public class PlacesApiErrorHandler {
     public ApiResponse<ErrorApiResponseBody> handleServiceException(ServiceException exception, Locale locale) {
         String errorMessage = Translator.generateMessage(SERVICE_KEY, locale);
 
-        return buildErrorApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, errorMessage);
+        return buildErrorApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, errorMessage, exception);
     }
 }

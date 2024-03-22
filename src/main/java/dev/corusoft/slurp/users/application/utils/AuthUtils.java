@@ -93,10 +93,16 @@ public class AuthUtils {
         return user;
     }
 
+    public User findUserByID(UUID userID) throws UserNotFoundException {
+        // Comprobar si existe el usuario
+        return userRepo.findById(userID)
+                .orElseThrow(() -> new UserNotFoundException(userID));
+
+    }
+
     public User fetchUserByID(UUID userID) throws UserNotFoundException, UserIsDeactivatedException {
         // Comprobar si existe el usuario
-        User user = userRepo.findById(userID)
-                .orElseThrow(() -> new UserNotFoundException(userID));
+        User user = findUserByID(userID);
 
         // Comprobar si usuario está activo
         if (!user.getIsActive()) {

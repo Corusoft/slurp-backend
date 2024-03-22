@@ -3,14 +3,12 @@ package dev.corusoft.slurp.common;
 import dev.corusoft.slurp.common.api.ApiResponse;
 import dev.corusoft.slurp.common.api.ErrorApiResponseBody;
 import dev.corusoft.slurp.common.api.error.ApiValidationErrorDetails;
-import jakarta.validation.ValidationException;
+import dev.corusoft.slurp.common.exception.InvalidArgumentException;
+import dev.corusoft.slurp.common.exception.MissingMandatoryValueException;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Locale;
@@ -23,6 +21,8 @@ public class CommonControllerAdvice {
     /* ******************** TRADUCCIONES DE EXCEPCIONES ******************** */
     public static final String METHOD_ARGUMENT_NOT_VALID_KEY = "MethodArgumentNotValidException";
     public static final String VALIDATION_KEY = "ValidationException";
+    public static final String INVALID_ARGUMENT_KEY = "InvalidArgumentException";
+    public static final String MISSING_MANDATORY_VALUE_KEY = "MissingMandatoryValueException";
 
 
     /* ******************** MANEJADORES DE EXCEPCIONES ******************** */
@@ -45,12 +45,23 @@ public class CommonControllerAdvice {
         return buildErrorApiResponse(HttpStatus.BAD_REQUEST, errorMessage, null, errorsList);
     }
 
-
-    @ExceptionHandler(ValidationException.class)
+    @ExceptionHandler(InvalidArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public ApiResponse<ErrorApiResponseBody> handleValidationException(ValidationException exception, Locale locale) {
-        String errorMessage = Translator.generateMessage(VALIDATION_KEY, locale);
+    public ApiResponse<ErrorApiResponseBody> handleInvalidArgumentException(InvalidArgumentException exception, Locale locale) {
+        Object[] args = {exception.getValue(), exception.getObjectName(), exception.getField()};
+        String errorMessage = Translator.generateMessage(INVALID_ARGUMENT_KEY, args, locale);
+
+        return buildErrorApiResponse(HttpStatus.BAD_REQUEST, errorMessage);
+    }
+
+    @ExceptionHandler(MissingMandatoryValueException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ApiResponse<ErrorApiResponseBody> handleMissingMandatoryValueException(MissingMandatoryValueException exception, Locale locale) {
+        //String translatedMessage = Translator.generateMessage(MISSING_MANDATORY_VALUE_KEY, locale);
+        Object[] args = {exception.getField()};
+        String errorMessage = Translator.generateMessage(MISSING_MANDATORY_VALUE_KEY, args, locale);
 
         return buildErrorApiResponse(HttpStatus.BAD_REQUEST, errorMessage);
     }

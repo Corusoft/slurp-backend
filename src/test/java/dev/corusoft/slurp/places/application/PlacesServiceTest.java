@@ -2,11 +2,12 @@ package dev.corusoft.slurp.places.application;
 
 import com.google.maps.model.PlacesSearchResponse;
 import dev.corusoft.slurp.TestResourcesDirectories;
+import dev.corusoft.slurp.common.exception.InvalidArgumentException;
 import dev.corusoft.slurp.common.pagination.Block;
 import dev.corusoft.slurp.places.application.criteria.PlacesCriteria;
+import dev.corusoft.slurp.places.application.criteria.PlacesCriteriaValidator;
 import dev.corusoft.slurp.places.domain.CandidateSummary;
 import dev.corusoft.slurp.utils.TestResourceUtils;
-import jakarta.validation.ConstraintViolationException;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +24,8 @@ import java.util.Locale;
 
 import static dev.corusoft.slurp.TestConstants.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.when;
 
 
 @Log4j2
@@ -114,7 +116,45 @@ public class PlacesServiceTest {
         }
 
         @Test
-        public void when_findCandidatesNearby_andInvalidCriteria_thenThrowException() {
+        public void when_findCandidatesNearby_andInvalidCriteria_becauseLatitudeIsWrong_thenThrowException() {
+            // ** Arrange **
+            PlacesCriteria searchCriteria = PlacesCriteria.builder()
+                    .latitude(PlacesCriteriaValidator.MAX_LATITUDE_VALUE + 1)
+                    .longitude(MADRID_KILOMETRIC_POINT_0_LONGITUDE)
+                    .radius(DEFAULT_SEARCH_PERIMETER_RADIUS)
+                    .build();
+
+            // ** Act **
+
+            // ** Assert **
+            assertAll(
+                    () -> assertThrows(InvalidArgumentException.class,
+                            () -> placesServiceMock.findCandidatesNearby(searchCriteria)
+                    )
+            );
+        }
+
+        @Test
+        public void when_findCandidatesNearby_andInvalidCriteria_becauseLongitudeIsWrong_thenThrowException() {
+            // ** Arrange **
+            PlacesCriteria searchCriteria = PlacesCriteria.builder()
+                    .latitude(MADRID_KILOMETRIC_POINT_0_LATITUDE)
+                    .longitude(PlacesCriteriaValidator.MAX_LONGITUDE_VALUE + 1)
+                    .radius(DEFAULT_SEARCH_PERIMETER_RADIUS)
+                    .build();
+
+            // ** Act **
+
+            // ** Assert **
+            assertAll(
+                    () -> assertThrows(InvalidArgumentException.class,
+                            () -> placesServiceMock.findCandidatesNearby(searchCriteria)
+                    )
+            );
+        }
+
+        @Test
+        public void when_findCandidatesNearby_andInvalidCriteria_becauseInvalidRadius_thenThrowException() {
             // ** Arrange **
             PlacesCriteria searchCriteria = PlacesCriteria.builder()
                     .latitude(MADRID_KILOMETRIC_POINT_0_LATITUDE)
@@ -126,10 +166,9 @@ public class PlacesServiceTest {
 
             // ** Assert **
             assertAll(
-                    () -> assertThrows(ConstraintViolationException.class,
+                    () -> assertThrows(InvalidArgumentException.class,
                             () -> placesServiceMock.findCandidatesNearby(searchCriteria)
                     )
-
             );
         }
 

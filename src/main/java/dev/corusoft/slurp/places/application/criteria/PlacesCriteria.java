@@ -2,9 +2,7 @@ package dev.corusoft.slurp.places.application.criteria;
 
 import com.google.maps.model.PlaceType;
 import com.google.maps.model.PriceLevel;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.*;
 import lombok.Builder;
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
@@ -21,7 +19,6 @@ public class PlacesCriteria {
     private final Double longitude;
 
     @Positive
-    @NotNull
     @Max(value = 50000)
     private final Integer radius;
 

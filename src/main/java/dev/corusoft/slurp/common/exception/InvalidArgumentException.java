@@ -12,14 +12,12 @@ public class InvalidArgumentException extends Exception {
 
     private Object value;
 
-    private String reason;
 
-    public InvalidArgumentException(String objectName, String field, Object value, String reason) {
-        super(reason);
+    public InvalidArgumentException(String objectName, String field, Object value) {
+        super();
         this.objectName = objectName;
         this.field = field;
         this.value = value;
-        this.reason = reason;
     }
 
 }
