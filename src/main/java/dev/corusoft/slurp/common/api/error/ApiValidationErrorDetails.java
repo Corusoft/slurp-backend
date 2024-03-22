@@ -13,5 +13,10 @@ public class ApiValidationErrorDetails extends ApiErrorDetails {
 
     private Object rejectedValue;
 
-    private String reason;
+    public ApiValidationErrorDetails(String objectName, String fieldName, Object rejectedValue, String reason) {
+        super(reason);
+        this.objectName = objectName;
+        this.fieldName = fieldName;
+        this.rejectedValue = rejectedValue;
+    }
 }

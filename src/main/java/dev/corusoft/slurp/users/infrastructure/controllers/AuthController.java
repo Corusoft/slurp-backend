@@ -10,8 +10,8 @@ import dev.corusoft.slurp.users.domain.User;
 import dev.corusoft.slurp.users.domain.exceptions.*;
 import dev.corusoft.slurp.users.infrastructure.dto.input.*;
 import dev.corusoft.slurp.users.infrastructure.dto.output.AuthenticatedUserDTO;
+import jakarta.validation.Valid;
 import org.springframework.http.*;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -50,7 +50,7 @@ public class AuthController {
     )
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<ApiResponse<AuthenticatedUserDTO>> register(
-            @Validated @RequestBody RegisterUserParamsDTO params
+            @Valid @RequestBody RegisterUserParamsDTO params
     ) throws UserAlreadyExistsException {
         // Registrar usuario
         User registeredUser = authService.register(params);
@@ -77,7 +77,7 @@ public class AuthController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ApiResponse<AuthenticatedUserDTO> login(
-            @Validated @RequestBody LoginParamsDTO params
+            @Valid @RequestBody LoginParamsDTO params
     ) throws IncorrectLoginException {
         // Iniciar sesión en servicio
         User user = authService.login(params.getNickname(), params.getPassword());
@@ -95,7 +95,7 @@ public class AuthController {
     public ApiResponse<AuthenticatedUserDTO> loginViaJWT(
             @RequestAttribute(USER_ID_ATTRIBUTE_NAME) UUID userID,
             @RequestAttribute(TOKEN_ATTRIBUTE_NAME) String jwt
-    ) throws UserNotFoundException, PermissionException, UserIsDeactivatedException {
+    ) throws UserNotFoundException, PermissionException {
         // Validar que JWT pertenece al usuario que intenta acceder
         JwtData jwtData = jwtGenerator.extractData(jwt);
         if (!authUtils.doUsersMatch(userID, jwtData.getUserID())) {
@@ -119,7 +119,7 @@ public class AuthController {
     public ApiResponse<Void> updatePassword(
             @RequestAttribute(USER_ID_ATTRIBUTE_NAME) UUID userID,
             @PathVariable("userID") UUID pathUserID,
-            @Validated @RequestBody ChangePasswordParamsDTO params
+            @Valid @RequestBody ChangePasswordParamsDTO params
     ) throws PermissionException, UserNotFoundException, PasswordsDoNotMatchException {
         // Comprobar que usuario actual y usuario objetivo son el mismo
         if (!authUtils.doUsersMatch(userID, pathUserID)) {

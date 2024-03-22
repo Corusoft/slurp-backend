@@ -37,9 +37,14 @@
 		<dependencies.version.postgresqldriver>42.6.0</dependencies.version.postgresqldriver>
 		<dependencies.version.spring-boot-starter>3.1.4</dependencies.version.spring-boot-starter>
 		<dependencies.version.spring-security>6.1.4</dependencies.version.spring-security>
+		<dependencies.version.google.services>2.2.0</dependencies.version.google.services>
+		<dependencies.version.apache.math>3.6.1</dependencies.version.apache.math>
+		<dependencies.version.simplelatlng>1.4.0</dependencies.version.simplelatlng>
+		<dependencies.version.mockito>5.10.0</dependencies.version.mockito>
+		<dependencies.version.mockito.inline>5.2.0</dependencies.version.mockito.inline>
 
 		<!-- Project plugins versions -->
-		<plugins.version.failsafe>3.2.1</plugins.version.failsafe>
+		<plugins.version.failsafe>3.2.2</plugins.version.failsafe>
 		<plugins.maven-help.version>3.4.0</plugins.maven-help.version>
 
 
@@ -58,6 +63,20 @@
 			<artifactId>jackson-datatype-jsr310</artifactId>
 			<version>${dependencies.version.jackson-datatype}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>com.google.maps</groupId>
+			<artifactId>google-maps-services</artifactId>
+			<version>${dependencies.version.google.services}</version>
+		</dependency>
+
+		<!-- Group "com.javadocmd" -->
+		<dependency>
+			<groupId>com.javadocmd</groupId>
+			<artifactId>simplelatlng</artifactId>
+			<version>${dependencies.version.simplelatlng}</version>
+		</dependency>
+
 
 		<!-- Group "io.jsonwebtoken" -->
 		<dependency>
@@ -81,11 +100,16 @@
 
 		<!-- Group "org.apache" -->
 		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-math3</artifactId>
+			<version>${dependencies.version.apache.math}</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.apache.maven.plugins</groupId>
 			<artifactId>maven-failsafe-plugin</artifactId>
 			<version>${plugins.version.failsafe}</version>
 		</dependency>
-
 
 		<!-- Group "org.bouncycastle" -->
 		<dependency>
@@ -106,6 +130,21 @@
 			<groupId>org.jacoco</groupId>
 			<artifactId>jacoco-maven-plugin</artifactId>
 			<version>${dependencies.version.jacoco}</version>
+		</dependency>
+
+		<!-- Group "org.mockito" -->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>${dependencies.version.mockito}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-inline</artifactId>
+			<version>${dependencies.version.mockito.inline}</version>
+			<scope>test</scope>
 		</dependency>
 
 		<!-- Group "org.postgresql" -->
@@ -142,7 +181,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 			<version>${dependencies.version.spring-boot-starter}</version>
-
 		</dependency>
 
 		<dependency>
@@ -207,7 +245,8 @@
 			<version>${dependencies.version.spring-security}</version>
 			<scope>test</scope>
 		</dependency>
-	</dependencies>
+
+    </dependencies>
 
 	<build>
 		<!-- Build name: slurp-backend_Mayor.Minor.Patch -->

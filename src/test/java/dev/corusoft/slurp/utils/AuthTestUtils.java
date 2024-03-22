@@ -1,5 +1,6 @@
 package dev.corusoft.slurp.utils;
 
+import dev.corusoft.slurp.common.security.PasswordEncoderBean;
 import dev.corusoft.slurp.users.application.utils.AuthUtils;
 import dev.corusoft.slurp.users.domain.*;
 import dev.corusoft.slurp.users.infrastructure.dto.input.RegisterUserParamsDTO;
@@ -10,24 +11,25 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static dev.corusoft.slurp.TestConstants.*;
 import static dev.corusoft.slurp.users.infrastructure.dto.conversors.UserConversor.toAuthenticatedUserDTO;
 
 @Component
 public class AuthTestUtils {
+    private final List<User> registeredUsers = new ArrayList<>();
 
     /* ************************* DEPENDENCIAS ************************* */
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
     @Autowired
     private UserRepository userRepo;
     @Autowired
     private AuthUtils authUtils;
+    private final BCryptPasswordEncoder passwordEncoder = PasswordEncoderBean.passwordEncoder();
 
 
-    public AuthTestUtils(BCryptPasswordEncoder passwordEncoder, UserRepository userRepo) {
-        this.passwordEncoder = passwordEncoder;
+    public AuthTestUtils(UserRepository userRepo) {
         this.userRepo = userRepo;
     }
 
@@ -98,11 +100,20 @@ public class AuthTestUtils {
         userRepo.save(user);
         authUtils.assignRoleToUser(user, UserRoles.BASIC);
 
+        registeredUsers.add(user);
+        return userRepo.save(user);
+    }
+
+    public User saveOrUpdateUser(User user) {
         return userRepo.save(user);
     }
 
     public void removeRegisteredUser(User user) {
         userRepo.delete(user);
+    }
+
+    public void removeAllRegisteredUsers() {
+        userRepo.deleteAll(registeredUsers);
     }
 
     public AuthenticatedUserDTO generateAuthenticatedUser(User user) {

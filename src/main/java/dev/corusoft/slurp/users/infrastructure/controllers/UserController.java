@@ -9,9 +9,9 @@ import dev.corusoft.slurp.users.domain.exceptions.UserIsDeactivatedException;
 import dev.corusoft.slurp.users.domain.exceptions.UserNotFoundException;
 import dev.corusoft.slurp.users.infrastructure.dto.input.UpdateContactInfoParamsDTO;
 import dev.corusoft.slurp.users.infrastructure.dto.output.UserDTO;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -59,7 +59,7 @@ public class UserController {
     public ApiResponse<UserDTO> updateContactInfo(
             @RequestAttribute(USER_ID_ATTRIBUTE_NAME) UUID userID,
             @PathVariable("userID") UUID pathUserID,
-            @Validated @RequestBody UpdateContactInfoParamsDTO params
+            @Valid @RequestBody UpdateContactInfoParamsDTO params
     ) throws PermissionException, UserNotFoundException, UserIsDeactivatedException {
         // Comprobar que usuario actual y usuario objetivo son el mismo
         if (!authUtils.doUsersMatch(userID, pathUserID)) {

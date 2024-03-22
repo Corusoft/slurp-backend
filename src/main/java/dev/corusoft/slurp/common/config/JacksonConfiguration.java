@@ -12,10 +12,9 @@ import java.time.LocalDateTime;
 @Configuration
 public class JacksonConfiguration {
     @NotNull
-    private static JavaTimeModule configureTimeModules() {
+    public static JavaTimeModule configureTimeModules() {
         JavaTimeModule javaTimeModule = new JavaTimeModule();
         javaTimeModule.addSerializer(LocalDateTime.class, new JacksonLocalDateTimeSerializer());
-        javaTimeModule.addDeserializer(LocalDateTime.class, new JacksonLocalDateTimeDeserializer());
         javaTimeModule.addSerializer(LocalDate.class, new JacksonLocalDateSerializer());
         javaTimeModule.addDeserializer(LocalDate.class, new JacksonLocalDateDeserializer());
         return javaTimeModule;
@@ -23,7 +22,7 @@ public class JacksonConfiguration {
 
     @Bean
     @Primary
-    public ObjectMapper configureObjectMapper() {
+    public static ObjectMapper configureObjectMapper() {
         JavaTimeModule javaTimeModule = configureTimeModules();
 
         ObjectMapper objectMapper = new ObjectMapper();

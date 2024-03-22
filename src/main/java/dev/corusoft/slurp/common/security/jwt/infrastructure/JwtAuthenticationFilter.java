@@ -39,8 +39,8 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         // Comprueba si se ha recibido el JWT en la cabecera de la petición
         String authHeaderValue = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (authHeaderValue == null || !authHeaderValue.startsWith(PREFIX_BEARER_TOKEN)) {
-            chain.doFilter(request, response);
             log.warn("Received request without JWT in the Authorization header");
+            chain.doFilter(request, response);
             return;
         }
 
@@ -83,7 +83,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
             authorities.add(authority);
         }
 
-        log.info("Registering granted authorities for user {}", token.getUserID());
+        log.debug("Registering granted authorities for user {}", token.getUserID());
         return authorities;
     }
 }

@@ -26,10 +26,15 @@ spring:
         format_sql: true
         show_sql: true
     open-in-view: false
+  jackson:
+    serialization:
+      indent-output: true
 server:
   servlet:
     context-path: '/api'
+    encoding:
+      charset: UTF-8
 project:
   security:
     jwt:
-      expirationInMilliseconds: 604800000     # 1000 ms * 60 s * 60 m * 24 h * 7 d
+      expirationInMilliseconds: 2592000000     # 1000 ms * 60 s * 60 m * 24 h * 30 d
