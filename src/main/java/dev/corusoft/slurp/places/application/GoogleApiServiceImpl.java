@@ -6,7 +6,6 @@ import com.google.maps.model.LatLng;
 import com.google.maps.model.PlacesSearchResponse;
 import dev.corusoft.slurp.common.api.error.ServiceException;
 import dev.corusoft.slurp.places.application.criteria.PlacesCriteria;
-import jakarta.validation.Valid;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -28,7 +27,7 @@ public class GoogleApiServiceImpl implements GoogleApiService {
     /* USE CASES */
 
     @Override
-    public PlacesSearchResponse findNearbyPlaces(@Valid PlacesCriteria criteria) throws ServiceException {
+    public PlacesSearchResponse findNearbyPlaces(PlacesCriteria criteria) throws ServiceException {
         // Configurar petición
         LatLng position = new LatLng(criteria.getLatitude(), criteria.getLongitude());
         NearbySearchRequest request = createNearbySearchRequest(position);

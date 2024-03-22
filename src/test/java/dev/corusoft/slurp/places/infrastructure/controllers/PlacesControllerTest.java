@@ -17,7 +17,6 @@ import dev.corusoft.slurp.places.infrastructure.dto.conversors.CandidateConverso
 import dev.corusoft.slurp.users.domain.User;
 import dev.corusoft.slurp.users.infrastructure.dto.output.AuthenticatedUserDTO;
 import dev.corusoft.slurp.utils.*;
-import jakarta.validation.Valid;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -215,7 +214,7 @@ class PlacesControllerTest {
 
         @ParameterizedTest
         @ValueSource(strings = {"findCandidatesNearby_empty.json"})
-        void when_findCandidatesNearby_andInvalidCriteria_thenException(@Valid String expectedFile) throws Exception {
+        void when_findCandidatesNearby_andInvalidCriteria_thenException(String expectedFile) throws Exception {
             // ** Arrange **
             Integer INVALID_RADIUS = -1;
             String placesCriteriaClassname = PlacesCriteria.class.getSimpleName();
@@ -249,7 +248,7 @@ class PlacesControllerTest {
 
         @ParameterizedTest
         @ValueSource(strings = {"findCandidatesNearby_empty.json"})
-        void when_findCandidatesNearby_andMissingCriteria_thenException(@Valid String expectedFile) throws Exception {
+        void when_findCandidatesNearby_andMissingCriteria_thenException(String expectedFile) throws Exception {
             // ** Arrange **
             String MISSING_FIELDNAME = "latitude";
             LatLng position = new LatLng(MADRID_KILOMETRIC_POINT_0_LATITUDE, MADRID_KILOMETRIC_POINT_0_LONGITUDE);
